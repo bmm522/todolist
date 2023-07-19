@@ -1,11 +1,19 @@
 <template>
-  <CalendarComponent/>
-
+  <BodyComponent>
+    <router-view>
+     <ToDoList/>
+    <AddTaskButton/>
+    </router-view>
+  </BodyComponent>
 </template>
 
 <script setup>
 
-import CalendarComponent from "components/body/CalendarComponent.vue";
+import BodyComponent from "components/body/BodyComponent.vue";
+import ToDoList from "components/body/ToDoList.vue";
+import AddTaskButton from "components/body/add-task/AddTaskButton.vue";
+
+
 </script>
 
 <style scoped>
