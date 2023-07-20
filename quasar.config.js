@@ -10,7 +10,7 @@
 
 
 const { configure } = require('quasar/wrappers');
-
+const ESLintPlugin = require('eslint-webpack-plugin')
 
 module.exports = configure(function (/* ctx */) {
   return {
@@ -59,6 +59,12 @@ module.exports = configure(function (/* ctx */) {
         browser: [ 'es2019', 'edge88', 'firefox78', 'chrome87', 'safari13.1' ],
         node: 'node16'
       },
+      chainWebpack (chain) {
+        chain.plugin('eslint-webpack-plugin')
+          .use(ESLintPlugin, [{ extensions: [ 'js', 'vue' ] }])
+      },
+
+
 
       vueRouterMode: 'hash', // available values: 'hash', 'history'
       // vueRouterBase,

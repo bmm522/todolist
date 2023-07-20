@@ -1,8 +1,8 @@
 <template>
   <q-page-sticky position="bottom-right" :offset="[18, 18]">
-    <q-btn fab icon="add" color="accent" label="할 일 추가"  @click="openTaskFormEvent" />
+    <q-btn fab icon="add" color="accent" label="할 일 추가" @click="openTaskModalEvent"/>
   </q-page-sticky>
-  <AddTaskDialog :add-task-modal="addTaskModal" @close="onClose" />
+  <AddTaskDialog :add-task-modal="addTaskModal" @close="onClose"/>
 </template>
 <script setup>
 
@@ -15,11 +15,9 @@ const onClose = () => {
   addTaskModal.value = false
 }
 
-const openTaskFormEvent = () => {
-     addTaskModal.value = true;
+const openTaskModalEvent = () => {
+  addTaskModal.value = true;
 }
-
-
 </script>
 
 <style scoped>
