@@ -1,9 +1,7 @@
 <template>
   <BodyComponent>
-    <router-view>
      <ToDoList/>
     <AddTaskButton/>
-    </router-view>
   </BodyComponent>
 </template>
 
