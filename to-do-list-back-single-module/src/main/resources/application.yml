@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    driver-class-name: oracle.jdbc.driver.OracleDriver
+    url: jdbc:oracle:thin:@localhost:1521/xe
+    username: todouser
+    password: 1234
+
+
+
+mybatis:
+  type-aliases-package: com.jiinkim.todolist.user.model, com.jiinkim.todolist.todo.model
+  mapper-locations: classpath:mybatis/mappers/*.xml

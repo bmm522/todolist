@@ -1,88 +1,90 @@
 <template>
 
-  아이디
-  <br>
-  <input style="width: 250px"  type="text" v-model="userId" maxlength="8"  @input="validCheckId" @focus="focusIdOn" @blur="focusIdOut"/>
-  <div v-if="isFocusId">
-    <div v-if="!isUserIdValid" style="color: #f57878"><small>최소 4자 ~ 최대 8자  입력하세요</small></div>
-    <div v-if="isUserIdValid" style="color: green"><small>형식이 올바릅니다.</small></div>
-  </div>
-  <br>
-  비밀번호
-  <br>
-  <input style="width: 250px" type="password"  v-model="password" maxlength="20" @input="validCheckPassword">
-  <div v-if="isFocusPassword">
-    <div v-if="!isPasswordValid" style="color: #f57878"><small>영어, 숫자, 특수문자를 포함하여 최소 8자 ~ 최대 20자 입력하세요</small></div>
-    <div v-if="isPasswordValid" style="color: green"><small>형식이 올바릅니다.</small></div>
-  </div>
-  <br>
-  비밀번호 확인
-  <br>
-  <input  style="width: 250px" type="password" @input="validCheckRePassword"/>
-  <div v-if="isFocusRePassword">
-    <div v-if="!isRePasswordValid" style="color: #f57878"><small>일치하지 않습니다.</small></div>
-    <div v-if="isRePasswordValid" style="color: green"><small>일치합니다.</small></div>
-  </div>
-  <br>
-  <br>
-  <q-btn outline color="primary" label="회원가입"  @click="register"/>
 
+  <q-form @submit="register" @reset="onReset">
+
+    <q-input
+      style="width: 300px"
+      filled v-model="userId" maxlength="8" label="아이디를 입력하세요" lazy-rules :rules="[val => val.length >= 4 || '최소 4자 ~ 최대 8자  입력하세요']"/>
+
+    <br>
+    <q-btn label="중복체크" @click="checkDuplicateUserId" />
+    <br>
+    <br>
+    <q-input
+      style="width: 300px"
+      filled  type="password" v-model="password" maxlength="20" label="비밀번호를 입력하세요" lazy-rules :rules="[val =>val.length > 8 && passwordRegex.test(val) || '영어, 숫자, 특수문자를 포함하여 최소 8자 ~ 최대 20자 입력하세요']"/>
+    <br>
+    <q-input
+      style="width: 300px"
+      filled  v-model="rePassword" type="password" maxlength="20" label="비밀번호를 재입력하세요" lazy-rules :rules="[val => val === password || '일치하지 않습니다']"/>
+
+
+    <br>
+    <q-btn label="회원가입" type="submit" />
+    <q-btn label="입력 초기화" type="reset"/>
+  </q-form>
 </template>
 
 <script setup>
 
 import { ref, watch } from "vue";
-import axios from "axios";
+import UserApi from "src/common/user/UserApi";
+import {Notify, useQuasar} from "quasar";
+
 
 const userId = ref('');
 const password = ref('');
+const rePassword = ref('');
 
-const isFocusId = ref(false);
-const isFocusPassword = ref(false);
-const isFocusRePassword = ref(false);
-
-const isUserIdValid = ref(false);
-const isPasswordValid = ref(false);
-const isRePasswordValid = ref(false);
-
+const isDuplicatedCheckUserId = ref(false);
 
 const passwordRegex = /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+]).{8,20}$/;
 
+const checkDuplicateUserId = async () => {
 
-const validCheckId = (e) => {
-  isUserIdValid.value = e.target.value.length >= 4;
+    const data = await UserApi.checkDuplicateUserIdApi(userId.value);
+    const duplicateCheckResult = data.body.duplicateCheckResult;
+
+    if(duplicateCheckResult) {
+        Notify.create({
+          message: '이미 사용중인 아이디입니다.',
+          color: 'red'
+        })
+      isDuplicatedCheckUserId.value = false;
+    }
+ else {
+      Notify.create({
+        message: '사용 가능한 아이디입니다.',
+        color: 'green'
+      })
+      isDuplicatedCheckUserId.value = true;
+    }
 }
 
-const validCheckPassword = (e) => {
 
-
-  let inputPasswordText = e.target.value;
-  isPasswordValid.value = (inputPasswordText.length >= 8) && passwordRegex.test(inputPasswordText);
-}
-
-const validCheckRePassword = (e) => {
-
-  isRePasswordValid.value = e.target.value === password.value;
-}
-
-const focusIdOn = () => {
-  isFocusId.value = true;
-}
-
-const focusIdOut = () => {
-  isFocusId.value = false;
-}
-const register = (e) => {
-  console.log(isUserIdValid.value);
-  console.log(isPasswordValid.value);
-  console.log(isRePasswordValid.value);
-
-  axios.get("http://localhost:8080/register")
-    .then(res=> {
-      console.log('통신성공');
+const register = async () => {
+  if(!isDuplicatedCheckUserId.value) {
+    return Notify.create({
+      message: '아이디 중복체크를 확인해주세요.',
+      color: 'red'
     })
+  }
+
+  const data = await UserApi.registerApi(userId.value, password.value);
+  console.log(data);
+
+
 }
 
+
+const onReset = () => {
+
+  userId.value = '';
+  password.value = '';
+  rePassword.value = '';
+
+}
 
 
 

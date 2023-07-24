@@ -23,6 +23,16 @@ const routes = [
     ]
   },
 
+  {
+    path: '/error',
+    name: 'error',
+    component: () => import('pages/ErrorNotFound.vue'),
+    children: [
+      // { path: '', component: () => import('pages/IndexPage.vue') }
+    ]
+  },
+
+
 
   // Always leave this as last one,
   // but you can also remove it

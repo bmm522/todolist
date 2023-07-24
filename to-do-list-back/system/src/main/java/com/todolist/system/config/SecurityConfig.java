@@ -21,6 +21,7 @@ public class SecurityConfig {
 
 
     @Bean
+    @Conf
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 //        http.formLogin(AbstractHttpConfigurer::disable);
 //        http.csrf(AbstractHttpConfigurer::disable);
