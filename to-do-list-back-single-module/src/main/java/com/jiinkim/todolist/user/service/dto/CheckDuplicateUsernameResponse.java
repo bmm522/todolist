@@ -3,7 +3,7 @@ package com.jiinkim.todolist.user.service.dto;
 import lombok.Getter;
 
 @Getter
-public class CheckDuplicateUsernameResponse {
+public class CheckDuplicateUsernameResponse extends  ResponseDto{
 
     private final boolean duplicateCheckResult;
 
