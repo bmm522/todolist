@@ -2,26 +2,27 @@ package com.jiinkim.todolist.user.controller.dto;
 
 
 import lombok.Getter;
+import org.springframework.http.HttpStatus;
 
 @Getter
 public class ApiResponse<T> {
 
-    private final Integer status;
+    private final Integer code;
     private final T body;
 
-    private ApiResponse(Integer status, T data) {
-        this.status = status;
+    private ApiResponse(HttpStatus status,final T data) {
+        this.code = status.value();
         this.body = data;
     }
 
     // 정상 요청
-    public static <T> ApiResponse<T> success(final Integer code, final T data) {
-        return new ApiResponse<>(code, data);
+    public static <T> ApiResponse<T> success(final HttpStatus status, final T data) {
+        return new ApiResponse<>(status, data);
     }
 
     // 비 정상 요청
-    public static <T> ApiResponse<T> fail(final Integer code,  final T error) {
-        return new ApiResponse<>(code,  error);
+    public static <T> ApiResponse<T> fail(final HttpStatus status,  final T error) {
+        return new ApiResponse<>(status,  error);
     }
 
 

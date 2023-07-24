@@ -12,9 +12,13 @@ const checkDuplicateUserIdApi = async (userId) => {
 }
 
 const registerApi = async (userId, password) => {
-  const result = await globalAxios.post("/user", {
+  const result = await globalAxios.post("/user/register", JSON.stringify({
     username: userId,
     password:password
+  }), {
+    headers: {
+      "Content-type" : "application/json",
+    }
   })
   return result.data;
 }
