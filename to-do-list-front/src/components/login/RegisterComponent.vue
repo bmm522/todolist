@@ -1,8 +1,6 @@
 <template>
 
-
   <q-form @submit="register" @reset="onReset">
-
     <q-input
       style="width: 300px"
       filled v-model="userId" maxlength="8" label="아이디를 입력하세요" lazy-rules :rules="[val => val.length >= 4 || '최소 4자 ~ 최대 8자  입력하세요']"/>
@@ -28,14 +26,21 @@
 
 <script setup>
 
-import { ref, watch } from "vue";
+import {computed, ref, watch} from "vue";
 import UserApi from "src/common/user/UserApi";
 import {Notify, useQuasar} from "quasar";
+// import router from "src/router/index";
+import {createRouter as $router, useRoute, useRouter} from "vue-router";
+import routes from "src/router/routes";
+import {route} from "quasar/wrappers";
+import router from "src/router";
 
 
 const userId = ref('');
 const password = ref('');
 const rePassword = ref('');
+const emits = defineEmits('clickRegisterButton');
+
 
 const isDuplicatedCheckUserId = ref(false);
 
@@ -70,12 +75,27 @@ const register = async () => {
       color: 'red'
     })
   }
-
   const data = await UserApi.registerApi(userId.value, password.value);
-  console.log(data);
+
+  if(data.code === 201) {
+    Notify.create({
+      message: '회원가입이 완료되었습니다.',
+      color: 'green'
+    })
+    await router.push({name: 'login'});
+  }
+ else {
+    Notify.create({
+      message: '서버에 문제가 생겼습니다.',
+      color: 'red'
+    });
+  }
 
 
 }
+
+
+
 
 
 const onReset = () => {

@@ -1,11 +1,10 @@
 <template>
-<AppComponent>
-  <HeaderLayout/>
-  <LeftDrawerLayout/>
-  <BodyLayout/>
-  <FooterLayout/>
-</AppComponent>
-
+  <AppComponent>
+    <HeaderLayout/>
+    <LeftDrawerLayout/>
+    <BodyLayout/>
+    <FooterLayout/>
+  </AppComponent>
 </template>
 
 <script setup>

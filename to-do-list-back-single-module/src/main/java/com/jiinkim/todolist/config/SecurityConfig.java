@@ -1,12 +1,18 @@
 package com.jiinkim.todolist.config;
 
 import java.util.Collections;
+
+
+import com.jiinkim.todolist.user.filter.UsernamePasswordAuthenticationFilterChild;
+import com.jiinkim.todolist.user.service.LoginService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
@@ -18,6 +24,7 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
 
@@ -27,6 +34,8 @@ public class SecurityConfig {
 
     private static final String allowedOriginUrl = "http://localhost:9000";
 
+    private final LoginService loginService;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
@@ -34,7 +43,9 @@ public class SecurityConfig {
                         .requestMatchers(duplicateUrl, registerUrl).permitAll()
                         .anyRequest().authenticated())
                 .formLogin(AbstractHttpConfigurer::disable)
-                .cors(Customizer.withDefaults());
+                .cors(Customizer.withDefaults())
+                .addFilter(new UsernamePasswordAuthenticationFilterChild(authenticationManager()))
+                .userDetailsService(loginService);
         return http.build();
     }
 
@@ -50,9 +61,11 @@ public class SecurityConfig {
     }
 
     @Bean
-    BCryptPasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder(16);
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder(4);
     }
+
+
 
 
 }

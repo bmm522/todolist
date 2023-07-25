@@ -1,15 +1,14 @@
 package com.jiinkim.todolist.user.service.dto;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-public class CheckDuplicateUsernameResponse extends  ResponseDto{
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+public class CheckDuplicateUsernameResponse {
 
     private final boolean duplicateCheckResult;
-
-    private CheckDuplicateUsernameResponse(final boolean duplicateCheckResult) {
-        this.duplicateCheckResult = duplicateCheckResult;
-    }
 
     public static CheckDuplicateUsernameResponse create(final boolean isDuplicated) {
         return new CheckDuplicateUsernameResponse(isDuplicated);

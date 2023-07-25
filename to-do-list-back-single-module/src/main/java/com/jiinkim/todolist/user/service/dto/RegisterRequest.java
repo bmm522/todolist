@@ -1,23 +1,33 @@
 package com.jiinkim.todolist.user.service.dto;
 
+import com.jiinkim.todolist.user.model.User;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 @Getter
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class RegisterRequest {
 
-  private String username;
+  private final String username;
   private String password;
-
-  private RegisterRequest(final String username, final String password) {
-    this.username = username;
-    this.password = password;
-  }
 
   public static RegisterRequest create(final String username, final String password) {
     return new RegisterRequest(username, password);
   }
 
-  public void encodedPassword(String encodedPassword) {
+  public void setPassword(String encodedPassword) {
     this.password = encodedPassword;
+  }
+
+
+  public User toModel(LocalDateTime now, String encodedPassword) {
+    User user = User.createWhenRegister(this.username, encodedPassword);
+    user.setCreatedAt(now);
+    user.setUpdatedAt(now);
+    return user;
   }
 }
