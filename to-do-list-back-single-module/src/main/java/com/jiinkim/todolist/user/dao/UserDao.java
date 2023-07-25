@@ -11,4 +11,7 @@ public interface UserDao {
 
     int checkDuplicateByUsername(final String username) ;
 
+    int register(User user);
+
+    Optional<User> findUserByUsername(String username);
 }

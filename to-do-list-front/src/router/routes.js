@@ -1,12 +1,11 @@
+import * as path from "path";
+import {createRouter} from "vue-router";
 
 const routes = [
-
   {
     path: '/',
+    name:'login',
     component: () => import('layouts/LoginLayout.vue'),
-    children: [
-      // { path: '', component: () => import('pages/IndexPage.vue') }
-    ]
   },
   {
     path: '/register',
@@ -16,8 +15,8 @@ const routes = [
     ]
   },
   {
-    path: '/main',
-    component: () => import('layouts/AppLayout.vue'),
+    path: '/todo',
+    component: () => import('layouts/TodoLayout.vue'),
     children: [
       // { path: '', component: () => import('pages/IndexPage.vue') }
     ]
@@ -41,5 +40,6 @@ const routes = [
     component: () => import('pages/ErrorNotFound.vue')
   }
 ]
+
 
 export default routes

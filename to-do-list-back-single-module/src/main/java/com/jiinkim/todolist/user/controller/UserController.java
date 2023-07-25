@@ -1,19 +1,24 @@
 package com.jiinkim.todolist.user.controller;
 
+import com.jiinkim.todolist.common.exception.InsertFailedException;
 import com.jiinkim.todolist.user.controller.dto.ApiResponse;
 import com.jiinkim.todolist.user.controller.dto.RegisterClientRequest;
 import com.jiinkim.todolist.user.controller.util.DtoConverter;
 import com.jiinkim.todolist.user.service.UserService;
 import com.jiinkim.todolist.user.service.dto.CheckDuplicateUsernameResponse;
 import com.jiinkim.todolist.user.service.dto.RegisterRequest;
-import com.jiinkim.todolist.user.service.dto.ResponseDto;
+import com.jiinkim.todolist.user.service.dto.UserDto;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/user")
+@Slf4j
 public class UserController {
 
     private final UserService userService;
@@ -24,13 +29,13 @@ public class UserController {
      * @return isDuplicated : true 중복값 있음, false 중복값 없음
      */
     @GetMapping("/check-duplicate")
-    public ApiResponse<ResponseDto> checkDuplicatedUsername(
+    public ApiResponse<CheckDuplicateUsernameResponse> checkDuplicatedUsername(
         @RequestParam("username") String username) {
         return ApiResponse.success(HttpStatus.OK, userService.checkDuplicatedUserId(username));
     }
 
     @PostMapping("/register")
-    public ApiResponse<> register(@RequestBody RegisterClientRequest request) {
+    public ApiResponse<UserDto> register(@RequestBody @Valid RegisterClientRequest request)  {
         RegisterRequest dto = DtoConverter.toRegisterRequest(request);
         return ApiResponse.success(HttpStatus.CREATED, userService.register(dto));
     }
