@@ -17,6 +17,8 @@ public class User  {
     private Long userId;
     private String username;
     private String password;
+
+    private String refreshToken;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -38,6 +40,8 @@ public class User  {
         this.updatedAt = updatedAt;
     }
 
-
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
 
 }

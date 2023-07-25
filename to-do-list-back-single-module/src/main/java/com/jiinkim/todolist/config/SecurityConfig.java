@@ -1,18 +1,20 @@
 package com.jiinkim.todolist.config;
 
+import com.jiinkim.todolist.user.dao.UserDao;
+import com.jiinkim.todolist.user.filter.LoginAuthenticationFilter;
 import java.util.Collections;
 
 
-import com.jiinkim.todolist.user.filter.UsernamePasswordAuthenticationFilterChild;
-import com.jiinkim.todolist.user.service.LoginService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
@@ -29,23 +31,30 @@ public class SecurityConfig {
 
 
 
+    private final UserDao userDao;
+
+
+
+
     private static final String duplicateUrl = "/user/check-duplicate";
     private static final String registerUrl = "/user/register";
 
     private static final String allowedOriginUrl = "http://localhost:9000";
 
-    private final LoginService loginService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(duplicateUrl, registerUrl).permitAll()
-                        .anyRequest().authenticated())
+                        .anyRequest().permitAll())
                 .formLogin(AbstractHttpConfigurer::disable)
+                .logout(logout -> logout.logoutUrl("/user/logout"))
+                .httpBasic(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
-                .addFilter(new UsernamePasswordAuthenticationFilterChild(authenticationManager()))
-                .userDetailsService(loginService);
+                .apply(new MyCustomSecurity());
+
         return http.build();
     }
 
@@ -65,6 +74,15 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder(4);
     }
 
+
+    public class MyCustomSecurity extends AbstractHttpConfigurer<MyCustomSecurity, HttpSecurity> {
+
+        @Override
+        public void configure(HttpSecurity http) throws Exception {
+            AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
+            http.addFilter(new LoginAuthenticationFilter(authenticationManager, userDao));
+        }
+    }
 
 
 

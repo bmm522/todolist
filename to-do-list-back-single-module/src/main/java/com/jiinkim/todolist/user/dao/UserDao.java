@@ -14,4 +14,6 @@ public interface UserDao {
     int register(User user);
 
     Optional<User> findUserByUsername(String username);
+
+    int updateRefreshToken(User savedUser);
 }

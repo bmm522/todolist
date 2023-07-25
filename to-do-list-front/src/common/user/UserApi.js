@@ -11,6 +11,11 @@ const checkDuplicateUserIdApi = async (userId) => {
   return result.data;
 }
 
+const getUsername = () => {
+  const result = globalAxios.get("/user/username");
+  return  result.data;
+}
+
 const registerApi = async (userId, password) => {
   const result = await globalAxios.post("/user/register", JSON.stringify({
     username: userId,
@@ -24,7 +29,7 @@ const registerApi = async (userId, password) => {
 }
 
 const loginApi = async (userId, password) => {
-  const result = await globalAxios.post("/login", JSON.stringify({
+  const result = await globalAxios.post("/user/login", JSON.stringify({
     username: userId,
     password:password
   }), {
@@ -39,5 +44,6 @@ const loginApi = async (userId, password) => {
 export default {
   checkDuplicateUserIdApi,
   registerApi,
-  loginApi
+  loginApi,
+  getUsername
 };

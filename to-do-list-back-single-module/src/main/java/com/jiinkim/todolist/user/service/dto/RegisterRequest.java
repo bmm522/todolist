@@ -24,8 +24,9 @@ public class RegisterRequest {
   }
 
 
-  public User toModel(LocalDateTime now, String encodedPassword) {
+  public User toModel(LocalDateTime now, String encodedPassword, String refreshToken) {
     User user = User.createWhenRegister(this.username, encodedPassword);
+    user.setRefreshToken(refreshToken);
     user.setCreatedAt(now);
     user.setUpdatedAt(now);
     return user;

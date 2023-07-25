@@ -1,0 +1,7 @@
+jwt:
+  secret: 1234567890123456
+  token_prefix: 'Bearer '
+  refresh_prefix: 'RefreshToken '
+  header_jwt: 'AccessToken'
+  header_refresh: 'RefreshToken'
+  iss: 'jiin'

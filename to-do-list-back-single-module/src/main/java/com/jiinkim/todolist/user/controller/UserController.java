@@ -7,11 +7,14 @@ import com.jiinkim.todolist.user.controller.util.DtoConverter;
 import com.jiinkim.todolist.user.service.UserService;
 
 import com.jiinkim.todolist.user.service.dto.RegisterRequest;
+import com.jiinkim.todolist.user.service.dto.UserDetailsImpl;
 import com.jiinkim.todolist.user.service.dto.UserDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,7 +32,7 @@ public class UserController {
      * @return isDuplicated : true 중복값 있음, false 중복값 없음
      */
     @GetMapping("/check-duplicate")
-    public ApiResponse<CheckDuplicateUsernameResponse> checkDuplicatedUsername(
+    public ApiResponse<?> checkDuplicatedUsername(
         @RequestParam("username") String username) {
         return ApiResponse.success(HttpStatus.OK, userService.checkDuplicatedUserId(username));
     }
@@ -39,4 +42,10 @@ public class UserController {
         RegisterRequest dto = DtoConverter.toRegisterRequest(request);
         return ApiResponse.success(HttpStatus.CREATED, userService.register(dto));
     }
+
+//    @GetMapping("/username")
+//    public ApiResponse<String> getUsername(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+//        System.out.println(userDetails.getUsername());
+//        return ApiResponse.success(HttpStatus.OK, userDetails.getUsername());
+//    }
 }

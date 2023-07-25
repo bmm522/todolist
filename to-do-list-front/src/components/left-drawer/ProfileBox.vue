@@ -6,14 +6,19 @@
     style="height: 100px"
   >
     <div class="absolute-bottom bg-transparent">
-      <div class="text-weight-bold" id="nickname-box">{접속닉네임}님 환영합니다</div>
-      <div id="id-box">{접속아이디}</div>
+      <div class="text-weight-bold" id="nickname-box">{{username}}님 환영합니다</div>
     </div>
   </q-img>
 </template>
 
 <script setup>
 
+import { ref } from "vue";
+import UserApi from "src/common/user/UserApi";
+
+const username = ref("");
+
+username.value = UserApi.getUsername();
 
 </script>
 
