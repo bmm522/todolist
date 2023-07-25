@@ -4,7 +4,7 @@ import com.jiinkim.todolist.user.controller.dto.ApiResponse;
 import com.jiinkim.todolist.user.controller.dto.RegisterClientRequest;
 import com.jiinkim.todolist.user.controller.util.DtoConverter;
 import com.jiinkim.todolist.user.service.UserService;
-import com.jiinkim.todolist.user.service.dto.CheckDuplicateUsernameResponse;
+
 import com.jiinkim.todolist.user.service.dto.RegisterRequest;
 import com.jiinkim.todolist.user.service.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
