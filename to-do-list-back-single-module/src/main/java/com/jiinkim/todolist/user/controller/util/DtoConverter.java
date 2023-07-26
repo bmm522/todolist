@@ -10,8 +10,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 public class DtoConverter {
 
   public static RegisterRequest toRegisterRequest(final RegisterClientRequest request) {
-    return RegisterRequest.create(request.getUsername(), request.getPassword());
+    return RegisterRequest.create(request.getUsername(), request.getPassword(), request.getNickname());
   }
+
 
 
 }

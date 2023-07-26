@@ -1,5 +1,6 @@
 package com.jiinkim.todolist.user.service.dto;
 
+import com.jiinkim.todolist.common.utils.TimeUtil;
 import com.jiinkim.todolist.user.model.User;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -14,21 +15,15 @@ public class RegisterRequest {
 
   private final String username;
   private String password;
+  private final String nickname;
 
-  public static RegisterRequest create(final String username, final String password) {
-    return new RegisterRequest(username, password);
+  public static RegisterRequest create(final String username, final String password, final String nickname) {
+    return new RegisterRequest(username, password, nickname);
   }
 
-  public void setPassword(String encodedPassword) {
-    this.password = encodedPassword;
-  }
-
-
-  public User toModel(LocalDateTime now, String encodedPassword, String refreshToken) {
-    User user = User.createWhenRegister(this.username, encodedPassword);
+  public User toModel(final String encodedPassword, final String refreshToken) {
+    User user = User.createWhenRegister(username, encodedPassword, nickname);
     user.setRefreshToken(refreshToken);
-    user.setCreatedAt(now);
-    user.setUpdatedAt(now);
     return user;
   }
 }

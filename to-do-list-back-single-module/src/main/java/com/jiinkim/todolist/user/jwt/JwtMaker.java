@@ -19,8 +19,8 @@ public class JwtMaker {
    * @return 생성된 JwtToken 객체
    */
   public static JwtToken create(User user) {
-    String accessToken = makeAccessToken(user);
-    String refreshToken = makeRefreshToken();
+    String accessToken = makeAccessToken(user.getUserId(),user.getUsername());
+    String refreshToken = makeRefreshToken(user.getUsername());
 
     return JwtToken.builder()
         .accessToken(accessToken)
@@ -28,18 +28,20 @@ public class JwtMaker {
         .build();
   }
 
-  public static String makeAccessToken(User user) {
+  public static String makeAccessToken(final Long userId, final String username) {
     return JwtProperties.TOKEN_PREFIX + JWT.create()
         .withIssuer(JwtProperties.ISS)
         .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-        .withClaim("username", user.getUsername())
+            .withClaim("userId", userId)
+        .withClaim("username",username)
         .sign(Algorithm.HMAC256(JwtProperties.SECRET));
   }
 
-  public static String makeRefreshToken() {
+  public static String makeRefreshToken(final String username) {
     return JwtProperties.REFRESH_PREFIX + JWT.create()
         .withSubject("refreshToken")
         .withIssuer(JwtProperties.ISS)
+            .withClaim("username", username)
         .withExpiresAt(new Date(System.currentTimeMillis() + REFRESHTOKEN_EXPIRATION_TIME))
         .sign(Algorithm.HMAC256(JwtProperties.SECRET));
   }

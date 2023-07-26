@@ -3,7 +3,7 @@
   <q-form @submit="register" @reset="onReset">
     <q-input
       style="width: 300px"
-      filled v-model="userId" maxlength="8" label="아이디를 입력하세요" lazy-rules :rules="[val => val.length >= 4 || '최소 4자 ~ 최대 8자  입력하세요']"/>
+      filled v-model="userId" maxlength="12" label="아이디를 입력하세요" lazy-rules :rules="[val => val.length >= 4 || '최소 4자 ~ 최대 12자  입력하세요']"/>
 
     <br>
     <q-btn label="중복체크" @click="checkDuplicateUserId" />
@@ -19,6 +19,10 @@
 
 
     <br>
+    <q-input
+      style="width: 300px"
+      filled v-model="nickname" maxlength="8" label="닉네임을 입력하세요" lazy-rules :rules="[val => val.length >= 2 || '최소 2자 ~ 최대 8자  입력하세요']"/>
+
     <q-btn label="회원가입" type="submit" />
     <q-btn label="입력 초기화" type="reset"/>
   </q-form>
@@ -39,6 +43,7 @@ import router from "src/router";
 const userId = ref('');
 const password = ref('');
 const rePassword = ref('');
+const nickname = ref('');
 const emits = defineEmits('clickRegisterButton');
 
 
@@ -75,7 +80,7 @@ const register = async () => {
       color: 'red'
     })
   }
-  const data = await UserApi.registerApi(userId.value, password.value);
+  const data = await UserApi.registerApi(userId.value, password.value, nickname.value);
 
   if(data.code === 201) {
     Notify.create({

@@ -11,6 +11,10 @@
     현재 선택된 시간 : {{timeValueFromModal}}
     <br>
     날짜 선택 모달 현재 상태 : {{dateSelectModal}}
+    <br>
+    제목 : {{title}}
+    <br>
+    내용 : {{content}}
     <q-card-section class="q-pt-none" style="text-align: center; margin-top: 30px" >
       <q-input color="grey-3" label-color="orange" outlined v-model="toDoTime" label="시간 선택" >
         <template #append>
@@ -23,12 +27,14 @@
     </q-card-section>
 
     <q-card-section class="q-pt-none" style="text-align: center; margin-top: 30px" >
-      <ToDoInputBox/>
+      <q-input filled v-model="title" label="제목" :dense="dense"  maxlength="30" />
+      <br>
+      <q-input filled v-model="content" label="할 일" :dense="dense" maxlength="500" />
     </q-card-section>
 
     <q-card-actions align="right" class="text-primary">
-      <q-btn flat label="Cancel" @click =  "sendToAddTaskModalClose"/>
-      <q-btn flat label="Add address"  @click =  "sendToAddTaskModalClose" />
+      <q-btn flat label="취소" @click =  "sendToAddTaskModalClose"/>
+      <q-btn flat label="등록"  @click =  "insertTodoEvent" />
     </q-card-actions>
   </q-card>
   </q-dialog>
@@ -40,6 +46,7 @@ import {ref, watch} from "vue";
 
 import DateSelectDialog from "components/body/add-task/DateSelectDialog.vue";
 import ToDoInputBox from "components/body/add-task/ToDoInputBox.vue";
+import {Notify} from "quasar";
 
 // add task 모달창
 const props = defineProps(['addTaskModal']);
@@ -50,6 +57,8 @@ const dateSelectModal = ref(false);
 const isDateSelectValue = ref(false);
 const dateValueFromModal = ref();
 const timeValueFromModal = ref();
+const title = ref("");
+const content = ref("");
 const toDoTime = ref("");
 
 const dateSubmitEvent = (dateAndTimeDatas) => {
@@ -80,7 +89,6 @@ watch(()=>props.addTaskModal, (newValue, oldValue)=>{
 
 const dateSelectModalOpenEvent = () => {
     dateSelectModal.value = true;
-
 }
 
 const dateSelectModalCloseEvent = () => {
@@ -88,6 +96,20 @@ const dateSelectModalCloseEvent = () => {
 
 }
 
+const insertTodoEvent = () => {
+
+  if(!isDateSelectValue.value) {
+    Notify.create({
+      message: '날짜와 시간을 선택해주세요',
+      color: 'red'
+    })
+    return;
+  }
+
+  
+
+
+}
 
 
 

@@ -1,19 +1,14 @@
 package com.jiinkim.todolist.user.dao;
 
 
-import com.jiinkim.todolist.user.model.User;
+import com.jiinkim.todolist.user.dao.model.UserModelDao;
+import com.jiinkim.todolist.user.dao.query.UserQueryDao;
 import org.apache.ibatis.annotations.Mapper;
 
-import java.util.Optional;
 
 @Mapper
-public interface UserDao {
+public interface UserDao extends UserQueryDao, UserModelDao {
 
-    int checkDuplicateByUsername(final String username) ;
 
-    int register(User user);
 
-    Optional<User> findUserByUsername(String username);
-
-    int updateRefreshToken(User savedUser);
 }

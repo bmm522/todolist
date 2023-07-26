@@ -1,4 +1,4 @@
-package com.jiinkim.todolist.config;
+package com.jiinkim.todolist.common.config;
 
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
@@ -15,7 +15,7 @@ import javax.sql.DataSource;
 import java.io.IOException;
 
 @Configuration
-@MapperScan(basePackages = {"com.jiinkim.todolist.user.dao"})
+@MapperScan(basePackages = {"com.jiinkim.todolist.user.dao", "com.jiinkim.todolist.todo.dao"})
 public class ContextDataSource {
 
 

@@ -1,4 +1,4 @@
-package com.jiinkim.todolist.user.controller.dto;
+package com.jiinkim.todolist.common.dto;
 
 
 import lombok.Getter;

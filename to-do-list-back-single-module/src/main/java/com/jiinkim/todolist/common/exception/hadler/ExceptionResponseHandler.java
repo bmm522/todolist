@@ -1,10 +1,7 @@
 package com.jiinkim.todolist.common.exception.hadler;
 
-import com.jiinkim.todolist.common.exception.AuthenticationException;
-import com.jiinkim.todolist.common.exception.InsertFailedException;
-import com.jiinkim.todolist.common.exception.InvalidTokenException;
-import com.jiinkim.todolist.common.exception.NotFoundEntityException;
-import com.jiinkim.todolist.user.controller.dto.ApiResponse;
+import com.jiinkim.todolist.common.exception.*;
+import com.jiinkim.todolist.common.dto.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -17,8 +14,8 @@ public class ExceptionResponseHandler {
         return ApiResponse.fail(HttpStatus.INTERNAL_SERVER_ERROR, e);
     }
 
-    @ExceptionHandler(NotFoundEntityException.class)
-    public ApiResponse<Exception> handleNotFoundEntity(NotFoundEntityException e) {
+    @ExceptionHandler(NotFoundQueryResultException.class)
+    public ApiResponse<Exception> handleNotFoundEntity(NotFoundQueryResultException e) {
         return ApiResponse.fail(HttpStatus.INTERNAL_SERVER_ERROR, e);
     }
 
@@ -29,6 +26,11 @@ public class ExceptionResponseHandler {
 
     @ExceptionHandler(InvalidTokenException.class)
     public ApiResponse<Exception> handleInvalidToken(InvalidTokenException e) {
+        return ApiResponse.fail(HttpStatus.UNAUTHORIZED, e);
+    }
+
+    @ExceptionHandler(NotFoundTokenFromHeaderException.class)
+    public ApiResponse<Exception> handleNotFoundTokenFromHeader(NotFoundTokenFromHeaderException e) {
         return ApiResponse.fail(HttpStatus.UNAUTHORIZED, e);
     }
 }

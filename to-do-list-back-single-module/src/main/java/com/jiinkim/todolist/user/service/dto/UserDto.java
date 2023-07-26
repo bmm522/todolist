@@ -12,11 +12,12 @@ import java.time.LocalDateTime;
 public class UserDto {
 
     private String username;
+    private String nickname;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
     public static UserDto create(final User user) {
-        return new UserDto(user.getUsername(), user.getCreatedAt(), user.getUpdatedAt());
+        return new UserDto(user.getUsername(), user.getNickname(),user.getCreatedAt(), user.getUpdatedAt());
     }
 
 }

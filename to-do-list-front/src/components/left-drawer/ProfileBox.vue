@@ -6,19 +6,28 @@
     style="height: 100px"
   >
     <div class="absolute-bottom bg-transparent">
-      <div class="text-weight-bold" id="nickname-box">{{username}}님 환영합니다</div>
+      <div class="text-weight-bold" id="nickname-box">{{nickname}}님 환영합니다</div>
     </div>
   </q-img>
 </template>
 
 <script setup>
 
-import { ref } from "vue";
+import {onMounted, ref} from "vue";
 import UserApi from "src/common/user/UserApi";
 
-const username = ref("");
+const nickname = ref("");
 
-username.value = UserApi.getUsername();
+// console.log(data.body);
+//
+
+onMounted(async () => {
+  const data =  await UserApi.getNickname();
+  nickname.value = data.body.nickname;
+});
+
+
+
 
 </script>
 

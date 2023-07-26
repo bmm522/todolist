@@ -11,7 +11,7 @@ spring:
 
 
 mybatis:
-  type-aliases-package: com.jiinkim.todolist.user.model, com.jiinkim.todolist.todo.model
-  mapper-locations: classpath:mybatis/mappers/*.xml
+  type-aliases-package: com.jiinkim.todolist.todo.model,com.jiinkim.todolist.user.model
+  mapper-locations: classpath:mybatis/mappers/**/*.xml
 
 

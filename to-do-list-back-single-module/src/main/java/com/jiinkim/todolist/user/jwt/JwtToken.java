@@ -8,14 +8,14 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import java.util.Base64;
 import java.util.Date;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
 @Getter
 @Setter
 @Slf4j
+
 public class JwtToken {
 
   private String accessToken;

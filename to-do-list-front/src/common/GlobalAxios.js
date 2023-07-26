@@ -2,21 +2,38 @@ import axios from "axios";
 import {useQuasar} from "quasar";
 
 
+const createInstance = () => {
+  const instance = axios.create({baseURL: process.env.API_URI});
+  return setInterceptor(instance);
+}
+
+const setInterceptor = (instance) => {
+  instance.interceptors.request.use(function (config ) {
+    config.headers.AccessToken =  sessionStorage.getItem("AccessToken");
+    config.headers.RefreshToken =  sessionStorage.getItem("RefreshToken");
+    config.headers["Content-Type"] = "application/json";
+    return config;
+  })
 
 
-const globalAxios = axios.create({baseURL: process.env.API_URI});
+
+  instance.interceptors.response.use(
+
+    (res) => {
+      return res;
+    },
+
+    (error) => {
+      return Promise.reject();
+    },
+  )
+
+  return instance;
+}
 
 
 
-globalAxios.interceptors.response.use(
+const globalAxios= createInstance();
 
-  (res) => {
-   return res;
-  },
-
-  (error) => {
-    return Promise.reject();
-  },
-)
 
 export default globalAxios;

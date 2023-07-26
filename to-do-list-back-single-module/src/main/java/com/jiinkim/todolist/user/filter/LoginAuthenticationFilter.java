@@ -1,12 +1,13 @@
 package com.jiinkim.todolist.user.filter;
 
 
-import com.jiinkim.todolist.common.exception.NotFoundEntityException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jiinkim.todolist.common.exception.LoginFailedException;
+import com.jiinkim.todolist.common.exception.NotFoundQueryResultException;
+import com.jiinkim.todolist.common.dto.ApiResponse;
 import com.jiinkim.todolist.user.dao.UserDao;
 import com.jiinkim.todolist.user.jwt.JwtMaker;
 import com.jiinkim.todolist.user.jwt.JwtToken;
-import com.jiinkim.todolist.user.jwt.JwtTokenCookie;
-import com.jiinkim.todolist.user.jwt.JwtTokenCookieMaker;
 import com.jiinkim.todolist.user.model.User;
 import com.jiinkim.todolist.user.service.dto.UserDetailsImpl;
 import jakarta.servlet.FilterChain;
@@ -16,6 +17,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -30,19 +32,21 @@ public class LoginAuthenticationFilter extends UsernamePasswordAuthenticationFil
 
     private final AuthenticationManager authenticationManager;
     private final UserDao userDao;
+    private final ObjectMapper objectMapper;
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
-
-        UsernamePasswordAuthenticationToken authenticationToken = null;
+        User user = null;
         try {
-            authenticationToken =new UsernamePasswordAuthenticationToken(username, password);
-        } catch(Exception e) {
-            log.error("로그인 검증 필터 과정에서 에러");
+            user = objectMapper.readValue(request.getInputStream(), User.class);
+        } catch (IOException e) {
+            log.error("클라이언트로 부터 온 데이터 stream 과정에서 에러");
             log.error(e.getMessage());
         }
+        String username =user.getUsername();
+        String password = user.getPassword();
+        UsernamePasswordAuthenticationToken authenticationToken
+                = new UsernamePasswordAuthenticationToken(username, password);
         return authenticationManager.authenticate(authenticationToken);
     }
 
@@ -55,19 +59,22 @@ public class LoginAuthenticationFilter extends UsernamePasswordAuthenticationFil
         User user = userDetails.getUser();
         JwtToken jwtToken = JwtMaker.create(user);
 
-        User savedUser= userDao.findUserByUsername(user.getUsername()).orElseThrow(() -> new NotFoundEntityException("아이디에 해당하는 유저가 없습니다."));
+        User savedUser= userDao.findUserByUsername(user.getUsername()).orElseThrow(() -> new NotFoundQueryResultException("아이디에 해당하는 유저가 없습니다."));
         String refreshTokenFromSavedUser = savedUser.getRefreshToken();
         jwtToken.setRefreshToken(refreshTokenFromSavedUser);
+
         if(!jwtToken.isRefreshTokenValid()) {
-            String newRefreshToken = JwtMaker.makeRefreshToken();
+            String newRefreshToken = JwtMaker.makeRefreshToken(user.getUsername());
             savedUser.setRefreshToken(newRefreshToken);
             jwtToken.setRefreshToken(newRefreshToken);
             userDao.updateRefreshToken(savedUser);
         }
-        JwtTokenCookie jwtTokenCookie = JwtTokenCookieMaker.INSTANCE.toCookie(jwtToken);
-        response.addCookie(jwtTokenCookie.getAccessTokenCookie());
-        response.addCookie(jwtTokenCookie.getRefreshTokenCookie());
-        response.sendRedirect("http://localhost:9000/todo");
-//        super.successfulAuthentication(request, response, chain, authResult);
+
+        objectMapper.writeValue(response.getOutputStream(),ApiResponse.success(HttpStatus.OK, jwtToken));
+    }
+
+    @Override
+protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
+        objectMapper.writeValue(response.getOutputStream(), ApiResponse.fail(HttpStatus.UNAUTHORIZED, new LoginFailedException("로그인을 실패했습니다.")));
     }
 }

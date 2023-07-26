@@ -1,25 +1,29 @@
 import globalAxios from "src/common/GlobalAxios";
 
 
-const checkDuplicateUserIdApi = async (userId) => {
+const checkDuplicateUsernameApi = async (username) => {
 
  const result = await globalAxios.get("/user/check-duplicate", {
     params: {
-      username: userId
+      username: username
     }
   })
   return result.data;
 }
 
-const getUsername = () => {
-  const result = globalAxios.get("/user/username");
+const getNickname = async () => {
+  const result = await globalAxios.get("/user/nickname"
+  )
+
+  console.log(result);
   return  result.data;
 }
 
-const registerApi = async (userId, password) => {
+const registerApi = async (userId, password, nickname) => {
   const result = await globalAxios.post("/user/register", JSON.stringify({
     username: userId,
-    password:password
+    password: password,
+    nickname: nickname,
   }), {
     headers: {
       "Content-type" : "application/json",
@@ -29,9 +33,9 @@ const registerApi = async (userId, password) => {
 }
 
 const loginApi = async (userId, password) => {
-  const result = await globalAxios.post("/user/login", JSON.stringify({
+  const result = await globalAxios.post("/login", JSON.stringify({
     username: userId,
-    password:password
+    password: password,
   }), {
     headers: {
       "Content-Type" : "application/json",
@@ -42,8 +46,8 @@ const loginApi = async (userId, password) => {
 }
 
 export default {
-  checkDuplicateUserIdApi,
+  checkDuplicateUserIdApi: checkDuplicateUsernameApi,
   registerApi,
   loginApi,
-  getUsername
+  getNickname
 };

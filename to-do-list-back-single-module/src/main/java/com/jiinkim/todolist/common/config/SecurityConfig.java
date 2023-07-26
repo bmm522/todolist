@@ -1,6 +1,8 @@
-package com.jiinkim.todolist.config;
+package com.jiinkim.todolist.common.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jiinkim.todolist.user.dao.UserDao;
+import com.jiinkim.todolist.user.filter.JwtAuthenticationFilter;
 import com.jiinkim.todolist.user.filter.LoginAuthenticationFilter;
 import java.util.Collections;
 
@@ -33,11 +35,7 @@ public class SecurityConfig {
 
     private final UserDao userDao;
 
-
-
-
-    private static final String duplicateUrl = "/user/check-duplicate";
-    private static final String registerUrl = "/user/register";
+    private final ObjectMapper objectMapper;
 
     private static final String allowedOriginUrl = "http://localhost:9000";
 
@@ -46,9 +44,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(request -> request
-                        .requestMatchers(duplicateUrl, registerUrl).permitAll()
-                        .anyRequest().permitAll())
+                .authorizeHttpRequests(request -> request.anyRequest().permitAll())
                 .formLogin(AbstractHttpConfigurer::disable)
                 .logout(logout -> logout.logoutUrl("/user/logout"))
                 .httpBasic(AbstractHttpConfigurer::disable)
@@ -64,6 +60,8 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(List.of(allowedOriginUrl));
         configuration.setAllowedMethods(Arrays.asList("GET","POST"));
         configuration.setAllowedHeaders(Collections.singletonList("*"));
+        configuration.addExposedHeader("AccessToken");
+        configuration.addExposedHeader("RefreshToken");
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
@@ -80,7 +78,9 @@ public class SecurityConfig {
         @Override
         public void configure(HttpSecurity http) throws Exception {
             AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
-            http.addFilter(new LoginAuthenticationFilter(authenticationManager, userDao));
+            http
+                    .addFilter(new JwtAuthenticationFilter(authenticationManager))
+                    .addFilter(new LoginAuthenticationFilter(authenticationManager, userDao, objectMapper));
         }
     }
 

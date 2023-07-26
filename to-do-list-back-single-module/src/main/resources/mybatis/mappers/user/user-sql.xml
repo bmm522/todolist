@@ -5,6 +5,7 @@
         <id column="user_id" property = "userId"/>
         <result column="username" property="username"/>
         <result column="password" property="password"/>
+        <result column="nickname" property="nickname"/>
         <result column="refresh_token" property="refreshToken"/>
         <result column="created_at" property="createdAt"/>
         <result column="updated_at" property="updatedAt"/>
@@ -17,14 +18,14 @@
     </select>
 
     <select id="findUserByUsername" resultMap="userResultMap" parameterType="string">
-        SELECT user_id, username, password, refresh_token,created_at, updated_at
+        SELECT user_id, username, password, nickname ,refresh_token,created_at, updated_at
         FROM USERS
-        WHERE USERNAME = #{username}
+        WHERE username = #{username}
     </select>
 
     <insert id="register" useGeneratedKeys="true"  parameterType="com.jiinkim.todolist.user.model.User">
-        INSERT INTO USERS(user_id,username, password, refresh_token,created_at, updated_at)
-        VALUES (user_seq.nextval,#{username}, #{password}, #{refreshToken},#{createdAt}, #{updatedAt})
+        INSERT INTO USERS(user_id,username, password, nickname,refresh_token,created_at, updated_at)
+        VALUES (user_seq.nextval,#{username}, #{password}, #{nickname},#{refreshToken},#{createdAt}, #{updatedAt})
     </insert>
 
     <update id="updateRefreshToken" parameterType="com.jiinkim.todolist.user.model.User">
@@ -32,5 +33,11 @@
         SET refresh_token = ${refreshToken}
         WHERE username = ${username}
     </update>
+
+    <select id="findNicknameByUserId" parameterType="long" resultType="string">
+        SELECT nickname
+        FROM USERS
+        WHERE user_id = #{userId}
+    </select>
 
 </mapper>
