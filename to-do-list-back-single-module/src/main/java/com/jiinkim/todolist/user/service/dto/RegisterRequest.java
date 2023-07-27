@@ -1,13 +1,9 @@
 package com.jiinkim.todolist.user.service.dto;
 
-import com.jiinkim.todolist.common.utils.TimeUtil;
-import com.jiinkim.todolist.user.model.User;
+import com.jiinkim.todolist.user.dao.model.User;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)

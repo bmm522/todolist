@@ -3,7 +3,7 @@ package com.jiinkim.todolist.user.jwt;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.jiinkim.todolist.user.jwt.properties.JwtProperties;
-import com.jiinkim.todolist.user.model.User;
+import com.jiinkim.todolist.user.dao.model.User;
 import java.util.Date;
 
 public class JwtMaker {

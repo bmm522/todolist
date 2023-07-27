@@ -24,11 +24,7 @@ const registerApi = async (userId, password, nickname) => {
     username: userId,
     password: password,
     nickname: nickname,
-  }), {
-    headers: {
-      "Content-type" : "application/json",
-    }
-  })
+  }))
   return result.data;
 }
 
@@ -36,17 +32,13 @@ const loginApi = async (userId, password) => {
   const result = await globalAxios.post("/login", JSON.stringify({
     username: userId,
     password: password,
-  }), {
-    headers: {
-      "Content-Type" : "application/json",
-    }
-  })
+  }))
 
   return result.data;
 }
 
 export default {
-  checkDuplicateUserIdApi: checkDuplicateUsernameApi,
+  checkDuplicateUsernameApi,
   registerApi,
   loginApi,
   getNickname

@@ -1,6 +1,7 @@
 package com.jiinkim.todolist.user.dao.model;
 
-import com.jiinkim.todolist.user.model.User;
+import org.apache.ibatis.annotations.Mapper;
+
 
 public interface UserModelDao {
 

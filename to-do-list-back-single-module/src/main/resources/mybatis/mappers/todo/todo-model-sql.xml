@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace = "com.jiinkim.todolist.todo.dao.TodoDao">
-    <resultMap type="com.jiinkim.todolist.todo.model.Todo" id="todoResultMap">
+    <resultMap type="com.jiinkim.todolist.todo.dao.model.Todo" id="todoResultMap">
         <id column="todo_id" property = "todoId"/>
         <result column="todo_title" property="todoTitle"/>
         <result column="todo_content" property="todoContent"/>
         <result column="todo_at" property="todoAt"/>
+        <result column="todo_done" property="todoDone"/>
         <result column="user_id" property="userId"/>
         <result column="created_at" property="createdAt"/>
         <result column="updated_at" property="updatedAt"/>
     </resultMap>
 
-    <insert id="insert" useGeneratedKeys="true"  parameterType="com.jiinkim.todolist.user.model.User">
-        INSERT INTO TODO(todo_id, todo_title, todo_content, todo_at, user_id, created_at, updated_at)
-        VALUES (user_seq.nextval,#{todoId}, #{todoTitle}, #{todoContent},#{todoAt},#{createdAt}, #{updatedAt})
+    <insert id="insert" useGeneratedKeys="true"  parameterType="com.jiinkim.todolist.user.dao.model.User">
+        INSERT INTO TODO(todo_id, todo_title, todo_content, todo_done,todo_at, user_id, created_at, updated_at)
+        VALUES (#{todoId},#{todoTitle}, #{todoContent},#{todoDone},#{todoAt},#{userId},#{createdAt}, #{updatedAt})
     </insert>
 </mapper>

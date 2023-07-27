@@ -7,8 +7,7 @@ import com.jiinkim.todolist.user.jwt.JwtDecoder;
 public class TodoClientDtoConverter {
 
 
-    public static TodoInsertRequest toTodoInsertDto(final TodoInsertClientRequest request, String accessToken) {
-        Long userId = JwtDecoder.getUserIdFromAccessToken(accessToken);
-        return TodoInsertRequest.create(request.getTodoTitle(), request.getTodoContent(), request.getTodoAt(), userId);
+    public static TodoInsertRequest toTodoInsertDto(final TodoInsertClientRequest request, Long userId) {
+        return TodoInsertRequest.create(request.getTodoTitle(), request.getTodoContent(),  request.getTodoAt(), userId);
     }
 }

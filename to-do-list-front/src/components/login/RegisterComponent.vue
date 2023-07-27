@@ -53,7 +53,7 @@ const passwordRegex = /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+]
 
 const checkDuplicateUserId = async () => {
 
-    const data = await UserApi.checkDuplicateUserIdApi(userId.value);
+    const data = await UserApi.checkDuplicateUsernameApi(userId.value);
     const duplicateCheckResult = data.body.duplicateCheckResult;
 
     if(duplicateCheckResult) {

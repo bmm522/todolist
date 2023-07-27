@@ -13,7 +13,7 @@ public interface UserService {
 
     Integer register(RegisterRequest toRegisterRequest) throws InsertFailedException;
 
-    GetNicknameResponse getNickname(JwtToken jwtToken);
+    GetNicknameResponse getNickname(Long userId);
 
-    String findNicknameByUserId(Long userId);
+
 }

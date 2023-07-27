@@ -19,10 +19,17 @@ public class JwtDecoder {
     }
 
     public static Long getUserIdFromAccessToken(final String accessToken) {
-        return getClaim(accessToken, "userId").asLong();
+        String replaceAccessToken = replaceToken(accessToken, JwtProperties.TOKEN_PREFIX);
+        return getClaim(replaceAccessToken, "userId").asLong();
+    }
+
+    public static String getUsernameFromAccessToken(final String accessToken) {
+        String replaceAccessToken = replaceToken(accessToken, JwtProperties.TOKEN_PREFIX);
+        return getClaim(replaceAccessToken, "username").asString();
     }
 
     private static Claim getClaim(final String jwtToken, final String key) {
+        System.out.println(jwtToken);
         return JWT.require(Algorithm.HMAC256(JwtProperties.SECRET)).build().verify(jwtToken).getClaim(key);
     }
 

@@ -1,9 +1,8 @@
-package com.jiinkim.todolist.user.model;
+package com.jiinkim.todolist.user.dao.model;
 
 
 
-import com.jiinkim.todolist.common.utils.TimeUtil;
-import lombok.AccessLevel;
+import com.jiinkim.todolist.common.utils.TimeUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,9 +34,22 @@ public class User  {
         this.updatedAt = updatedAt;
     }
 
+    private User(final Long userId, final String username, final String password, final String nickname, final LocalDateTime createdAt, final LocalDateTime updatedAt) {
+        this.userId = userId;
+        this.username = username;
+        this.password = password;
+        this.nickname = nickname;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+
+    public static User create(final Long userId, final String username, final String password, final String nickname, final String refreshToken,final LocalDateTime createdAt, final LocalDateTime updatedAt) {
+        return new User(userId, username, password, nickname, refreshToken,createdAt, updatedAt);
+    }
+
 
     public static User createWhenRegister(final String username, final String password, final String nickname) {
-        LocalDateTime now = TimeUtil.getNow();
+        LocalDateTime now = TimeUtils.getNow();
         return new User(username, password, nickname, now, now);
     }
 

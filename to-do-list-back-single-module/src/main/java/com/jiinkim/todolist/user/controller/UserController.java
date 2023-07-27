@@ -7,15 +7,13 @@ import com.jiinkim.todolist.user.jwt.JwtConverter;
 import com.jiinkim.todolist.user.jwt.JwtToken;
 import com.jiinkim.todolist.user.service.UserService;
 
-import com.jiinkim.todolist.user.service.dto.CheckDuplicateUsernameResponse;
-import com.jiinkim.todolist.user.service.dto.GetNicknameResponse;
-import com.jiinkim.todolist.user.service.dto.RegisterRequest;
-import com.jiinkim.todolist.user.service.dto.UserDto;
+import com.jiinkim.todolist.user.service.dto.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -45,9 +43,7 @@ public class UserController {
 
     @GetMapping("/nickname")
     public ApiResponse<GetNicknameResponse> getNickname(
-            @RequestAttribute("AccessToken")String accessToken,
-            @RequestAttribute("RefreshToken")String refreshToken) {
-        JwtToken jwtToken = JwtConverter.toJwtToken(accessToken, refreshToken);
-        return ApiResponse.success(HttpStatus.OK,userService.getNickname(jwtToken));
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ApiResponse.success(HttpStatus.OK,userService.getNickname(userDetails.getUserId()));
     }
 }

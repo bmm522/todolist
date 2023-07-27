@@ -3,6 +3,7 @@
     <q-card
       style="min-width: 450px">
       <q-date
+        mask="YYYY-MM-DD"
         v-model="dateValue"
         landscape
 
@@ -61,7 +62,7 @@ const dateSelectModalCloseEvent = () => {
   emits('close');
 }
 
-const dateFormat = "YYYY/MM/DD";
+const dateFormat = "YYYY-MM-DD";
 const dateValue = ref(dayjs().format(dateFormat));
 
 

@@ -1,23 +1,25 @@
-package com.jiinkim.todolist.user.service.dto;
+package com.jiinkim.todolist.user.dao.query.dto;
 
 import com.jiinkim.todolist.user.dao.model.User;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Getter
-public class UserDto {
 
+@Getter
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+public class UserQueryDto {
+
+    private Long userId;
     private String username;
+    private String password;
     private String nickname;
+    private String refreshToken;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public static UserDto create(final User user) {
-        return new UserDto(user.getUsername(), user.getNickname(),user.getCreatedAt(), user.getUpdatedAt());
-    }
 
 }
