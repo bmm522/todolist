@@ -6,7 +6,7 @@ import com.jiinkim.todolist.todo.application.service.dto.TodoInsertRequest;
 import com.jiinkim.todolist.todo.dao.TodoDao;
 import com.jiinkim.todolist.todo.dao.model.Todo;
 import com.jiinkim.todolist.todo.dao.model.TodoConverter;
-import com.jiinkim.todolist.todo.dao.query.TodoQueryDtoConverter;
+import com.jiinkim.todolist.todo.dao.query.dto.TodoQueryDtoConverter;
 import com.jiinkim.todolist.todo.dao.query.dto.TodoGetRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

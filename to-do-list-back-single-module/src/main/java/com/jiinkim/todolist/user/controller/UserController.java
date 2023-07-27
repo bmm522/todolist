@@ -2,7 +2,7 @@ package com.jiinkim.todolist.user.controller;
 
 import com.jiinkim.todolist.common.dto.ApiResponse;
 import com.jiinkim.todolist.user.controller.dto.RegisterClientRequest;
-import com.jiinkim.todolist.user.controller.util.DtoConverter;
+import com.jiinkim.todolist.user.controller.dto.UserClientDtoConverter;
 import com.jiinkim.todolist.user.service.UserService;
 
 import com.jiinkim.todolist.user.service.dto.*;
@@ -34,7 +34,7 @@ public class UserController {
 
     @PostMapping("/register")
     public ApiResponse<Integer> register(@RequestBody @Valid RegisterClientRequest request)  {
-        RegisterRequest dto = DtoConverter.from(request);
+        RegisterRequest dto = UserClientDtoConverter.from(request);
         return ApiResponse.success(HttpStatus.CREATED, userService.register(dto));
     }
 
