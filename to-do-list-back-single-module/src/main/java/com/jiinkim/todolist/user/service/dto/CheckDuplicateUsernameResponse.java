@@ -10,15 +10,9 @@ public class CheckDuplicateUsernameResponse {
 
     private final boolean duplicateCheckResult;
 
-    public static CheckDuplicateUsernameResponse create(final boolean isDuplicated) {
-        return new CheckDuplicateUsernameResponse(isDuplicated);
+    public static CheckDuplicateUsernameResponse create(final int count) {
+        return new CheckDuplicateUsernameResponse(count == 1);
     }
 
-    public static CheckDuplicateUsernameResponse createFromCount(final int count) {
-        if (count == 1) {
-            return CheckDuplicateUsernameResponse.create(true);
-        }
-        return CheckDuplicateUsernameResponse.create(false);
-    }
 }
 

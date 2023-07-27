@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService,  UserDetailsService{
     @Override
     public CheckDuplicateUsernameResponse checkDuplicatedUserId(final String username) {
         int count = userDao.checkDuplicateByUsername(username);
-        return CheckDuplicateUsernameResponse.createFromCount(count);
+        return CheckDuplicateUsernameResponse.create(count);
     }
 
     @Override
