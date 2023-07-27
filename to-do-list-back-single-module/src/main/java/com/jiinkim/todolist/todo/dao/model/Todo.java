@@ -4,6 +4,7 @@ package com.jiinkim.todolist.todo.dao.model;
 import com.jiinkim.todolist.common.utils.TimeUtils;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -20,6 +21,7 @@ public class Todo {
     private Long userId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
 
     private Todo(final String todoTitle, final String todoContent,LocalDateTime todoAt, final Long userId, final LocalDateTime createdAt, final LocalDateTime updatedAt) {
         this.todoTitle = todoTitle;

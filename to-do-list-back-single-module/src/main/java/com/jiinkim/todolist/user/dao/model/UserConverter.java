@@ -6,7 +6,7 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class UserConverter {
 
-    public User to(UserQueryDto dto) {
+    public User from(UserQueryDto dto) {
         return User.create(dto.getUserId(), dto.getUsername(), dto.getPassword(), dto.getNickname(), dto.getRefreshToken(), dto.getCreatedAt(), dto.getUpdatedAt());
     }
 }

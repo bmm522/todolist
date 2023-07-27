@@ -46,14 +46,13 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
 
         Long userId = JwtDecoder.getUserIdFromAccessToken(accessToken);
         String username = JwtDecoder.getUsernameFromAccessToken(accessToken);
-        UserDetailsImpl userDetails = new UserDetailsImpl(userId, accessToken);
+        UserDetailsImpl userDetails = new UserDetailsImpl(userId, username);
         Authentication authentication =
                 new UsernamePasswordAuthenticationToken(userDetails, null);
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        request.setAttribute("AccessToken", accessToken);
-        request.setAttribute("RefreshToken", refreshToken);
+
         try {
-            chain.doFilter(request, response);// -> run to mvc
+            chain.doFilter(request, response);// -> run from mvc
         }  finally {
             SecurityContextHolder.clearContext();
         }

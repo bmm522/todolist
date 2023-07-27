@@ -3,6 +3,7 @@ package com.jiinkim.todolist.todo.application.service.dto;
 import com.jiinkim.todolist.todo.dao.model.Todo;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -21,13 +22,8 @@ public class TodoInsertRequest {
 
 
 
-
     public static TodoInsertRequest create(final String todoTitle,final String todoContent,  final LocalDateTime todoAt, final Long userId) {
         return new TodoInsertRequest(todoTitle, todoContent, todoAt, userId);
     }
 
-    public Todo toModel() {
-        return Todo.createWhenInsert(todoTitle, todoContent, todoAt, userId);
-
-    }
 }

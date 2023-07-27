@@ -63,7 +63,7 @@ public class LoginAuthenticationFilter extends UsernamePasswordAuthenticationFil
 
         UserQueryDto userQueryDto= userDao.findUserByUsername(user.getUsername())
                 .orElseThrow(() -> new NotFoundQueryResultException("아이디에 해당하는 유저가 없습니다."));
-        User savedUser = UserConverter.to(userQueryDto);
+        User savedUser = UserConverter.from(userQueryDto);
         String refreshTokenFromSavedUser = savedUser.getRefreshToken();
         jwtToken.setRefreshToken(refreshTokenFromSavedUser);
 

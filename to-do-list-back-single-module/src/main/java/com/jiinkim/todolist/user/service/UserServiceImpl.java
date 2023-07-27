@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService,  UserDetailsService{
     public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
         UserQueryDto userQueryDto = userDao.findUserByUsername(username)
             .orElseThrow(() -> new NotFoundQueryResultException("아이디에 해당하는 유저가 없습니다."));
-        return new UserDetailsImpl(UserConverter.to(userQueryDto));
+        return new UserDetailsImpl(UserConverter.from(userQueryDto));
     }
 
     @Override

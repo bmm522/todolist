@@ -3,6 +3,7 @@ package com.jiinkim.todolist.todo.controller;
 
 
 import com.jiinkim.todolist.common.dto.ApiResponse;
+import com.jiinkim.todolist.todo.application.service.dto.TodoGetResponse;
 import com.jiinkim.todolist.todo.application.service.dto.TodoInsertRequest;
 import com.jiinkim.todolist.todo.application.service.TodoService;
 import com.jiinkim.todolist.todo.controller.dto.TodoInsertClientRequest;
@@ -27,8 +28,14 @@ public class TodoController {
     public ApiResponse<Integer> insert(
             @RequestBody @Valid TodoInsertClientRequest request,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        TodoInsertRequest dto = TodoClientDtoConverter.toTodoInsertDto(request, userDetails.getUserId());
+        TodoInsertRequest dto = TodoClientDtoConverter.of(request, userDetails.getUserId());
         return ApiResponse.success(HttpStatus.CREATED, todoService.insert(dto));
+    }
+
+    @GetMapping
+    public ApiResponse<TodoGetResponse> getTodoList(@RequestParam("page")Long page
+        , @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ApiResponse.success(HttpStatus.OK, todoService.getTodoList(page, userDetails.getUserId()));
     }
 
 

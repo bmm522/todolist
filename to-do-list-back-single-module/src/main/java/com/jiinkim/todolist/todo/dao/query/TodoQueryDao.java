@@ -7,6 +7,6 @@ import java.util.Optional;
 
 public interface TodoQueryDao {
 
-    List<TodoQueryDto> findTodoListWithPaging();
+    List<TodoQueryDto> findTodoListWithPaging(final Long offset, final Long userId);
 
 }
