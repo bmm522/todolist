@@ -5,7 +5,7 @@ import com.jiinkim.todolist.todo.application.service.dto.TodoGetResponse;
 import com.jiinkim.todolist.todo.application.service.dto.TodoInsertRequest;
 import com.jiinkim.todolist.todo.dao.TodoDao;
 import com.jiinkim.todolist.todo.dao.model.Todo;
-import com.jiinkim.todolist.todo.dao.model.TodoConverter;
+import com.jiinkim.todolist.todo.dao.model.TodoModelConverter;
 import com.jiinkim.todolist.todo.dao.query.dto.TodoQueryDtoConverter;
 import com.jiinkim.todolist.todo.dao.query.dto.TodoGetRequest;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ public class TodoService {
     private final TodoDao todoDao;
 
     public Integer insert(final TodoInsertRequest dto) {
-        Todo todo = TodoConverter.from(dto);
+        Todo todo = TodoModelConverter.from(dto);
         int result = todoDao.insert(todo);
         if(result != 1) {
             throw new InsertFailedException("Inserting Todo data failed");

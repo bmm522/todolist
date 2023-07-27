@@ -6,7 +6,7 @@ import com.jiinkim.todolist.common.exception.LoginFailedException;
 import com.jiinkim.todolist.common.exception.NotFoundQueryResultException;
 import com.jiinkim.todolist.common.dto.ApiResponse;
 import com.jiinkim.todolist.user.dao.UserDao;
-import com.jiinkim.todolist.user.dao.model.UserConverter;
+import com.jiinkim.todolist.user.dao.model.UserModelConverter;
 import com.jiinkim.todolist.user.dao.query.dto.UserQueryDto;
 import com.jiinkim.todolist.user.jwt.JwtMaker;
 import com.jiinkim.todolist.user.jwt.JwtToken;
@@ -63,7 +63,7 @@ public class LoginAuthenticationFilter extends UsernamePasswordAuthenticationFil
 
         UserQueryDto userQueryDto= userDao.findUserByUsername(user.getUsername())
                 .orElseThrow(() -> new NotFoundQueryResultException("아이디에 해당하는 유저가 없습니다."));
-        User savedUser = UserConverter.from(userQueryDto);
+        User savedUser = UserModelConverter.from(userQueryDto);
         String refreshTokenFromSavedUser = savedUser.getRefreshToken();
         jwtToken.setRefreshToken(refreshTokenFromSavedUser);
 

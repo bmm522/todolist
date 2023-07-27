@@ -6,7 +6,7 @@ import com.jiinkim.todolist.common.dto.ApiResponse;
 import com.jiinkim.todolist.todo.application.service.dto.TodoGetResponse;
 import com.jiinkim.todolist.todo.application.service.dto.TodoInsertRequest;
 import com.jiinkim.todolist.todo.application.service.TodoService;
-import com.jiinkim.todolist.todo.controller.dto.TodoClientDtoConverter;
+import com.jiinkim.todolist.todo.controller.dto.TodoServiceDtoConverter;
 import com.jiinkim.todolist.todo.controller.dto.TodoInsertClientRequest;
 import com.jiinkim.todolist.user.service.dto.UserDetailsImpl;
 import jakarta.validation.Valid;
@@ -28,7 +28,7 @@ public class TodoController {
     public ApiResponse<Integer> insert(
             @RequestBody @Valid TodoInsertClientRequest request,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        TodoInsertRequest dto = TodoClientDtoConverter.of(request, userDetails.getUserId());
+        TodoInsertRequest dto = TodoServiceDtoConverter.of(request, userDetails.getUserId());
         return ApiResponse.success(HttpStatus.CREATED, todoService.insert(dto));
     }
 
