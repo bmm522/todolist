@@ -3,37 +3,38 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
 import com.jiinkim.todolist.user.jwt.properties.JwtProperties;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Component;
+
 
 public class JwtDecoder {
 
 
-
-    public static String getClaimStringByKeyFromAccessToken(final String accessToken, final String key) {
-        String replaceAccessToken = replaceToken(accessToken, JwtProperties.TOKEN_PREFIX);
-        return getClaim(replaceAccessToken, key).asString();
+    public String getClaimStringByKeyFromAccessToken(final String accessToken, final String key, String tokenPrefix, final String secretKey) {
+        String replaceAccessToken = replaceToken(accessToken, tokenPrefix);
+        return getClaim(replaceAccessToken, key, secretKey).asString();
     }
 
-    public static String getClaimStringByKeyFromRefreshToken(final String refreshToken, final String key) {
-        String replaceRefreshToken = replaceToken(refreshToken, JwtProperties.REFRESH_PREFIX);
-        return getClaim(replaceRefreshToken, key).asString();
+    public String getClaimStringByKeyFromRefreshToken(final String refreshToken, final String key, final String refreshPrefix, final String secretKey) {
+        String replaceRefreshToken = replaceToken(refreshToken, refreshPrefix);
+        return getClaim(replaceRefreshToken, key, secretKey).asString();
     }
 
-    public static Long getUserIdFromAccessToken(final String accessToken) {
-        String replaceAccessToken = replaceToken(accessToken, JwtProperties.TOKEN_PREFIX);
-        return getClaim(replaceAccessToken, "userId").asLong();
+    public Long getUserIdFromAccessToken(final String accessToken, final String tokenPrefix, final String secretKey) {
+        String replaceAccessToken = replaceToken(accessToken, tokenPrefix);
+        return getClaim(replaceAccessToken, "userId", secretKey).asLong();
     }
 
-    public static String getUsernameFromAccessToken(final String accessToken) {
-        String replaceAccessToken = replaceToken(accessToken, JwtProperties.TOKEN_PREFIX);
-        return getClaim(replaceAccessToken, "username").asString();
+    public String getUsernameFromAccessToken(final String accessToken, final String tokenPrefix, final String secretKey) {
+        String replaceAccessToken = replaceToken(accessToken, tokenPrefix);
+        return getClaim(replaceAccessToken, "username", secretKey).asString();
     }
 
-    private static Claim getClaim(final String jwtToken, final String key) {
-        System.out.println(jwtToken);
-        return JWT.require(Algorithm.HMAC256(JwtProperties.SECRET)).build().verify(jwtToken).getClaim(key);
+    private  Claim getClaim(final String jwtToken, final String key, final String secretKey) {
+        return JWT.require(Algorithm.HMAC256(secretKey)).build().verify(jwtToken).getClaim(key);
     }
 
-    private static String replaceToken (final String token, final String prefix) {
+    private  String replaceToken (final String token, final String prefix) {
             return token.replace(prefix, "");
     }
 

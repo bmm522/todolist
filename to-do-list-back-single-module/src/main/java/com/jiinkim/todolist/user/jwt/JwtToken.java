@@ -11,21 +11,24 @@ import java.util.Date;
 
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StringUtils;
 
 @Getter
 @Setter
 @Slf4j
-
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class JwtToken {
 
   private String accessToken;
   private String refreshToken;
+  private String tokenPrefix;
+  private String refreshPrefix;
+  private String secretKey;
 
-  @Builder
-  public JwtToken(String accessToken, String refreshToken) {
-    this.accessToken = accessToken;
-    this.refreshToken = refreshToken;
+  public static JwtToken create(final String accessToken, final String refreshToken, final String tokenPrefix, final String refreshPrefix, final String secretKey) {
+    return new JwtToken(accessToken, refreshToken, tokenPrefix, refreshPrefix, secretKey);
   }
+
 
   /**
    * JWT 토큰의 유효성을 검사합니다.
@@ -33,8 +36,8 @@ public class JwtToken {
    * @throws InvalidTokenException 유효하지 않은 토큰인 경우 발생하는 예외
    */
   public void checkValidateJwtToken() {
-    if (accessToken == null || accessToken.isEmpty() || !accessToken.startsWith(
-        JwtProperties.TOKEN_PREFIX)) {
+    if (!StringUtils.hasText(accessToken) || !accessToken.startsWith(
+        tokenPrefix)) {
       throw new InvalidTokenException("잘못된 토큰 정보입니다.");
     }
   }
@@ -45,8 +48,8 @@ public class JwtToken {
    * @throws InvalidTokenException 유효하지 않은 토큰인 경우 발생하는 예외
    */
   public void checkValidateRefreshToken() {
-    if (refreshToken == null || refreshToken.isEmpty() || !refreshToken.startsWith(
-        JwtProperties.REFRESH_PREFIX)) {
+    if (!StringUtils.hasText(refreshToken)|| !refreshToken.startsWith(
+        refreshPrefix)) {
       throw new InvalidTokenException("잘못된 토큰 정보입니다.");
     }
   }
@@ -59,8 +62,8 @@ public class JwtToken {
   public boolean isAccessTokenValid() {
     try {
       Jws<Claims> claims = Jwts.parser()
-          .setSigningKey(Base64.getEncoder().encodeToString(JwtProperties.SECRET.getBytes()))
-          .parseClaimsJws(accessToken.replace(JwtProperties.TOKEN_PREFIX, ""));
+          .setSigningKey(Base64.getEncoder().encodeToString(secretKey.getBytes()))
+          .parseClaimsJws(accessToken.replace(tokenPrefix, ""));
       if (claims.getBody().getExpiration().before(new Date())) {
         return false;
       }
@@ -79,8 +82,8 @@ public class JwtToken {
   public boolean isRefreshTokenValid() {
     try {
       Jws<Claims> claims = Jwts.parser()
-          .setSigningKey(Base64.getEncoder().encodeToString(JwtProperties.SECRET.getBytes()))
-          .parseClaimsJws(this.refreshToken.replace(JwtProperties.REFRESH_PREFIX, ""));
+          .setSigningKey(Base64.getEncoder().encodeToString(secretKey.getBytes()))
+          .parseClaimsJws(this.refreshToken.replace(refreshPrefix, ""));
 
       if (claims.getBody().getExpiration().before(new Date())) {
         return false;

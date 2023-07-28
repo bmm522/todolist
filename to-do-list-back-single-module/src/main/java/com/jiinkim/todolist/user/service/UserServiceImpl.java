@@ -1,12 +1,14 @@
 package com.jiinkim.todolist.user.service;
 
+import com.jiinkim.todolist.common.config.mybatis.Status;
 import com.jiinkim.todolist.common.exception.InsertFailedException;
 import com.jiinkim.todolist.common.exception.NotFoundQueryResultException;
 import com.jiinkim.todolist.user.dao.UserDao;
 import com.jiinkim.todolist.user.dao.model.UserModelConverter;
 import com.jiinkim.todolist.user.dao.query.dto.UserQueryDto;
-import com.jiinkim.todolist.user.jwt.JwtMaker;
+import com.jiinkim.todolist.user.jwt.JwtGenerator;
 import com.jiinkim.todolist.user.dao.model.User;
+import com.jiinkim.todolist.user.jwt.JwtProvider;
 import com.jiinkim.todolist.user.service.dto.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +28,7 @@ public class UserServiceImpl implements UserService,  UserDetailsService{
     private final Encoder encoder;
     @Override
     public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
-        UserQueryDto userQueryDto = userDao.findUserByUsername(username)
+        UserQueryDto userQueryDto = userDao.findUserByUsername(username, Status.Y)
             .orElseThrow(() -> new NotFoundQueryResultException("아이디에 해당하는 유저가 없습니다."));
         return new UserDetailsImpl(UserModelConverter.from(userQueryDto));
     }
@@ -40,8 +42,9 @@ public class UserServiceImpl implements UserService,  UserDetailsService{
     @Override
     public Integer register(RegisterRequest dto)  {
         String encodedPassword = encoder.encodeByBCryptPasswordEncoder(dto.getPassword());
-        String refreshToken = JwtMaker.makeRefreshToken(dto.getUsername());
+        String refreshToken = JwtProvider.makeRefreshToken(dto.getUsername());
         User user = dto.toModel(encodedPassword, refreshToken);
+//        return userDomainService.register(user);
         int result = userDao.register(user);
         if(result != 1) {
              throw new InsertFailedException("Inserting user data failed");
@@ -51,7 +54,7 @@ public class UserServiceImpl implements UserService,  UserDetailsService{
 
     @Override
     public GetNicknameResponse getNickname(final Long userId) {
-        String nickname =userDao.findNicknameByUserId(userId);
+        String nickname =userDao.findNicknameByUserId(userId, Status.Y);
         if(!StringUtils.hasText(nickname)) {
             throw new NotFoundQueryResultException("유저 PK값에 해당 하는 닉네임이 없습니다.");
         }

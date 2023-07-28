@@ -1,4 +1,4 @@
-package com.jiinkim.todolist.common.config;
+package com.jiinkim.todolist.common.config.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jiinkim.todolist.user.dao.UserDao;
@@ -7,10 +7,18 @@ import com.jiinkim.todolist.user.filter.LoginAuthenticationFilter;
 import java.util.Collections;
 
 
+import com.jiinkim.todolist.user.jwt.JwtDecoder;
+import com.jiinkim.todolist.user.jwt.JwtGenerator;
+import com.jiinkim.todolist.user.jwt.JwtProvider;
+import com.jiinkim.todolist.user.jwt.JwtTokenConverter;
+import com.jiinkim.todolist.user.jwt.properties.JwtProperties;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -36,6 +44,7 @@ public class SecurityConfig {
     private final UserDao userDao;
 
     private final ObjectMapper objectMapper;
+
 
     private static final String allowedOriginUrl = "http://localhost:9000";
 
@@ -85,5 +94,34 @@ public class SecurityConfig {
     }
 
 
+    @Bean
+    public JwtDecoder jwtDecoder() {
+        return new JwtDecoder();
+    }
+
+    @Bean
+    public JwtGenerator jwtGenerator() {
+        return new JwtGenerator();
+    }
+
+
+    @Bean
+    @ConfigurationProperties(prefix = "jwt")
+    public JwtProperties jwtProperties() {
+        return  new JwtProperties();
+    }
+
+    @Bean
+    public JwtTokenConverter jwtTokenConverter() {
+        return new JwtTokenConverter();
+    }
+
+    @Bean
+    public void settingJwtProvider() {
+        JwtProvider.setJwtDecoder(jwtDecoder());
+        JwtProvider.setJwtGenerator(jwtGenerator());
+        JwtProvider.setJwtTokenConverter(jwtTokenConverter());
+        JwtProvider.setJwtProperties(jwtProperties());
+    }
 
 }

@@ -9,12 +9,13 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 
 @SpringBootApplication
-@ConfigurationPropertiesScan("com.jiinkim.todolist.common.config")
 public class ToDoListBackSingleModuleApplication  {
 
 
     public static void main(String[] args) {
         SpringApplication.run(ToDoListBackSingleModuleApplication.class, args);
     }
+
+
 
 }

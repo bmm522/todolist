@@ -1,9 +1,7 @@
-package com.jiinkim.todolist.todo.application.service.dto;
+package com.jiinkim.todolist.todo.service.dto;
 
-import com.jiinkim.todolist.todo.dao.model.Todo;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;

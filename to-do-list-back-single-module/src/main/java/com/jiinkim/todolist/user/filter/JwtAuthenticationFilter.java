@@ -1,7 +1,8 @@
 package com.jiinkim.todolist.user.filter;
 
 import com.jiinkim.todolist.common.exception.NotFoundTokenFromHeaderException;
-import com.jiinkim.todolist.user.jwt.JwtConverter;
+import com.jiinkim.todolist.user.jwt.JwtProvider;
+import com.jiinkim.todolist.user.jwt.JwtTokenConverter;
 import com.jiinkim.todolist.user.jwt.JwtDecoder;
 import com.jiinkim.todolist.user.jwt.JwtToken;
 import com.jiinkim.todolist.user.service.dto.UserDetailsImpl;
@@ -39,13 +40,13 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
         String accessToken = getHeaderValue(request, "AccessToken");
         String refreshToken = getHeaderValue(request, "RefreshToken");
 
-        JwtToken jwtToken = JwtConverter.toJwtToken(accessToken, refreshToken);
+        JwtToken jwtToken = JwtProvider.create(accessToken, refreshToken);
 
         jwtToken.checkValidateJwtToken();
         jwtToken.checkValidateRefreshToken();
 
-        Long userId = JwtDecoder.getUserIdFromAccessToken(accessToken);
-        String username = JwtDecoder.getUsernameFromAccessToken(accessToken);
+        Long userId = JwtProvider.getUserIdFromAccessToken(accessToken);
+        String username = JwtProvider.getUsernameFromAccessToken(accessToken);
         UserDetailsImpl userDetails = new UserDetailsImpl(userId, username);
         Authentication authentication =
                 new UsernamePasswordAuthenticationToken(userDetails, null);

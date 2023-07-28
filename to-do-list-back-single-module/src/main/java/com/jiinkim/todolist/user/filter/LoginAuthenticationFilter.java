@@ -2,13 +2,15 @@ package com.jiinkim.todolist.user.filter;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jiinkim.todolist.common.config.mybatis.Status;
 import com.jiinkim.todolist.common.exception.LoginFailedException;
 import com.jiinkim.todolist.common.exception.NotFoundQueryResultException;
 import com.jiinkim.todolist.common.dto.ApiResponse;
 import com.jiinkim.todolist.user.dao.UserDao;
 import com.jiinkim.todolist.user.dao.model.UserModelConverter;
 import com.jiinkim.todolist.user.dao.query.dto.UserQueryDto;
-import com.jiinkim.todolist.user.jwt.JwtMaker;
+import com.jiinkim.todolist.user.jwt.JwtGenerator;
+import com.jiinkim.todolist.user.jwt.JwtProvider;
 import com.jiinkim.todolist.user.jwt.JwtToken;
 import com.jiinkim.todolist.user.dao.model.User;
 import com.jiinkim.todolist.user.service.dto.UserDetailsImpl;
@@ -59,16 +61,16 @@ public class LoginAuthenticationFilter extends UsernamePasswordAuthenticationFil
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authResult.getPrincipal();
         User user = userDetails.getUser();
-        JwtToken jwtToken = JwtMaker.create(user);
+        JwtToken jwtToken = JwtProvider.create(user.getUserId(), user.getUsername());
 
-        UserQueryDto userQueryDto= userDao.findUserByUsername(user.getUsername())
+        UserQueryDto userQueryDto= userDao.findUserByUsername(user.getUsername(), Status.Y)
                 .orElseThrow(() -> new NotFoundQueryResultException("아이디에 해당하는 유저가 없습니다."));
         User savedUser = UserModelConverter.from(userQueryDto);
         String refreshTokenFromSavedUser = savedUser.getRefreshToken();
         jwtToken.setRefreshToken(refreshTokenFromSavedUser);
 
         if(!jwtToken.isRefreshTokenValid()) {
-            String newRefreshToken = JwtMaker.makeRefreshToken(user.getUsername());
+            String newRefreshToken = JwtProvider.makeRefreshToken(user.getUsername());
             savedUser.setRefreshToken(newRefreshToken);
             jwtToken.setRefreshToken(newRefreshToken);
             userDao.updateRefreshToken(savedUser);

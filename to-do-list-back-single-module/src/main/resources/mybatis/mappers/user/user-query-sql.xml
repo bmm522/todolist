@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace = "com.jiinkim.todolist.user.dao.UserDao">
-    <resultMap type="com.jiinkim.todolist.user.dao.query.dto.UserQueryDto" id="userQueryMap">
+    <resultMap type="userQueryDto" id="userQueryMap">
         <id column="user_id" property = "userId"/>
         <result column="username" property="username"/>
         <result column="password" property="password"/>
         <result column="nickname" property="nickname"/>
         <result column="refresh_token" property="refreshToken"/>
+        <result column="status" property="status"/>
         <result column="created_at" property="createdAt"/>
         <result column="updated_at" property="updatedAt"/>
     </resultMap>
@@ -17,16 +18,16 @@
         WHERE USERNAME = #{username}
     </select>
 
-    <select id="findUserByUsername" resultMap="userQueryMap" parameterType="string">
-        SELECT user_id, username, password, nickname ,refresh_token,created_at, updated_at
+    <select id="findUserByUsername" resultMap="userQueryMap" >
+        SELECT user_id, username, password, nickname ,refresh_token,status,created_at, updated_at
         FROM USERS
-        WHERE username = #{username}
+        WHERE username = #{username} AND status = #{status}
     </select>
 
-    <select id="findNicknameByUserId" parameterType="long" resultType="string">
+    <select id="findNicknameByUserId"  resultType="string">
         SELECT nickname
         FROM USERS
-        WHERE user_id = #{userId}
+        WHERE user_id = #{userId}  AND status = #{status}
     </select>
 
 

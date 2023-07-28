@@ -1,30 +1,31 @@
 package com.jiinkim.todolist.user.jwt.properties;
 
 import jakarta.annotation.PostConstruct;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
-@ConfigurationProperties(prefix = "env")
-@Component
+
+@Getter
+@Setter
 public class JwtProperties {
 
-  public static String SECRET;
+  public String secret;
+
+  public String tokenPrefix;
 
 
-  public static String TOKEN_PREFIX;
+  public String refreshPrefix;
 
 
-  public static String REFRESH_PREFIX;
+  public String headerJwt;
 
+  public String headerRefresh;
 
-  public static String HEADER_JWT;
-
-
-  public static String HEADER_REFRESH;
-
-
-  public static String ISS;
+  public String iss;
 
 
 
