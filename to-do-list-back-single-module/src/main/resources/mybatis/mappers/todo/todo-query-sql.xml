@@ -15,13 +15,14 @@
 
     <select id="findAllByUserIdWithPaging" parameterType="todoListGetRequest" resultMap="todoQueryMap">
         WITH filtered_todo AS (
+            SELECT rn, todo_id,todo_title, todo_content, todo_at, todo_done, user_id, created_at, updated_at FROM(
             SELECT rownum as rn, todo_id,todo_title, todo_content, todo_at, todo_done, user_id, created_at, updated_at
             FROM todo
             WHERE todo_at <![CDATA[ >= ]]> TO_CHAR(SYSDATE,'YY/MM/DD')
               AND user_id = #{userId}
-              AND rownum <![CDATA[ <= ]]> #{endRow}
               AND status = #{status}
             ORDER BY todo_at
+                )  where rownum <![CDATA[ <= ]]> #{endRow}
         )
         SELECT todo_id,todo_title, todo_content, todo_at, todo_done, user_id, created_at, updated_at
         FROM filtered_todo

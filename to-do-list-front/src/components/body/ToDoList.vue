@@ -9,7 +9,7 @@
         <q-timeline-entry
           v-for="todo in todoMap[date]" :key="todo.todoId"
           :title="todo.todoTitle"
-          :subtitle="todo.todoAt"
+          :subtitle="todo.todoAt.substring(11, 16)"
           side="left"
           icon="edit"
           :body="todo.todoContent"
@@ -27,79 +27,107 @@
 <script setup>
 
 import ToDoBoxes from "components/body/ToDoForm.vue";
-import { nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import TodoApi from "src/common/todo/TodoApi";
 import dayjs from "dayjs";
 import ToDoForm from "components/body/ToDoForm.vue";
-const props = defineProps(['updateData']);
+
+const props = defineProps(["updateData"]);
 const todoMap = ref({});
-let page = 1; // 전역 변수로 선언
+let page = 1;
+let isLastPage = false;
 
 const loadNextPage = async () => {
-  // 다음 페이지 데이터를 요청합니다.
-  const nextPage = await TodoApi.getTodoListApi(page); // 페이지 번호를 적절하게 설정해야 합니다.
 
-  // 가져온 데이터를 현재 데이터에 추가합니다.
-  for (const key in nextPage.body.timeBucketTodoMap) {
-    if (!todoMap.value[key]) {
-      todoMap.value[key] = nextPage.body.timeBucketTodoMap[key];
-    }
-    else {
-      todoMap.value[key] = [...todoMap.value[key], ...nextPage.body.timeBucketTodoMap[key]];
-    }
+  if (isLastPage) {
+    return;
   }
 
-  console.log(todoMap.value);
-  page++; // 다음 페이지로 이동
+  const nextPage = await TodoApi.getTodoListApi(page);
+
+  if (Object.keys(nextPage.body.timeBucketTodoMap).length === 0) {
+    // 다음 페이지의 데이터가 비어있으면 마지막 페이지로 간주하고 isLastPage를 true로 설정합니다.
+    isLastPage = true;
+    window.removeEventListener("scroll", handleScroll);
+  }
+  else {
+    for (const key in nextPage.body.timeBucketTodoMap) {
+      if (!todoMap.value[key]) {
+        todoMap.value[key] = nextPage.body.timeBucketTodoMap[key];
+      }
+      else {
+        todoMap.value[key] = [...todoMap.value[key], ...nextPage.body.timeBucketTodoMap[key]];
+      }
+    }
+    page++;
+
+    await loadNextPage(page - 1);
+  }
+
+
 };
 
 const handleScroll = () => {
-  // 스크롤 이벤트 핸들러
-
-  if (window.innerHeight + window.scrollY >=  document.body.scrollHeight ) {
-    // 스크롤이 맨 아래에 도달하면 다음 페이지를 요청합니다.
+  if (window.innerHeight + window.scrollY >= document.body.scrollHeight) {
     loadNextPage();
   }
 };
 
-onMounted(async () => {
-  console.log('마운트발동');
-  // 컴포넌트가 마운트되면 스크롤 이벤트를 추가합니다.
-  window.addEventListener('scroll', handleScroll);
+// Function to sort todo items based on todoAt property
+const sortTodoByTime = (todos) => {
+  return todos.sort((a, b) => {
+    return new Date(a.todoAt).getTime() - new Date(b.todoAt).getTime();
+  });
+};
 
-  // 컴포넌트가 마운트될 때 첫 번째 페이지의 데이터를 불러옵니다.
-  console.log(page); // page 값 확인용 출력
+// Computed property to get the sorted dates
+// const sortedDates = computed(() => {
+//   return Object.keys(todoMap.value).sort((a, b) => {
+//     return new Date(a).getTime() - new Date(b).getTime();
+//   });
+// });
+
+// Computed property to get the sorted todo items for each date
+const sortedTodoMap = computed(() => {
+  const sortedMap = {};
+  for (const date in todoMap.value) {
+    sortedMap[date] = sortTodoByTime(todoMap.value[date]);
+  }
+  return sortedMap;
+});
+
+onMounted(async () => {
+  window.addEventListener("scroll", handleScroll);
   await loadNextPage();
-  console.log(todoMap.value); // todoMap 확인용 출력
 });
 
 onBeforeUnmount(() => {
-  console.log('마운트삭제');
-  // 컴포넌트가 언마운트되기 전에 스크롤 이벤트를 제거합니다.
-  window.removeEventListener('scroll', handleScroll);
+  window.removeEventListener("scroll", handleScroll);
 });
 
-
-watch(() => props.updateData, (newValue, oldValue) => {
+watch(() => props.updateData,  async (newValue, oldValue) => {
   if (newValue) {
     // Access the value of the ref and update the todoMap
     const mapValue = todoMap.value;
     const newDate = newValue.key; // Assuming the new data has a "date" property
 
     // Check if the date already exists in todoMap
-    if (!mapValue[newDate]) {
-      console.log('여기가실행이야?');
-      mapValue[newDate] = [newValue]; // If not, create a new array with the new data
-    }
- else {
+    if (mapValue[newDate]) {
       console.log('여기니?실행이야?');
-      mapValue[newDate].push(newValue); // If the date exists, add the new data to the existing array
+      mapValue[newDate].push(newValue);
+      mapValue[newDate] = sortTodoByTime(mapValue[newDate]);
+      todoMap.value = Object.fromEntries(
+        Object.entries(todoMap.value).sort((a, b) => {
+          return new Date(a[0]).getTime() - new Date(b[0]).getTime();
+        })
+      );// If not, create a new array with the new data
     }
+
+
+
   }
 
-
-})
-
+});
 </script>
 
 <style scoped>
