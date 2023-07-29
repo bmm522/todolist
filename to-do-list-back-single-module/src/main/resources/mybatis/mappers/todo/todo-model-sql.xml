@@ -14,6 +14,6 @@
 
     <insert id="insert" useGeneratedKeys="true"  parameterType="todoModel">
         INSERT INTO TODO(todo_id, todo_title, todo_content, todo_done,todo_at, user_id, status,created_at, updated_at)
-        VALUES (#{todoId},#{todoTitle}, #{todoContent},#{todoDone},#{todoAt},#{userId},#{status},#{createdAt}, #{updatedAt})
+        VALUES (todo_seq.nextval,#{todoTitle}, #{todoContent},#{todoDone},#{todoAt},#{userId},#{status},#{createdAt}, #{updatedAt})
     </insert>
 </mapper>

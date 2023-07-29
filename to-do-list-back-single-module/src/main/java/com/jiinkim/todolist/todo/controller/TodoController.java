@@ -39,6 +39,7 @@ public class TodoController {
     @GetMapping
     public ApiResponse<TodoGetResponse> getTodoList(@RequestParam("page")int page
         , @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        System.out.println("들어오니 ? "+ page);
 //        TodoListGetRequest dto = TodoServiceDtoConverter.of(page, userDetails.getUserId());
         return ApiResponse.success(HttpStatus.OK, todoService.getTodoList(page, userDetails.getUserId()));
     }

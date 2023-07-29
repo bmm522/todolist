@@ -14,8 +14,6 @@ const checkDuplicateUsernameApi = async (username) => {
 const getNickname = async () => {
   const result = await globalAxios.get("/user/nickname"
   )
-
-  console.log(result);
   return  result.data;
 }
 

@@ -1,7 +1,6 @@
 <template>
   <BodyComponent>
-     <ToDoList/>
-    <AddTaskButton/>
+
   </BodyComponent>
 </template>
 

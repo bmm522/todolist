@@ -1,4 +1,7 @@
 <template>
+
+
+
   <q-dialog v-model="addTask" persistent>
 
   <q-card
@@ -72,6 +75,12 @@ const dateSubmitEvent = (dateAndTimeDatas) => {
 
 
 const sendToAddTaskModalClose =  ()  => {
+  emits('submit', {
+    "title" : title.value,
+    "content" : content.value,
+    "todoTime" : toDoTime.value,
+    "key" :  dateValueFromModal.value,
+  })
   isDateSelectValue.value = false;// 날짜 선택 여부
   dateValueFromModal.value = ""; // 날짜 데이터
   timeValueFromModal.value = "";// 시간 데이터

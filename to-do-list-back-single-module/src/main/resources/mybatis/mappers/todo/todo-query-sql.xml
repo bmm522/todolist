@@ -17,14 +17,16 @@
         WITH filtered_todo AS (
             SELECT rownum as rn, todo_id,todo_title, todo_content, todo_at, todo_done, user_id, created_at, updated_at
             FROM todo
-            WHERE todo_at <![CDATA[ >= ]]> CURRENT_DATE
+            WHERE todo_at <![CDATA[ >= ]]> TO_CHAR(SYSDATE,'YY/MM/DD')
               AND user_id = #{userId}
               AND rownum <![CDATA[ <= ]]> #{endRow}
               AND status = #{status}
+            ORDER BY todo_at
         )
         SELECT todo_id,todo_title, todo_content, todo_at, todo_done, user_id, created_at, updated_at
         FROM filtered_todo
         WHERE rn <![CDATA[ >= ]]>  #{startRow}
+
     </select>
 
 

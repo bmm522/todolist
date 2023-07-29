@@ -24,9 +24,10 @@ class TodoServiceTest {
 
     @Test
     void dummyInsert() {
-        LongStream.rangeClosed(2, 30_000).forEach(i->{
+        LongStream.rangeClosed(2, 1_00).forEach(i->{
+
             LocalDateTime dateTime = LocalDateTime.now();
-            todoDao.insert(Todo.createWhenTest(i, "test"+i, "content " + i, dateTime.plusMinutes(i), Status.N,5L, Status.Y, dateTime, dateTime));
+            todoDao.insert(Todo.createWhenTest(i, "test"+i, "content " + i, dateTime.plusHours(i), Status.N,5L, Status.Y, dateTime, dateTime));
         });
     }
 }

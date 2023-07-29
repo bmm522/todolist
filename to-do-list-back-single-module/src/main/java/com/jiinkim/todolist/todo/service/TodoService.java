@@ -9,6 +9,9 @@ import com.jiinkim.todolist.todo.dao.TodoDao;
 import com.jiinkim.todolist.todo.dao.model.Todo;
 import com.jiinkim.todolist.todo.dao.model.TodoModelConverter;
 import com.jiinkim.todolist.todo.dao.query.dto.TodoQueryDto;
+import java.time.LocalDate;
+import java.util.Comparator;
+import java.util.TreeMap;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,8 +25,10 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import org.springframework.transaction.annotation.Transactional;
 
 import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toList;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +36,7 @@ public class TodoService {
 
     private final TodoDao todoDao;
 
+    @Transactional
     public Integer insert(final TodoInsertRequest dto) {
         Todo todo = TodoModelConverter.from(dto);
         int result = todoDao.insert(todo);
@@ -45,15 +51,16 @@ public class TodoService {
       TodoListGetParams params = TodoQueryDtoConverter.of(page, userId);
 
       List<TodoQueryDto> queryDtoList = todoDao.findAllByUserIdWithPaging(params);
+      Map<LocalDate, List<TodoQueryDto>> timeBucketTodoMap = queryDtoList.stream()
+            .collect(groupingBy(todoAt(),
+            TreeMap::new,
+            toList()));
 
-      Map<LocalDateTime, List<TodoQueryDto>> timeBucketTodoMap =  queryDtoList.stream()
-              .collect(groupingBy(todoAt()));
-
-      return TodoGetResponse.create(timeBucketTodoMap);
+    return TodoGetResponse.create(timeBucketTodoMap);
     }
 
-    private static Function<TodoQueryDto, LocalDateTime> todoAt() {
-        return queryDto -> queryDto.getTodoAt().truncatedTo(ChronoUnit.DAYS);
+    private static Function<TodoQueryDto, LocalDate> todoAt() {
+        return queryDto -> queryDto.getTodoAt().toLocalDate();
     }
 
 }

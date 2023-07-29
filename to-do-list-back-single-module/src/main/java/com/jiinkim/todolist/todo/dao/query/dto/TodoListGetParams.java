@@ -33,7 +33,7 @@ public class TodoListGetParams {
   }
 
   public int getStartRow() {
-    return this.page == 1 ? 1 : ((page -1) * pageSize + 1)-1;
+    return  (page -1) * pageSize + 1;
   }
 
   public void setPageSize(final int pageSize) {
