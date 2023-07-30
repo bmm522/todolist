@@ -5,7 +5,8 @@
         <q-input color="grey-3" label-color="orange" outlined v-model="todoAt" label="시간 선택" readonly>
           <template #append>
             <q-icon name="event" color="orange"   @click="dateSelectModalOpenEvent" style="cursor: pointer;"/>
-            <DateSelectDialog   :date-select-modal="dateSelectModal"     @close="dateSelectModalCloseEvent"/>
+            {{dateSelectModalWhenEdit}}
+            <DateSelectDialog   :date-select-modal-when-edit="dateSelectModalWhenEdit"     @close="dateSelectModalCloseEvent" :select-date="selectDate" :select-time="selectTime"/>
           </template>
         </q-input>
       </q-card-section>
@@ -34,7 +35,7 @@ import DateSelectDialog from "components/body/add-task/DateSelectDialog.vue";
 const props = defineProps(['editTaskModal', 'editBeforeData']);
 const emits = defineEmits(['submit','close']);
 const editTodo = ref(props.editTaskModal);
-const dateSelectModal = ref(false);
+const dateSelectModalWhenEdit = ref(false);
 const title = ref();
 const content = ref();
 const todoAt = ref();
@@ -44,11 +45,11 @@ const selectTime = ref();
 
 
 const dateSelectModalOpenEvent = () => {
-  dateSelectModal.value = true;
+  dateSelectModalWhenEdit.value = true;
+
 }
 const dateSelectModalCloseEvent = () => {
-  dateSelectModal.value = false;
-
+  dateSelectModalWhenEdit.value = false;
 }
 
 watch(() => props.editTaskModal, (newValue, oldValue) => {
@@ -60,8 +61,8 @@ watch(() => props.editBeforeData, (newValue, oldValue) => {
   content.value = newValue.todoContent;
   todoAt.value = newValue.todoAt.replace("T", " ").substring(0, 16);
   todoDone.value = newValue.todoDone;
-  selectDate.value = newValue.todoAt.replace("T", " ").substring(0, 9);
-  selectTime.value =  newValue.todoAt.replace("T", " ").substring(10, 16);
+  selectDate.value = newValue.todoAt.replace("T", " ").substring(0, 10);
+  selectTime.value =  newValue.todoAt.replace("T", " ").substring(11, 16);
 })
 </script>
 

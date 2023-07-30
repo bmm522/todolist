@@ -2,6 +2,8 @@
   <q-dialog v-model="dateSelect" persistent>
     <q-card
       style="min-width: 450px">
+      날짜 : {{dateValue}}
+      시간 : {{timeSelectValue}}
       <q-date
         mask="YYYY-MM-DD"
         v-model="dateValue"
@@ -33,14 +35,16 @@ import {ref, watch} from "vue";
 import TimeSelectDialog from "components/body/add-task/TimeSelectDialog.vue";
 import dayjs from "dayjs";
 import ToDoInputDialog from "components/body/add-task/ToDoInputBox.vue";
+import { date } from "quasar";
 
-const props = defineProps(['dateSelectModal', 'selectDate', 'selectTime']);
+const props = defineProps(['dateSelectModal', 'selectDate', 'selectTime', 'dateSelectModalWhenEdit']);
 const dateSelect = ref(props.dateSelectModal);
 const timeSelectModal = ref(false);
 const toDoInputModal = ref(false);
 const emits = defineEmits(['submit','close']);
 const isDateSelect = ref(false);
 const isTimeSelect= ref(false);
+const dateValue = ref();
 let timeSelectValue = ref();
 
 
@@ -63,7 +67,7 @@ const dateSelectModalCloseEvent = () => {
 }
 
 const dateFormat = "YYYY-MM-DD";
-const dateValue = ref(dayjs().format(dateFormat));
+
 
 
 const openTimeSelectModalEvent = () => {
@@ -83,11 +87,14 @@ const timeSelectEvent = (data) => {
 
 watch(()=>props.dateSelectModal, (newValue, oldValue)=>{
   dateSelect.value = newValue
+  dateValue.value = dayjs().format(dateFormat);
 })
 
-watch(() => props.selectDate, (newValue, oldValue) => {
-  console.log(newValue);
-  dateValue.value= newValue;
+watch(() => props.dateSelectModalWhenEdit, (newValue, oldValue) => {
+  console.log('여기들어오니???');
+  dateSelect.value = newValue
+  dateValue.value = props.selectDate;
+  timeSelectValue.value = props.selectTime;
 })
 
 

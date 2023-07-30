@@ -71,9 +71,6 @@ onMounted(async () => {
 });
 
 const handleScroll = async () => {
-  console.log(window.innerHeight);
-  console.log( window.scrollY);
-  console.log(document.body.scrollHeight);
   if (window.innerHeight + window.scrollY >= document.body.scrollHeight- 1) {
     await loadPage('N');
   }
