@@ -1,7 +1,6 @@
 package com.jiinkim.todolist.user.jwt;
 
 import com.jiinkim.todolist.common.exception.InvalidTokenException;
-import com.jiinkim.todolist.user.jwt.properties.JwtProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;

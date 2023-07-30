@@ -1,9 +1,5 @@
 package com.jiinkim.todolist.user.jwt;
 
-import com.jiinkim.todolist.user.jwt.properties.JwtProperties;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 
 public class JwtProvider  {
 

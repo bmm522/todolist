@@ -1,4 +1,4 @@
-package com.jiinkim.todolist.user.jwt.properties;
+package com.jiinkim.todolist.user.jwt;
 
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;

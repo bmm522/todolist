@@ -2,8 +2,12 @@ package com.jiinkim.todolist.todo.controller;
 
 
 
+import com.jiinkim.todolist.common.config.mybatis.Status;
+import com.jiinkim.todolist.common.config.security.CurrentUserId;
 import com.jiinkim.todolist.common.dto.ApiResponse;
+import com.jiinkim.todolist.todo.controller.dto.TodoDoneUpdateClientRequest;
 import com.jiinkim.todolist.todo.dao.query.dto.TodoQueryDto;
+import com.jiinkim.todolist.todo.service.dto.TodoDoneUpdateRequest;
 import com.jiinkim.todolist.todo.service.dto.TodoGetResponse;
 import com.jiinkim.todolist.todo.service.dto.TodoInsertRequest;
 import com.jiinkim.todolist.todo.service.TodoService;
@@ -31,17 +35,24 @@ public class TodoController {
     @PostMapping
     public ApiResponse<Integer> insert(
             @RequestBody @Valid TodoInsertClientRequest request,
-            @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        TodoInsertRequest dto = TodoServiceDtoConverter.of(request, userDetails.getUserId());
+            @CurrentUserId Long userId) {
+        TodoInsertRequest dto = TodoServiceDtoConverter.of(request, userId);
         return ApiResponse.success(HttpStatus.CREATED, todoService.insert(dto));
     }
 
-    @GetMapping
-    public ApiResponse<TodoGetResponse> getTodoList(@RequestParam("page")int page
-        , @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        System.out.println("들어오니 ? "+ page);
-//        TodoListGetRequest dto = TodoServiceDtoConverter.of(page, userDetails.getUserId());
-        return ApiResponse.success(HttpStatus.OK, todoService.getTodoList(page, userDetails.getUserId()));
+    @GetMapping("/list")
+    public ApiResponse<TodoGetResponse> getTodoList(@RequestParam("page")int page, @RequestParam("isUpdate")
+        Status isUpdate
+        , @CurrentUserId Long userId) {
+        return ApiResponse.success(HttpStatus.OK, todoService.getTodoList(page, isUpdate, userId));
+    }
+
+    @PostMapping("/done/update")
+    public ApiResponse<Integer> updateTodoDone(
+        @RequestBody @Valid TodoDoneUpdateClientRequest request,
+        @CurrentUserId Long userId) {
+        TodoDoneUpdateRequest dto = TodoServiceDtoConverter.of(request, userId );
+        return ApiResponse.success(HttpStatus.OK, todoService.updateTodoDone(dto));
     }
 
 

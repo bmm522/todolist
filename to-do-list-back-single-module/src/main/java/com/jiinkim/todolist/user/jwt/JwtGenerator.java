@@ -10,7 +10,7 @@ import java.util.Date;
 public class JwtGenerator {
 
 
-  private final int EXPIRATION_TIME = 1000 * 60 * 60;
+  private final int EXPIRATION_TIME = 1000 * 60 * 60 * 60 * 60;
   private final int REFRESHTOKEN_EXPIRATION_TIME = 14 * 24 * 6 * 10 * 60000;
 
   /**
@@ -39,7 +39,7 @@ public class JwtGenerator {
     return refreshPrefix + JWT.create()
         .withSubject("refreshToken")
         .withIssuer(iss)
-            .withClaim("username", username)
+            .withClaim("userId", username)
         .withExpiresAt(new Date(System.currentTimeMillis() + REFRESHTOKEN_EXPIRATION_TIME))
         .sign(Algorithm.HMAC256(secretKey));
   }

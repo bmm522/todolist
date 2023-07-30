@@ -16,4 +16,11 @@
         INSERT INTO TODO(todo_id, todo_title, todo_content, todo_done,todo_at, user_id, status,created_at, updated_at)
         VALUES (todo_seq.nextval,#{todoTitle}, #{todoContent},#{todoDone},#{todoAt},#{userId},#{status},#{createdAt}, #{updatedAt})
     </insert>
+
+
+    <update id="updateTodoDone" >
+        UPDATE TODO
+        SET todo_done = #{todoDone}
+        WHERE todo_id = #{todoId}
+    </update>
 </mapper>

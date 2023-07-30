@@ -13,22 +13,52 @@
         <result column="updated_at" property="updatedAt"/>
     </resultMap>
 
-    <select id="findAllByUserIdWithPaging" parameterType="todoListGetRequest" resultMap="todoQueryMap">
-        WITH filtered_todo AS (
-            SELECT rn, todo_id,todo_title, todo_content, todo_at, todo_done, user_id, created_at, updated_at FROM(
-            SELECT rownum as rn, todo_id,todo_title, todo_content, todo_at, todo_done, user_id, created_at, updated_at
-            FROM todo
-            WHERE todo_at <![CDATA[ >= ]]> TO_CHAR(SYSDATE,'YY/MM/DD')
-              AND user_id = #{userId}
-              AND status = #{status}
-            ORDER BY todo_at
-                )  where rownum <![CDATA[ <= ]]> #{endRow}
-        )
-        SELECT todo_id,todo_title, todo_content, todo_at, todo_done, user_id, created_at, updated_at
-        FROM filtered_todo
-        WHERE rn <![CDATA[ >= ]]>  #{startRow}
+    <select id="findAllByUserIdWithPaging" parameterType="todoListGetParams" resultMap="todoQueryMap">
 
+        SELECT
+            todo_id, todo_title, todo_content, todo_at, todo_done, user_id, created_at, updated_at
+        FROM
+            todo
+        WHERE
+            todo_at >= TO_CHAR(SYSDATE,'YY/MM/DD')
+          AND user_id = #{userId}
+          AND status = #{status}
+        ORDER BY todo_at
+        <if test='"N".equals(isUpdate)'>
+            OFFSET #{offset} ROWS FETCH NEXT #{nextRow} ROWS ONLY
+        </if>
+        <if test='"Y".equals(isUpdate)'>
+            OFFSET 0 ROWS FETCH NEXT #{endRow} ROWS ONLY
+        </if>
+
+
+    </select>
+
+    <select id="findByTodoId" resultMap="todoQueryMap">
+        SELECT
+            todo_id, todo_title, todo_content, todo_at, todo_done, user_id, created_at, updated_at
+        FROM
+            todo
+        WHERE
+            todo_id = #{param1} AND status = #{param2}
     </select>
 
 
 </mapper>
+
+
+<!--  &#45;&#45;         WITH filtered_todo AS (-->
+<!--  &#45;&#45;             SELECT rn, todo_id,todo_title, todo_content, todo_at, todo_done, user_id, created_at, updated_at-->
+<!--  &#45;&#45;             FROM  (-->
+<!--  &#45;&#45;                     SELECT rownum as rn, todo_id,todo_title, todo_content, todo_at, todo_done, user_id, created_at, updated_at-->
+<!--  &#45;&#45;                     FROM todo-->
+<!--  &#45;&#45;                     WHERE todo_at <![CDATA[ >= ]]> TO_CHAR(SYSDATE,'YY/MM/DD')-->
+<!--  &#45;&#45;                       AND user_id = #{userId}-->
+<!--  &#45;&#45;                       AND status = #{status}-->
+<!--  &#45;&#45;                     ORDER BY todo_at-->
+<!--  &#45;&#45;                 )-->
+<!--  &#45;&#45;                 where rownum <![CDATA[ <= ]]> #{endRow}-->
+<!--  &#45;&#45;         )-->
+<!--  &#45;&#45;         SELECT todo_id,todo_title, todo_content, todo_at, todo_done, user_id, created_at, updated_at-->
+<!--  &#45;&#45;         FROM filtered_todo-->
+<!--  &#45;&#45;         WHERE rn <![CDATA[ >= ]]>  #{startRow}-->

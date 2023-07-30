@@ -1,5 +1,6 @@
 package com.jiinkim.todolist.user.controller;
 
+import com.jiinkim.todolist.common.config.security.CurrentUserId;
 import com.jiinkim.todolist.common.dto.ApiResponse;
 import com.jiinkim.todolist.user.controller.dto.RegisterClientRequest;
 import com.jiinkim.todolist.user.controller.dto.UserServiceDtoConverter;
@@ -40,7 +41,8 @@ public class UserController {
 
     @GetMapping("/nickname")
     public ApiResponse<GetNicknameResponse> getNickname(
-            @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return ApiResponse.success(HttpStatus.OK,userService.getNickname(userDetails.getUserId()));
+            @CurrentUserId Long userId) {
+        return ApiResponse.success(HttpStatus.OK,userService.getNickname(userId));
     }
+
 }

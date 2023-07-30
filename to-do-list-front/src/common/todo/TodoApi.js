@@ -12,10 +12,11 @@ const insertTodoApi = async (todoTitle, todoContent, todoAt) => {
 }
 
 
-const getTodoListApi = async (page) => {
-  const result = await globalAxios.get("/todo",  {
+const getTodoListApi = async (page, isUpdate) => {
+  const result = await globalAxios.get("/todo/list",  {
     params : {
-      page : page
+      page : page,
+      isUpdate : isUpdate,
     }
   })
 

@@ -25,5 +25,8 @@ public class TodoQueryDto {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
+    public boolean isPermission(final Long userId) {
+        return this.userId.equals(userId);
+    }
 
 }

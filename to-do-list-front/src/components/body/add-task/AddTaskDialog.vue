@@ -7,17 +7,6 @@
   <q-card
     style="min-width: 450px">
 
-    날짜와 시간 선택 여부 : {{isDateSelectValue}}
-    <br>
-    현재 선택된 날짜 : {{dateValueFromModal}}
-    <br>
-    현재 선택된 시간 : {{timeValueFromModal}}
-    <br>
-    날짜 선택 모달 현재 상태 : {{dateSelectModal}}
-    <br>
-    제목 : {{title}}
-    <br>
-    내용 : {{content}}
     <q-card-section class="q-pt-none" style="text-align: center; margin-top: 30px" >
       <q-input color="grey-3" label-color="orange" outlined v-model="toDoTimeShow" label="시간 선택" readonly>
         <template #append>

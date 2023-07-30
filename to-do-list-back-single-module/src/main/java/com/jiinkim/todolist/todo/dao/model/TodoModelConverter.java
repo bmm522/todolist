@@ -1,5 +1,6 @@
 package com.jiinkim.todolist.todo.dao.model;
 
+import com.jiinkim.todolist.todo.service.dto.TodoDoneUpdateRequest;
 import com.jiinkim.todolist.todo.service.dto.TodoInsertRequest;
 import lombok.experimental.UtilityClass;
 
@@ -13,5 +14,9 @@ public class TodoModelConverter {
     public Todo from(TodoInsertRequest dto) {
         return Todo.createWhenInsert(dto.getTodoTitle(), dto.getTodoContent(), dto.getTodoAt(),
             dto.getUserId());
+    }
+
+    public Todo from(TodoDoneUpdateRequest dto) {
+        return Todo.createWhenTodoDoneUpdate(dto.getTodoId(), dto.getTodoDone());
     }
 }

@@ -34,7 +34,7 @@ import TimeSelectDialog from "components/body/add-task/TimeSelectDialog.vue";
 import dayjs from "dayjs";
 import ToDoInputDialog from "components/body/add-task/ToDoInputBox.vue";
 
-const props = defineProps(['dateSelectModal']);
+const props = defineProps(['dateSelectModal', 'selectDate', 'selectTime']);
 const dateSelect = ref(props.dateSelectModal);
 const timeSelectModal = ref(false);
 const toDoInputModal = ref(false);
@@ -83,6 +83,11 @@ const timeSelectEvent = (data) => {
 
 watch(()=>props.dateSelectModal, (newValue, oldValue)=>{
   dateSelect.value = newValue
+})
+
+watch(() => props.selectDate, (newValue, oldValue) => {
+  console.log(newValue);
+  dateValue.value= newValue;
 })
 
 

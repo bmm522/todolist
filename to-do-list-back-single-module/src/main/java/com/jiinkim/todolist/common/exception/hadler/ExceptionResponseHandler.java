@@ -14,6 +14,11 @@ public class ExceptionResponseHandler {
         return ApiResponse.fail(HttpStatus.INTERNAL_SERVER_ERROR, e);
     }
 
+    @ExceptionHandler(UpdateFailedException.class)
+    public ApiResponse<Exception> handleUpdateFailed(UpdateFailedException e) {
+        return ApiResponse.fail(HttpStatus.INTERNAL_SERVER_ERROR, e);
+    }
+
     @ExceptionHandler(NotFoundQueryResultException.class)
     public ApiResponse<Exception> handleNotFoundEntity(NotFoundQueryResultException e) {
         return ApiResponse.fail(HttpStatus.INTERNAL_SERVER_ERROR, e);
@@ -33,4 +38,11 @@ public class ExceptionResponseHandler {
     public ApiResponse<Exception> handleNotFoundTokenFromHeader(NotFoundTokenFromHeaderException e) {
         return ApiResponse.fail(HttpStatus.UNAUTHORIZED, e);
     }
+
+    @ExceptionHandler(PermissionException.class)
+    public ApiResponse<Exception> handlePermission(PermissionException e) {
+        return ApiResponse.fail(HttpStatus.FORBIDDEN, e);
+    }
+
+
 }

@@ -2,9 +2,6 @@ package com.jiinkim.todolist.user.jwt;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
-import com.jiinkim.todolist.user.jwt.properties.JwtProperties;
-import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Component;
 
 
 public class JwtDecoder {

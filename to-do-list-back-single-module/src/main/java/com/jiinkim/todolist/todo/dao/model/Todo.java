@@ -39,6 +39,12 @@ public class Todo {
         this.updatedAt = updatedAt;
     }
 
+    private Todo(final Long todoId, final Status todoDone, final LocalDateTime updatedAt) {
+        this.todoId = todoId;
+        this.todoDone = todoDone;
+        this.updatedAt = updatedAt;
+    }
+
     public static Todo createWhenTest(final Long todoId, final String todoTitle, final String todoContent,final LocalDateTime todoAt,final Status todoDone,  final Long userId, final Status status, final LocalDateTime createdAt, final LocalDateTime updatedAt) {
         return new Todo(todoId, todoTitle, todoContent, todoAt, todoDone, userId, status, createdAt, updatedAt);
     }
@@ -46,6 +52,11 @@ public class Todo {
     public static Todo createWhenInsert(final String todoTitle,  final String todoContent, LocalDateTime todoAt, final Long userId) {
         LocalDateTime now = TimeUtils.getNow();
         return new Todo(todoTitle, todoContent, todoAt,userId,now, now);
+    }
+
+    public static Todo createWhenTodoDoneUpdate(final Long todoId, final Status todoDone) {
+        LocalDateTime now = TimeUtils.getNow();
+        return new Todo(todoId, todoDone, now);
     }
 
 
