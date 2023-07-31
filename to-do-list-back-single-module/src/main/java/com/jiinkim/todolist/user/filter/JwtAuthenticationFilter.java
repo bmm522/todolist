@@ -54,13 +54,14 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
 
         try {
             chain.doFilter(request, response);// -> run from mvc
-        }  finally {
+        } finally {
             SecurityContextHolder.clearContext();
         }
 
     }
 
-    public boolean checkSkipFilter(final String requestURI ) {
+
+    public boolean checkSkipFilter(final String requestURI) {
         return PermitUrls.isPermitted(requestURI);
     }
 

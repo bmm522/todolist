@@ -2,26 +2,21 @@
   <div class="q-px-lg q-py-md">
 
     <q-timeline :layout="layout" color="secondary">
-      <div v-for="date in Object.keys(todoMap)" :key="date">
-        <q-timeline-entry heading> {{date}}</q-timeline-entry>
+      <div v-for="date in Object.keys(sortedTodoMap)" :key="date">
+        <q-timeline-entry heading> {{ date }}</q-timeline-entry>
 
 
         <q-timeline-entry
-          v-for="todo in todoMap[date]" :key="todo"
+          v-for="todo in sortedTodoMap[date]" :key="todo"
           :title="todo.todoTitle"
           :subtitle="todo.todoAt.substring(11, 16)"
           side="left"
-          :icon="todo.todoDone === 'N' ? 'edit' : 'done_all'"
+          :icon="todo.todoDone === 'Y' ? 'done_all':'edit'"
           :body="todo.todoContent"
-          :color="todo.todoDone === 'N' ? 'blue' : 'orange'"
-          @click="test(todo)"
+          :color="todo.todoDone === 'Y' ? 'orange':'blue'"
+          @click="editModalOpenEvent(todo)"
         >
-
-
-
         </q-timeline-entry>
-
-
 
       </div>
     </q-timeline>
@@ -31,55 +26,69 @@
 
 <script setup>
 
-import { onMounted, ref, watch } from "vue";
+import {computed, onBeforeUnmount, onMounted, ref, watch} from "vue";
 import TodoApi from "src/common/todo/TodoApi";
+import {useDialogModalStore} from "stores/dialog_modal";
+import {useEditTodoDialogDataStore} from "stores/edit_todo_dialog_data";
+import {useStore} from "stores/store";
 
 const props = defineProps(["updateData"]);
 const emits = defineEmits(["editTodoOpen"]);
+
+const modalStore = useDialogModalStore();
+const editTodoDialogStore = useEditTodoDialogDataStore();
+const store = useStore;
+
 const todoMap = ref({});
 
 let page = 1;
 
 const loadPage = async (isUpdate) => {
-  console.log('요청들어옴');
   const loadData = await TodoApi.getTodoListApi(page, isUpdate);
   const timeBucketTodoMap = loadData.body.timeBucketTodoMap;
-  if(Object.keys(timeBucketTodoMap).length === 0) {
+  if (Object.keys(timeBucketTodoMap).length === 0) {
     page--;
     return;
   }
-  for(const date in timeBucketTodoMap) {
-
-      todoMap.value[date] = timeBucketTodoMap[date];
+  for (const date in timeBucketTodoMap) {
+    todoMap.value[date] = timeBucketTodoMap[date];
   }
-    page++;
+  page++;
 }
 
 
-const test = (todo) => {
-  emits('editTodoOpen', {
-    "todoTitle" : todo.todoTitle,
-    "todoContent" : todo.todoContent,
-    "todoAt" : todo.todoAt,
-    "todoDone" :todo.todoDone,
-  });
+const sortedTodoMap = computed(() => {
+  return Object.fromEntries(
+    Object.entries(todoMap.value).sort((a, b) => {
+      return new Date(a[0]).getTime() - new Date(b[0]).getTime();
+    })
+  );
+});
+
+
+const editModalOpenEvent = (todo) => {
+  modalStore.openEditTodoModal();
+  editTodoDialogStore.createFromTodo(todo);
+  store.dateTimeDialog.initFromTodoAt(todo.todoAt);
 }
+
+const handleScroll = async () => {
+  if (window.innerHeight + window.scrollY >= document.body.scrollHeight - 1) {
+    await loadPage('N');
+  }
+};
 
 onMounted(async () => {
   window.addEventListener("scroll", handleScroll);
   await loadPage('N');
 });
 
-const handleScroll = async () => {
-  if (window.innerHeight + window.scrollY >= document.body.scrollHeight- 1) {
-    await loadPage('N');
-  }
-};
+onBeforeUnmount(() => {
+  window.removeEventListener("scroll", handleScroll);
+})
 
-watch(() => props.updateData,  async (newValue, oldValue) => {
-  if (newValue) {
-    await loadPage('Y');
-  }
+watch(() => props.updateData, async (newValue, oldValue) => {
+  await loadPage('Y');
 });
 
 
@@ -87,19 +96,5 @@ watch(() => props.updateData,  async (newValue, oldValue) => {
 
 <style scoped>
 
-.timeline-entry {
-  /* 다른 스타일들 */
-  position: relative; /* 커서용 효과를 위해 필요한 설정 */
-}
 
-.timeline-entry .icon-button {
-  /* 아이콘 버튼의 기본 스타일 */
-}
-
-.timeline-entry .icon-button:hover {
-  width: 100px
-  /* 커서를 갖다댔을 때의 스타일 */
-  /* 원하는 효과를 추가하세요 */
-  /* 예를 들어, 배경색이 바뀌거나, 크기가 조정되거나, 그림자 효과가 추가되는 등 */
-}
 </style>

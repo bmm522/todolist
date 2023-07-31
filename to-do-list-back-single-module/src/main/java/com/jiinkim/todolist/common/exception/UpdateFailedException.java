@@ -3,9 +3,9 @@ package com.jiinkim.todolist.common.exception;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class UpdateFailedException extends RuntimeException{
+public class UpdateFailedException extends RuntimeException {
 
-    String message;
+    private String message;
 
     public UpdateFailedException(String message) {
         this.message = message;

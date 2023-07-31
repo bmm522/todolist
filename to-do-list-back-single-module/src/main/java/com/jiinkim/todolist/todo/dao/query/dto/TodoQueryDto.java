@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.apache.ibatis.type.Alias;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -27,6 +28,10 @@ public class TodoQueryDto {
 
     public boolean isPermission(final Long userId) {
         return this.userId.equals(userId);
+    }
+
+    public LocalDate getTodoDate() {
+        return this.todoAt.toLocalDate();
     }
 
 }

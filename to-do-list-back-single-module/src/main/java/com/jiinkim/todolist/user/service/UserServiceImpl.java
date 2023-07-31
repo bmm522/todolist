@@ -1,5 +1,6 @@
 package com.jiinkim.todolist.user.service;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.jiinkim.todolist.common.config.mybatis.Status;
 import com.jiinkim.todolist.common.exception.InsertFailedException;
 import com.jiinkim.todolist.common.exception.NotFoundQueryResultException;
@@ -22,15 +23,16 @@ import org.springframework.util.StringUtils;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class UserServiceImpl implements UserService,  UserDetailsService{
+public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserDao userDao;
 
     private final Encoder encoder;
+
     @Override
     public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
         UserQueryDto userQueryDto = userDao.findUserByUsername(username, Status.Y)
-            .orElseThrow(() -> new NotFoundQueryResultException("아이디에 해당하는 유저가 없습니다."));
+                .orElseThrow(() -> new NotFoundQueryResultException("아이디에 해당하는 유저가 없습니다."));
         return new UserDetailsImpl(UserModelConverter.from(userQueryDto));
     }
 
@@ -42,22 +44,21 @@ public class UserServiceImpl implements UserService,  UserDetailsService{
 
     @Override
     @Transactional
-    public Integer register(RegisterRequest dto)  {
+    public Integer register(RegisterRequest dto) {
         String encodedPassword = encoder.encodeByBCryptPasswordEncoder(dto.getPassword());
         String refreshToken = JwtProvider.makeRefreshToken(dto.getUsername());
         User user = dto.toModel(encodedPassword, refreshToken);
-//        return userDomainService.register(user);
         int result = userDao.register(user);
-        if(result != 1) {
-             throw new InsertFailedException("Inserting user data failed");
+        if (result != 1) {
+            throw new InsertFailedException("Inserting user data failed");
         }
-         return result;
+        return result;
     }
 
     @Override
     public GetNicknameResponse getNickname(final Long userId) {
-        String nickname =userDao.findNicknameByUserId(userId, Status.Y);
-        if(!StringUtils.hasText(nickname)) {
+        String nickname = userDao.findNicknameByUserId(userId, Status.Y);
+        if (!StringUtils.hasText(nickname)) {
             throw new NotFoundQueryResultException("유저 PK값에 해당 하는 닉네임이 없습니다.");
         }
         return GetNicknameResponse.create(nickname);

@@ -3,12 +3,12 @@ package com.jiinkim.todolist.common.exception;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class AuthenticationException extends Exception{
+public class AuthenticationException extends RuntimeException {
 
-  String message;
+    private String message;
 
-  public AuthenticationException(String message) {
-    this.message = message;
-    log.error(message);
-  }
+    public AuthenticationException(String message) {
+        this.message = message;
+        log.error(message);
+    }
 }

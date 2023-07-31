@@ -1,44 +1,29 @@
 <template>
   <q-page-container>
-    {{editTaskModal}}
-    <ToDoList :update-data="updateData" @editTodoOpen="editTodoModalEvent"/>
-    <EditTaskDialog :edit-task-modal="editTaskModal" :edit-before-data="editBeforeData"/>
+    <ToDoList/>
+    <EditTaskDialog @submitData="updateListFromAddTaskDialog"/>
     <AddTaskButton @submitData="updateListFromAddTaskDialog"/>
-
   </q-page-container>
 </template>
 
 <script setup>
 
 import ToDoList from "components/body/ToDoList.vue";
-import AddTaskButton from "components/body/add-task/AddTaskButton.vue";
-import { ref } from "vue";
-import EditTaskDialog from "components/body/EditTaskDialog.vue";
+import AddTaskButton from "components/body/add-task/AddTodoButton.vue";
+import {ref} from "vue";
+import EditTaskDialog from "components/body/EditTodoDialog.vue";
 
-const updateData = ref();
-const editBeforeData = ref();
-const editTaskModal = ref(false);
+const updateData = ref(0);
 
 const updateListFromAddTaskDialog = (value, text) => {
-  updateData.value = {
-    "todoTitle" : value.title,
-    "todoContent": value.content,
-    "todoAt" :value.todoTime,
-    "key": value.key
-  }
+  updateData.value++;
 }
 
-const editTodoModalEvent = (value) => {
-  editTaskModal.value = true;
-  editBeforeData.value = {
-    "todoTitle" : value.todoTitle,
-    "todoContent" : value.todoContent,
-    "todoAt" : value.todoAt,
-    "todoDone" : value.todoDone,
-  }
-}
+
 </script>
 
 <style scoped>
 
 </style>
+
+

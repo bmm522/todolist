@@ -4,8 +4,7 @@
 
 <script setup>
 
+import {createPinia} from "pinia";
 
-import LoginLayout from "layouts/LoginLayout.vue";
-import AppLayout from "layouts/TodoLayout.vue";
-// let url = window.location.href;
+
 </script>

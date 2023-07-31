@@ -1,27 +1,25 @@
 <template>
-  <q-dialog v-model="dateSelect" persistent>
+  <q-dialog v-model="modalStore.data.dateSelectModal" persistent>
     <q-card
       style="min-width: 450px">
-      날짜 : {{dateValue}}
-      시간 : {{timeSelectValue}}
+      날짜 : {{ dateTimeStoreData.date }}
       <q-date
         mask="YYYY-MM-DD"
-        v-model="dateValue"
+        v-model="dateTimeStoreData.date"
         landscape
 
       />
-      <q-card-section v-if="isTimeSelect" align="right" >
-        현재 선택된 시간 : {{timeSelectValue}}
+      <q-card-section v-if="isTimeSelect" align="right">
+        현재 선택된 시간 : {{ dateTimeStoreData.time }}
       </q-card-section>
       <q-card-actions align="right" class="text-primary">
 
-        <q-btn flat label="취소" @click =  "dateSelectModalCloseEvent"/>
+        <q-btn flat label="취소" @click="modalStore.closeDateSelectModal()"/>
 
-        <q-btn v-if="!isTimeSelect" flat label="다음"  @click =  "openTimeSelectModalEvent" />
-        <q-btn v-if="isTimeSelect" flat label="시간 수정" @click =  "openTimeSelectModalEvent" />
-        <q-btn v-if="isTimeSelect" flat label="완료" @click =  "submitEvent" />
-<!--        <ToDoInputDialog :to-do-input-modal="toDoInputModal" :date-value="dateValue" :time-value="timeSelectValue"/>-->
-        <TimeSelectDialog :time-select-modal="timeSelectModal" :date-value="dateValue" @close="timeSelectModalCloseEvent" @select="timeSelectEvent"/>
+        <q-btn v-if="!isTimeSelect" flat label="다음" @click="modalStore.openTimeSelectModal()"/>
+        <q-btn v-if="isTimeSelect" flat label="시간 수정" @click="modalStore.openTimeSelectModal()"/>
+        <q-btn v-if="isTimeSelect" flat label="완료" @click="submitEvent"/>
+        <TimeSelectDialog @select="timeSelectEvent"/>
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -31,71 +29,33 @@
 <script setup>
 
 
-import {ref, watch} from "vue";
+import {onMounted, ref, watch} from "vue";
 import TimeSelectDialog from "components/body/add-task/TimeSelectDialog.vue";
 import dayjs from "dayjs";
 import ToDoInputDialog from "components/body/add-task/ToDoInputBox.vue";
-import { date } from "quasar";
+import {date} from "quasar";
+import {useDateTimeDialogDataStore} from "stores/date_time_dialog_data";
+import {useDialogModalStore} from "stores/dialog_modal";
 
 const props = defineProps(['dateSelectModal', 'selectDate', 'selectTime', 'dateSelectModalWhenEdit']);
-const dateSelect = ref(props.dateSelectModal);
-const timeSelectModal = ref(false);
-const toDoInputModal = ref(false);
-const emits = defineEmits(['submit','close']);
-const isDateSelect = ref(false);
-const isTimeSelect= ref(false);
-const dateValue = ref();
-let timeSelectValue = ref();
+const emits = defineEmits(['submit', 'close']);
+const modalStore = useDialogModalStore();
+const dateTimeStore = useDateTimeDialogDataStore();
+const dateTimeStoreData = dateTimeStore.data;
 
+
+const isTimeSelect = ref(false);
 
 
 const submitEvent = () => {
-  isDateSelect.value = true;
-  dateSelect.value = false;
-  emits('submit',
-    {
-      isDateSelect : isDateSelect.value,
-      dateValue: dateValue.value,
-      timeSelectValue: timeSelectValue.value,
-      dateSelect: dateSelect.value
-    });
-
-}
-
-const dateSelectModalCloseEvent = () => {
-  emits('close');
-}
-
-const dateFormat = "YYYY-MM-DD";
-
-
-
-const openTimeSelectModalEvent = () => {
-  timeSelectModal.value = true;
-
-}
-
-const timeSelectModalCloseEvent =() => {
-  timeSelectModal.value = false;
+  emits('submit');
+  modalStore.closeDateSelectModal()
 }
 
 const timeSelectEvent = (data) => {
-  timeSelectValue.value = data.timeValue;
-  timeSelectModal.value = false;
   isTimeSelect.value = true;
 }
 
-watch(()=>props.dateSelectModal, (newValue, oldValue)=>{
-  dateSelect.value = newValue
-  dateValue.value = dayjs().format(dateFormat);
-})
-
-watch(() => props.dateSelectModalWhenEdit, (newValue, oldValue) => {
-  console.log('여기들어오니???');
-  dateSelect.value = newValue
-  dateValue.value = props.selectDate;
-  timeSelectValue.value = props.selectTime;
-})
 
 
 

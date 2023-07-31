@@ -29,12 +29,13 @@ public class UserController {
      */
     @GetMapping("/check-duplicate")
     public ApiResponse<CheckDuplicateUsernameResponse> checkDuplicatedUsername(
-        @RequestParam("username") String username) {
+            @RequestParam("username") String username) {
         return ApiResponse.success(HttpStatus.OK, userService.checkDuplicatedUserId(username));
     }
 
     @PostMapping("/register")
-    public ApiResponse<Integer> register(@RequestBody @Valid RegisterClientRequest request)  {
+    public ApiResponse<Integer> register(
+            @RequestBody @Valid RegisterClientRequest request) {
         RegisterRequest dto = UserServiceDtoConverter.from(request);
         return ApiResponse.success(HttpStatus.CREATED, userService.register(dto));
     }
@@ -42,7 +43,7 @@ public class UserController {
     @GetMapping("/nickname")
     public ApiResponse<GetNicknameResponse> getNickname(
             @CurrentUserId Long userId) {
-        return ApiResponse.success(HttpStatus.OK,userService.getNickname(userId));
+        return ApiResponse.success(HttpStatus.OK, userService.getNickname(userId));
     }
 
 }

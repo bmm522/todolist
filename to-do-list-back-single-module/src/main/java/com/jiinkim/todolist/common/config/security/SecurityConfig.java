@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jiinkim.todolist.user.dao.UserDao;
 import com.jiinkim.todolist.user.filter.JwtAuthenticationFilter;
 import com.jiinkim.todolist.user.filter.LoginAuthenticationFilter;
+
 import java.util.Collections;
 
 
@@ -37,7 +38,6 @@ import java.util.List;
 public class SecurityConfig {
 
 
-
     private final UserDao userDao;
 
     private final ObjectMapper objectMapper;
@@ -64,7 +64,7 @@ public class SecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of(allowedOriginUrl));
-        configuration.setAllowedMethods(Arrays.asList("GET","POST"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST"));
         configuration.setAllowedHeaders(Collections.singletonList("*"));
         configuration.addExposedHeader("AccessToken");
         configuration.addExposedHeader("RefreshToken");
@@ -91,7 +91,6 @@ public class SecurityConfig {
     }
 
 
-    @Bean
     public JwtDecoder jwtDecoder() {
         return new JwtDecoder();
     }
@@ -105,7 +104,7 @@ public class SecurityConfig {
     @Bean
     @ConfigurationProperties(prefix = "jwt")
     public JwtProperties jwtProperties() {
-        return  new JwtProperties();
+        return new JwtProperties();
     }
 
     @Bean

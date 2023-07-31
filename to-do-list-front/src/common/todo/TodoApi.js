@@ -23,7 +23,13 @@ const getTodoListApi = async (page, isUpdate) => {
   return result.data;
 }
 
+const updateTodoApi = async (todoId, todoTitle, todoContent, todoAt, todoDone) => {
+  console.log(todoDone);
+}
+
+
 export default {
   insertTodoApi,
-  getTodoListApi
+  getTodoListApi,
+  updateTodoApi
 };

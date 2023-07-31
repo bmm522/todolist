@@ -6,7 +6,6 @@
     <div v-for="date in Object.keys(todoMap)" :key="date">
       <q-timeline-entry heading> {{date}}</q-timeline-entry>
 
-
   <q-timeline-entry
 v-for="todo in todoMap[date]" :key="todo.todoId"
     :title="todo.todoTitle"

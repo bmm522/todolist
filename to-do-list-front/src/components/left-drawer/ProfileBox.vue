@@ -18,8 +18,6 @@ import UserApi from "src/common/user/UserApi";
 
 const nickname = ref("");
 
-// console.log(data.body);
-//
 
 onMounted(async () => {
   const data =  await UserApi.getNickname();
