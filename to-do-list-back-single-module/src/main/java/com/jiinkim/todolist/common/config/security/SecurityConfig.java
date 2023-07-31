@@ -90,33 +90,13 @@ public class SecurityConfig {
         }
     }
 
-
-    public JwtDecoder jwtDecoder() {
-        return new JwtDecoder();
-    }
-
-    @Bean
-    public JwtGenerator jwtGenerator() {
-        return new JwtGenerator();
-    }
-
-
     @Bean
     @ConfigurationProperties(prefix = "jwt")
     public JwtProperties jwtProperties() {
         return new JwtProperties();
     }
 
-    @Bean
-    public JwtTokenConverter jwtTokenConverter() {
-        return new JwtTokenConverter();
-    }
-
-    @Bean
     public void settingJwtProvider() {
-        JwtProvider.setJwtDecoder(jwtDecoder());
-        JwtProvider.setJwtGenerator(jwtGenerator());
-        JwtProvider.setJwtTokenConverter(jwtTokenConverter());
         JwtProvider.setJwtProperties(jwtProperties());
     }
 

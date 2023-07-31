@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.jiinkim.todolist.common.config.mybatis.Status;
 import com.jiinkim.todolist.common.exception.InsertFailedException;
 import com.jiinkim.todolist.common.exception.NotFoundQueryResultException;
+import com.jiinkim.todolist.common.exception.UserInsertFailedException;
+import com.jiinkim.todolist.common.exception.UserNotFoundQueryResultException;
 import com.jiinkim.todolist.user.dao.UserDao;
 import com.jiinkim.todolist.user.dao.model.UserModelConverter;
 import com.jiinkim.todolist.user.dao.query.dto.UserQueryDto;
@@ -32,7 +34,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
         UserQueryDto userQueryDto = userDao.findUserByUsername(username, Status.Y)
-                .orElseThrow(() -> new NotFoundQueryResultException("아이디에 해당하는 유저가 없습니다."));
+                .orElseThrow(() -> new UserNotFoundQueryResultException("아이디에 해당하는 유저가 없습니다."));
         return new UserDetailsImpl(UserModelConverter.from(userQueryDto));
     }
 
@@ -50,7 +52,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         User user = dto.toModel(encodedPassword, refreshToken);
         int result = userDao.register(user);
         if (result != 1) {
-            throw new InsertFailedException("Inserting user data failed");
+            throw new UserInsertFailedException("user를 저장하는 과정에서 에러");
         }
         return result;
     }
@@ -59,7 +61,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public GetNicknameResponse getNickname(final Long userId) {
         String nickname = userDao.findNicknameByUserId(userId, Status.Y);
         if (!StringUtils.hasText(nickname)) {
-            throw new NotFoundQueryResultException("유저 PK값에 해당 하는 닉네임이 없습니다.");
+            throw new UserNotFoundQueryResultException("유저 PK값에 해당 하는 닉네임이 없습니다.");
         }
         return GetNicknameResponse.create(nickname);
     }

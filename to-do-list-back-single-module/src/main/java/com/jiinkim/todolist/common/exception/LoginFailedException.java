@@ -3,12 +3,10 @@ package com.jiinkim.todolist.common.exception;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class LoginFailedException extends RuntimeException {
+public class LoginFailedException extends CustomException {
 
-    private String message;
 
-    public LoginFailedException(String message) {
-        this.message = message;
-        log.error(message);
+    public LoginFailedException(final String message) {
+        super(message);
     }
 }

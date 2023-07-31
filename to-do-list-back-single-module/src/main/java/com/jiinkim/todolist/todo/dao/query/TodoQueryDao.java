@@ -15,4 +15,6 @@ public interface TodoQueryDao {
     List<TodoQueryDto> findAllByUserIdWithPaging(TodoListGetParams params);
 
   Optional<TodoQueryDto> findByTodoId(Long param1, Status param2);
+
+  List<TodoQueryDto> findAllByTodoIdAndUserId(@Param("deletedTodoIdList") List<Integer> deletedTodoIdList);
 }

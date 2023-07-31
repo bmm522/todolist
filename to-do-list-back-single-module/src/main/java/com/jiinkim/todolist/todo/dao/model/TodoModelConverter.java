@@ -2,6 +2,7 @@ package com.jiinkim.todolist.todo.dao.model;
 
 import com.jiinkim.todolist.todo.service.dto.TodoDoneUpdateRequest;
 import com.jiinkim.todolist.todo.service.dto.TodoInsertRequest;
+import com.jiinkim.todolist.todo.service.dto.TodoUpdateRequest;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
@@ -18,5 +19,10 @@ public class TodoModelConverter {
 
     public Todo from(TodoDoneUpdateRequest dto) {
         return Todo.createWhenTodoDoneUpdate(dto.getTodoId(), dto.getTodoDone());
+    }
+
+    public Todo from(TodoUpdateRequest dto) {
+        return Todo.createWhenUpdate(dto.getTodoId(), dto.getTodoTitle(), dto.getTodoContent(), dto.getTodoAt(), dto.getTodoDone(),
+            dto.getUserId());
     }
 }

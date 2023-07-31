@@ -43,6 +43,19 @@
             todo_id = #{param1} AND status = #{param2}
     </select>
 
+    <select id=" findAllByTodoIdAndUserId">
+        SELECT
+            user_id
+        FROM
+            todo
+        WHERE
+            todo_id IN (
+                <foreach collection="deletedTodoIdList" item="todoId" separator=",">
+                    #{todoId}
+                </foreach>
+                )
+    </select>
+
 
 </mapper>
 

@@ -11,7 +11,7 @@ import com.jiinkim.todolist.user.service.dto.UserDto;
 public interface UserService {
     CheckDuplicateUsernameResponse checkDuplicatedUserId(final String username);
 
-    Integer register(RegisterRequest toRegisterRequest) throws InsertFailedException;
+    Integer register(RegisterRequest toRegisterRequest);
 
     GetNicknameResponse getNickname(Long userId);
 

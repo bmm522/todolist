@@ -5,12 +5,16 @@ import com.jiinkim.todolist.common.config.mybatis.Status;
 import com.jiinkim.todolist.common.config.security.CurrentUserId;
 import com.jiinkim.todolist.common.dto.ApiResponse;
 import com.jiinkim.todolist.todo.controller.dto.TodoDoneUpdateClientRequest;
+import com.jiinkim.todolist.todo.controller.dto.TodoListDeleteClientRequest;
+import com.jiinkim.todolist.todo.controller.dto.TodoUpdateClientRequest;
 import com.jiinkim.todolist.todo.service.dto.TodoDoneUpdateRequest;
 import com.jiinkim.todolist.todo.service.dto.TodoGetResponse;
 import com.jiinkim.todolist.todo.service.dto.TodoInsertRequest;
 import com.jiinkim.todolist.todo.service.TodoService;
 import com.jiinkim.todolist.todo.controller.dto.TodoServiceDtoConverter;
 import com.jiinkim.todolist.todo.controller.dto.TodoInsertClientRequest;
+import com.jiinkim.todolist.todo.service.dto.TodoListDeleteRequest;
+import com.jiinkim.todolist.todo.service.dto.TodoUpdateRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,11 +30,11 @@ public class TodoController {
     private final TodoService todoService;
 
     @PostMapping
-    public ApiResponse<Integer> insert(
+    public ApiResponse<Integer> insertTodo(
             @RequestBody @Valid TodoInsertClientRequest request,
             @CurrentUserId Long userId) {
         TodoInsertRequest dto = TodoServiceDtoConverter.of(request, userId);
-        return ApiResponse.success(HttpStatus.CREATED, todoService.insert(dto));
+        return ApiResponse.success(HttpStatus.CREATED, todoService.insertTodo(dto));
     }
 
     @GetMapping("/list")
@@ -50,8 +54,18 @@ public class TodoController {
     }
 
     @PostMapping("/update")
-    public ApiResponse<Integer> update(@RequestBody @Valid TodoUpdateClientRequest request, @CurrentUserId Long userId) {
+    public ApiResponse<Integer> updateTodo(
+        @RequestBody @Valid TodoUpdateClientRequest request
+        , @CurrentUserId Long userId) {
+        TodoUpdateRequest dto = TodoServiceDtoConverter.of(request, userId);
+        return ApiResponse.success(HttpStatus.OK, todoService.updateTodo(dto));
+    }
 
+    @PostMapping("/list/delete")
+    public ApiResponse<Integer> deleteTodoList(@RequestBody TodoListDeleteClientRequest request, @CurrentUserId Long userId) {
+        request.checkListEmpty();
+        TodoListDeleteRequest dto = TodoServiceDtoConverter.of(request, userId);
+        return ApiResponse.success(HttpStatus.OK, todoService.deleteTodoList(dto));
     }
 
 

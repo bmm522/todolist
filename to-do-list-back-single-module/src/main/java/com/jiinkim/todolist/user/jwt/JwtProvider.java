@@ -3,31 +3,14 @@ package com.jiinkim.todolist.user.jwt;
 
 public class JwtProvider  {
 
-    private static JwtGenerator jwtGenerator;
-    private static JwtTokenConverter jwtTokenConverter;
-    private static JwtDecoder jwtDecoder;
+    private static final JwtGenerator jwtGenerator = new JwtGenerator();
+    private static final JwtTokenConverter jwtTokenConverter = new JwtTokenConverter();
+    private static final JwtDecoder jwtDecoder = new JwtDecoder();
     private static JwtProperties jwtProperties;
-
-
-    public static void setJwtDecoder(JwtDecoder jwtDecoder) {
-        JwtProvider.jwtDecoder = jwtDecoder;
-    }
-
-
-    public static void setJwtGenerator(JwtGenerator jwtGenerator) {
-        JwtProvider.jwtGenerator = jwtGenerator;
-    }
-
 
     public static void setJwtProperties(JwtProperties jwtProperties) {
         JwtProvider.jwtProperties = jwtProperties;
     }
-
-
-    public static void setJwtTokenConverter(JwtTokenConverter jwtTokenConverter) {
-        JwtProvider.jwtTokenConverter = jwtTokenConverter;
-    }
-
 
 
     public static String getClaimStringByKeyFromAccessToken(final String accessToken, final String key) {

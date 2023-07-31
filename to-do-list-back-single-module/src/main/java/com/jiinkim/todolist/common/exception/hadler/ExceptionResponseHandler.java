@@ -44,5 +44,10 @@ public class ExceptionResponseHandler {
         return ApiResponse.fail(HttpStatus.FORBIDDEN, e);
     }
 
+    @ExceptionHandler(DeleteTodoIdListEmptyException.class)
+    public ApiResponse<CustomException> handleDeleteTodoIdListEmpty(DeleteTodoIdListEmptyException e) {
+        return ApiResponse.fail(HttpStatus.BAD_REQUEST, e);
+    }
+
 
 }

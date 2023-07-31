@@ -1,12 +1,12 @@
 package com.jiinkim.todolist.todo.service;
 
 import com.jiinkim.todolist.common.config.mybatis.Status;
-import com.jiinkim.todolist.common.exception.InsertFailedException;
-import com.jiinkim.todolist.common.exception.NotFoundQueryResultException;
 import com.jiinkim.todolist.common.exception.PermissionException;
+import com.jiinkim.todolist.common.exception.TodoInsertFailedException;
+import com.jiinkim.todolist.common.exception.TodoNotFoundQueryResultException;
+import com.jiinkim.todolist.common.exception.UpdateFailedException;
 import com.jiinkim.todolist.todo.dao.query.dto.TodoListGetParams;
 import com.jiinkim.todolist.todo.dao.query.dto.TodoQueryDtoConverter;
-import com.jiinkim.todolist.todo.service.dto.TodoDoneUpdateRequest;
 import com.jiinkim.todolist.todo.service.dto.TodoGetResponse;
 import com.jiinkim.todolist.todo.service.dto.TodoInsertRequest;
 import com.jiinkim.todolist.todo.dao.TodoDao;
@@ -14,6 +14,8 @@ import com.jiinkim.todolist.todo.dao.model.Todo;
 import com.jiinkim.todolist.todo.dao.model.TodoModelConverter;
 import com.jiinkim.todolist.todo.dao.query.dto.TodoQueryDto;
 
+import com.jiinkim.todolist.todo.service.dto.TodoListDeleteRequest;
+import com.jiinkim.todolist.todo.service.dto.TodoUpdateRequest;
 import java.time.LocalDate;
 
 import lombok.RequiredArgsConstructor;
@@ -34,11 +36,11 @@ public class TodoService {
 
 
     @Transactional
-    public Integer insert(final TodoInsertRequest dto) {
-        Todo todo = TodoModelConverter.from(dto);
+    public Integer insertTodo(final TodoInsertRequest request) {
+        Todo todo = TodoModelConverter.from(request);
         int result = todoDao.insert(todo);
         if (result != 1) {
-            throw new InsertFailedException("Inserting Todo data failed");
+            throw new TodoInsertFailedException("todo를 저장하는 과정에서 에러");
         }
         return result;
     }
@@ -60,21 +62,38 @@ public class TodoService {
         return TodoGetResponse.create(timeBucketTodoMap);
     }
 
+
     @Transactional
-    public Integer updateTodoDone(final TodoDoneUpdateRequest request) {
-        TodoQueryDto todoQueryDto = todoDao.findByTodoId(request.getTodoId(), Status.Y)
-                .orElseThrow(() -> new NotFoundQueryResultException("Todo PK값에 해당 하는 Todo객체가 없습니다."));
+    public Integer updateTodo(final TodoUpdateRequest request) {
+        TodoQueryDto todoQueryDto =  todoDao.findByTodoId(request.getTodoId(), Status.Y)
+            .orElseThrow(() -> new TodoNotFoundQueryResultException("Todo PK값에 해당 하는 Todo객체가 없습니다."));
 
-        if (!todoQueryDto.isPermission(request.getUserId())) {
-            throw new PermissionException("todo의 done 상태를 변경할 권한이 없습니다.");
+        if(!todoQueryDto.isPermission(request.getUserId())) {
+            throw new PermissionException("todo를 변경할 권한이 없습니다.");
         }
 
-        int result = todoDao.updateTodoDone(request.getTodoId(), request.getTodoDone());
+        Todo todo = TodoModelConverter.from(request);
+        int result = todoDao.updateTodo(todo);
 
-        if (result != 1) {
-            throw new InsertFailedException("Inserting Todo data failed");
+        if(result != 1) {
+            throw new UpdateFailedException("todo 업데이트 하는 과정에서 에러");
         }
 
+        return result;
+    }
+
+    @Transactional
+    public Integer deleteTodoList(final TodoListDeleteRequest request) {
+        List<TodoQueryDto> todoQueryDtoList = todoDao.findAllByTodoIdAndUserId(request.getDeletedTodoIdList());
+
+        todoQueryDtoList.stream()
+            .filter(todoQueryDto -> !todoQueryDto.isPermission(request.getUserId()))
+            .findAny()
+            .ifPresent(todoQueryDto -> {
+                throw new PermissionException("todo를 삭제할 권한이 없습니다.");
+            });
+
+        int result = todoDao.deleteTodoList(request.getDeletedTodoIdList());
         return result;
     }
 }
