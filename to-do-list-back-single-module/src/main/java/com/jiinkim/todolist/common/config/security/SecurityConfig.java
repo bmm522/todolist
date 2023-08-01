@@ -2,17 +2,14 @@ package com.jiinkim.todolist.common.config.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jiinkim.todolist.user.dao.UserDao;
-import com.jiinkim.todolist.user.filter.JwtAuthenticationFilter;
-import com.jiinkim.todolist.user.filter.LoginAuthenticationFilter;
+import com.jiinkim.todolist.common.config.security.filter.JwtAuthenticationFilter;
+import com.jiinkim.todolist.common.config.security.filter.LoginAuthenticationFilter;
 
 import java.util.Collections;
 
 
-import com.jiinkim.todolist.user.jwt.JwtDecoder;
-import com.jiinkim.todolist.user.jwt.JwtGenerator;
-import com.jiinkim.todolist.user.jwt.JwtProvider;
-import com.jiinkim.todolist.user.jwt.JwtTokenConverter;
-import com.jiinkim.todolist.user.jwt.JwtProperties;
+import com.jiinkim.todolist.common.jwt.JwtProvider;
+import com.jiinkim.todolist.common.jwt.JwtProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -85,7 +82,7 @@ public class SecurityConfig {
         public void configure(HttpSecurity http) throws Exception {
             AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
             http
-                    .addFilter(new JwtAuthenticationFilter(authenticationManager))
+                    .addFilter(new JwtAuthenticationFilter(authenticationManager, objectMapper))
                     .addFilter(new LoginAuthenticationFilter(authenticationManager, userDao, objectMapper));
         }
     }

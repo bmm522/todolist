@@ -1,10 +1,9 @@
-package com.jiinkim.todolist.user.jwt;
+package com.jiinkim.todolist.common.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
@@ -26,7 +25,7 @@ public class JwtGenerator {
         String accessToken = makeAccessToken(userId, username, tokenPrefix, iss, secretKey);
         String refreshToken = makeRefreshToken(username, refreshPrefix, iss, secretKey);
 
-        return JwtToken.create(accessToken, refreshToken, tokenPrefix, refreshPrefix, secretKey);
+        return JwtToken.create(accessToken, refreshToken);
     }
 
     protected String makeAccessToken(final Long userId, final String username, final String tokenPrefix, final String iss, final String secretKey) {
@@ -42,7 +41,7 @@ public class JwtGenerator {
         return refreshPrefix + JWT.create()
                 .withSubject("refreshToken")
                 .withIssuer(iss)
-                .withClaim("userId", username)
+                .withClaim("username", username)
                 .withExpiresAt(new Date(System.currentTimeMillis() + REFRESHTOKEN_EXPIRATION_TIME))
                 .sign(Algorithm.HMAC256(secretKey));
     }

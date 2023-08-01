@@ -3,6 +3,7 @@ package com.jiinkim.todolist.user.controller;
 import com.jiinkim.todolist.common.config.security.CurrentUserId;
 import com.jiinkim.todolist.common.dto.ApiResponse;
 import com.jiinkim.todolist.user.controller.dto.RegisterClientRequest;
+import com.jiinkim.todolist.user.controller.dto.ReissueTokenRequest;
 import com.jiinkim.todolist.user.service.dto.converter.UserServiceDtoConverter;
 import com.jiinkim.todolist.user.service.UserService;
 
@@ -39,6 +40,12 @@ public class UserController {
         RegisterRequest dto = userServiceDtoConverter.from(request);
         return ApiResponse.success(HttpStatus.CREATED, userService.register(dto));
     }
+
+    @PostMapping("/re-issue")
+    public ApiResponse<ReissueTokenResponse> reIssueToken(@RequestBody @Valid ReissueTokenRequest request) {
+        return ApiResponse.success(HttpStatus.OK, userService.reIssueToken(request));
+    }
+
 
     @GetMapping("/nickname")
     public ApiResponse<GetNicknameResponse> getNickname(

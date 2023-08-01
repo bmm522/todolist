@@ -1,10 +1,10 @@
 package com.jiinkim.todolist.todo.service;
 
 import com.jiinkim.todolist.common.config.mybatis.Status;
-import com.jiinkim.todolist.common.exception.PermissionException;
-import com.jiinkim.todolist.common.exception.TodoInsertFailedException;
-import com.jiinkim.todolist.common.exception.TodoNotFoundQueryResultException;
-import com.jiinkim.todolist.common.exception.UpdateFailedException;
+import com.jiinkim.todolist.common.exception.forbidden.PermissionException;
+import com.jiinkim.todolist.common.exception.servererror.TodoInsertFailedException;
+import com.jiinkim.todolist.common.exception.servererror.TodoNotFoundQueryResultException;
+import com.jiinkim.todolist.common.exception.servererror.TodoUpdateFailedException;
 import com.jiinkim.todolist.todo.dao.model.converter.TodoModelConverter;
 import com.jiinkim.todolist.todo.dao.query.dto.TodoListGetParams;
 import com.jiinkim.todolist.todo.dao.query.dto.converter.TodoQueryDtoConverter;
@@ -63,15 +63,13 @@ public class TodoServiceImpl implements TodoService {
         TodoQueryDto todoQueryDto = todoDao.findByTodoId(request.getTodoId(), Status.Y)
                 .orElseThrow(() -> new TodoNotFoundQueryResultException("Todo PK값에 해당 하는 Todo객체가 없습니다."));
 
-        if (!todoQueryDto.isPermission(request.getUserId())) {
-            throw new PermissionException("todo를 변경할 권한이 없습니다.");
-        }
+        checkPermission(todoQueryDto, request.getUserId());
 
         Todo todo = TodoModelConverter.from(request);
         int result = todoDao.updateTodo(todo);
 
         if (result != 1) {
-            throw new UpdateFailedException("todo 업데이트 하는 과정에서 에러");
+            throw new TodoUpdateFailedException("todo 업데이트 하는 과정에서 에러");
         }
 
         return result;
@@ -80,33 +78,42 @@ public class TodoServiceImpl implements TodoService {
     @Transactional
     @Override
     public Integer batchDeleteTodoList(final TodoBatchDeleteRequest request) {
+
         List<TodoQueryDto> todoQueryDtoList = todoDao.findAllByTodoIdAndUserId(request.getDeletedTodoIdList());
 
-        todoQueryDtoList.stream()
-                .filter(todoQueryDto -> !todoQueryDto.isPermission(request.getUserId()))
-                .findAny()
-                .ifPresent(todoQueryDto -> {
-                    throw new PermissionException("todo를 삭제할 권한이 없습니다.");
-                });
+        checkPermission(todoQueryDtoList, request.getUserId());
 
         return todoDao.batchDeleteTodoListByTodoId(request.getDeletedTodoIdList());
+
     }
 
     @Override
     public Integer batchUpdateTodoDone(TodoBatchUpdateTodoDoneRequest request) {
+
         List<TodoQueryDto> todoQueryDtoList = todoDao.findAllByTodoIdAndUserId(request.getUpdatedTodoIdList());
 
-        todoQueryDtoList.stream()
-                .filter(todoQueryDto -> !todoQueryDto.isPermission(request.getUserId()))
-                .findAny()
-                .ifPresent(todoQueryDto -> {
-                    throw new PermissionException("todo의 done 상태를 변경할  권한이 없습니다.");
-                });
-
-        System.out.println(request.getIsDone());
+        checkPermission(todoQueryDtoList, request.getUserId());
 
         return todoDao.batchUpdateTodoDoneByTodoIdAndIsDone(request.getUpdatedTodoIdList(), request.getIsDone());
+
     }
+
+    private void checkPermission(TodoQueryDto todoQueryDto, final Long userIdFromRequest) {
+        if (!todoQueryDto.isPermission(userIdFromRequest)) {
+            throw new PermissionException("todo를 변경할 권한이 없습니다.");
+        }
+    }
+
+    private void checkPermission(List<TodoQueryDto> todoQueryDtoList, final Long userIdFromRequest) {
+        todoQueryDtoList.stream()
+            .filter(todoQueryDto -> !todoQueryDto.isPermission(userIdFromRequest))
+            .findAny()
+            .ifPresent(todoQueryDto -> {
+                throw new PermissionException("todo를 변경할 권한이 없습니다.");
+            });
+    }
+
+
 
 }
 

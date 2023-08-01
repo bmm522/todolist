@@ -22,8 +22,8 @@
 
     <update id="updateRefreshToken" parameterType="com.jiinkim.todolist.user.dao.model.User">
         UPDATE USERS
-        SET refresh_token = ${refreshToken}
-        WHERE username = ${username}  AND status = #{status}
+        SET refresh_token = #{refreshToken}
+        WHERE username = #{username}  AND status = #{status}
     </update>
 
 

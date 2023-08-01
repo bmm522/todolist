@@ -1,4 +1,4 @@
-package com.jiinkim.todolist.user.jwt;
+package com.jiinkim.todolist.common.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -26,8 +26,8 @@ public class JwtDecoder {
         return getClaim(replaceAccessToken, "userId", secretKey).asLong();
     }
 
-    protected String getUsernameFromAccessToken(final String accessToken, final String tokenPrefix, final String secretKey) {
-        String replaceAccessToken = replaceToken(accessToken, tokenPrefix);
+    protected String getUsernameFromJwtToken(final String jwtToken, final String tokenPrefix, final String secretKey) {
+        String replaceAccessToken = replaceToken(jwtToken, tokenPrefix);
         return getClaim(replaceAccessToken, "username", secretKey).asString();
     }
 

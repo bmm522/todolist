@@ -1,17 +1,20 @@
 package com.jiinkim.todolist.user.service;
 
 
+import com.jiinkim.todolist.user.controller.dto.ReissueTokenRequest;
 import com.jiinkim.todolist.user.service.dto.CheckDuplicateUsernameResponse;
 import com.jiinkim.todolist.user.service.dto.GetNicknameResponse;
 import com.jiinkim.todolist.user.service.dto.RegisterRequest;
+import com.jiinkim.todolist.user.service.dto.ReissueTokenResponse;
 
 
 public interface UserService {
     CheckDuplicateUsernameResponse checkDuplicatedUserId(final String username);
 
-    Integer register(RegisterRequest toRegisterRequest);
+    Integer register(final RegisterRequest toRegisterRequest);
 
-    GetNicknameResponse getNickname(Long userId);
+    GetNicknameResponse getNickname(final Long userId);
 
 
+    ReissueTokenResponse reIssueToken(final ReissueTokenRequest request);
 }

@@ -1,6 +1,6 @@
 package com.jiinkim.todolist.todo.controller.dto;
 
-import com.jiinkim.todolist.common.exception.DeleteTodoIdListEmptyException;
+import com.jiinkim.todolist.common.exception.badrequest.DeleteTodoIdListEmptyException;
 
 import java.util.List;
 
