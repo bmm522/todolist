@@ -3,7 +3,6 @@
     class="bg-primary"
     show-if-above
     side="left"
-    :mini="miniState"
     :width="250"
     :breakpoint="100"
   >

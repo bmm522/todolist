@@ -2,6 +2,7 @@ import globalAxios from "src/common/GlobalAxios";
 
 
 const checkDuplicateUsernameApi = async (username) => {
+  username.trim();
 
  const result = await globalAxios.get("/user/check-duplicate", {
     params: {
@@ -18,6 +19,9 @@ const getNickname = async () => {
 }
 
 const registerApi = async (userId, password, nickname) => {
+  userId.trim();
+  password.trim();
+  nickname.trim();
   const result = await globalAxios.post("/user/register", JSON.stringify({
     username: userId,
     password: password,
@@ -27,6 +31,8 @@ const registerApi = async (userId, password, nickname) => {
 }
 
 const loginApi = async (userId, password) => {
+  userId.trim();
+  password.trim();
   const result = await globalAxios.post("/login", JSON.stringify({
     username: userId,
     password: password,

@@ -42,9 +42,9 @@ const timeSelectEvent = () => {
   modalStore.closeTimeSelectModal();
 }
 
-onMounted(() => {
-  dateTimeStoreData.time = dateTimeStore.formatTime(dayjs());
-})
+// onMounted(() => {
+//   dateTimeStoreData.time = dateTimeStore.formatTime(dayjs());
+// })
 
 
 </script>

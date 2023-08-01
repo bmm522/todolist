@@ -9,33 +9,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class ExceptionResponseHandler {
 
-    @ExceptionHandler(InsertFailedException.class)
-    public ApiResponse<Exception> handleInsertFailed(InsertFailedException e) {
+    @ExceptionHandler({InsertFailedException.class, UpdateFailedException.class, NotFoundQueryResultException.class})
+    public ApiResponse<Exception> handleInsertFailed(CustomException e) {
         return ApiResponse.fail(HttpStatus.INTERNAL_SERVER_ERROR, e);
     }
 
-    @ExceptionHandler(UpdateFailedException.class)
-    public ApiResponse<Exception> handleUpdateFailed(UpdateFailedException e) {
-        return ApiResponse.fail(HttpStatus.INTERNAL_SERVER_ERROR, e);
-    }
-
-    @ExceptionHandler(NotFoundQueryResultException.class)
-    public ApiResponse<Exception> handleNotFoundEntity(NotFoundQueryResultException e) {
-        return ApiResponse.fail(HttpStatus.INTERNAL_SERVER_ERROR, e);
-    }
-
-    @ExceptionHandler(AuthenticationException.class)
-    public ApiResponse<Exception> handleAuthentication(AuthenticationException e) {
-        return ApiResponse.fail(HttpStatus.UNAUTHORIZED, e);
-    }
-
-    @ExceptionHandler(InvalidTokenException.class)
-    public ApiResponse<Exception> handleInvalidToken(InvalidTokenException e) {
-        return ApiResponse.fail(HttpStatus.UNAUTHORIZED, e);
-    }
-
-    @ExceptionHandler(NotFoundTokenFromHeaderException.class)
-    public ApiResponse<Exception> handleNotFoundTokenFromHeader(NotFoundTokenFromHeaderException e) {
+    @ExceptionHandler({AuthenticationException.class, InvalidTokenException.class, NotFoundTokenFromHeaderException.class})
+    public ApiResponse<Exception> handleAuthentication(CustomException e) {
         return ApiResponse.fail(HttpStatus.UNAUTHORIZED, e);
     }
 

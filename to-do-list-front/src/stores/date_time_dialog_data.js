@@ -46,6 +46,11 @@ export const useDateTimeDialogDataStore = defineStore('dateTimeStoreId', () => {
     return dayjs(dateTime).format(timeFormat);
   }
 
+  const formatDateForApi = (date) => {
+    const timeFormat = "YYYY-MM-DD'T'HH24:mm"
+    return dayjs(date).format(timeFormat);
+  }
+
 
 
 
@@ -69,6 +74,6 @@ export const useDateTimeDialogDataStore = defineStore('dateTimeStoreId', () => {
 
 
 
-  return {data, getShowDateTime, getDateTimeForApiRequest,initFromTodoAt,formatTime, formatDate,formatDateTime, setTimeValue, init}
+  return {data, getShowDateTime, getDateTimeForApiRequest,initFromTodoAt,formatTime, formatDate,formatDateTime, setTimeValue, formatDateForApi,  init}
 
 })

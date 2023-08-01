@@ -1,6 +1,6 @@
 <template>
   <q-page-container>
-    <ToDoList/>
+    <ToDoList :update-data="updateData"/>
     <EditTaskDialog @submitData="updateListFromAddTaskDialog"/>
     <AddTaskButton @submitData="updateListFromAddTaskDialog"/>
   </q-page-container>
@@ -13,9 +13,10 @@ import AddTaskButton from "components/body/add-task/AddTodoButton.vue";
 import {ref} from "vue";
 import EditTaskDialog from "components/body/EditTodoDialog.vue";
 
-const updateData = ref(0);
+const updateData = ref(false);
 
 const updateListFromAddTaskDialog = (value, text) => {
+
   updateData.value++;
 }
 

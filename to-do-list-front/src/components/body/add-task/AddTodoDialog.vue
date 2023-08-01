@@ -20,7 +20,7 @@
 
       <q-card-section class="q-pt-none" style="text-align: center; margin-top: 30px">
         <q-input
-          filled v-model="addTodoDialogStoreData.todoTitle" label="제목" :dense="dense" maxlength="30" lazy-rules
+          filled v-model="addTodoDialogStoreData.todoTitle" label="제목" maxlength="30" lazy-rules
           :rules="[val => val.length >= 1 || '빈칸은 입력하실 수 없습니다.']"/>
         <br>
         <q-input type="textarea" filled v-model="addTodoDialogStoreData.todoContent" label="메모" maxlength="500"/>
@@ -28,7 +28,7 @@
 
       <q-card-actions align="right" class="text-primary">
         <q-btn flat label="취소" @click="modalStore.closeAddTodoModal()"/>
-        <q-btn v-if="hasTitle" flat label="등록" @click="insertTodoEvent"/>
+        <q-btn flat label="등록"  :disable="!hasTitle" @click="insertTodoEvent"/>
       </q-card-actions>
     </q-card>
   </q-dialog>

@@ -3,8 +3,8 @@
     <q-card style="min-width: 350px">
       <q-card-section class="q-pt-none" style="text-align: center; margin-top: 30px">
         <q-input
-color="grey-3" label-color="orange" outlined v-model="store.dateTimeDialog.getShowDateTime"
-                 label="시간 선택" readonly>
+          color="grey-3" label-color="orange" outlined v-model="store.dateTimeDialog.getShowDateTime"
+          label="시간 선택" readonly>
           {{ store.dateTimeDialog.getShowDateTime }}
 
           <template #append>
@@ -16,7 +16,7 @@ color="grey-3" label-color="orange" outlined v-model="store.dateTimeDialog.getSh
 
       <q-card-section class="q-pt-none" style="text-align: center; margin-top: 30px">
         <q-input
-          filled v-model="store.editTodoDialog.data.todoTitle" label="제목" :dense="dense" maxlength="30"
+          filled v-model="store.editTodoDialog.data.todoTitle" label="제목" maxlength="30"
           lazy-rules
           :rules="[val => val.length >= 1 || '빈칸은 입력하실 수 없습니다.']"/>
         <br>
@@ -28,7 +28,7 @@ color="grey-3" label-color="orange" outlined v-model="store.dateTimeDialog.getSh
 
       <q-card-actions align="right" class="text-primary">
         <q-btn flat label="취소" @click="closeEvent"/>
-        <q-btn v-if="hasTitle" flat label="수정" @click="updateTodoEvent"/>
+        <q-btn  flat label="수정"  :disable="!hasTitle" @click="updateTodoEvent"/>
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -51,14 +51,15 @@ const store = useStore;
 const updateTodoEvent = async () => {
 
 
-  const data = await TodoApi.updateTodoApi(
+   await TodoApi.updateTodoApi(
     store.editTodoDialog.data.todoId,
     store.editTodoDialog.data.todoTitle,
     store.editTodoDialog.data.todoContent,
     store.dateTimeDialog.getDateTimeForApiRequest,
-    isTodoDone.value ? 'Y': 'N');
+    isTodoDone.value ? 'Y' : 'N');
 
   isTodoDone.value = false;
+  store.dialogModal.closeEditTodoModal();
   emits('submitData');
 }
 
@@ -70,6 +71,9 @@ const closeEvent = () => {
 
 }
 
+const dateSelectModalOpenEvent = () => {
+  store.dialogModal.openDateSelectModal();
+}
 
 const hasTitle = computed(() => {
   return store.editTodoDialog.data.todoTitle.length !== 0;

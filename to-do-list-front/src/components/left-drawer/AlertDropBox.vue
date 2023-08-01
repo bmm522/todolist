@@ -8,7 +8,6 @@
       no-caps
       icon="folder"
       label="7일 이내 일정 보기"
-      @click="onMainClick"
     >
       <q-list>
         <q-item clickable v-close-popup @click="onItemClick">

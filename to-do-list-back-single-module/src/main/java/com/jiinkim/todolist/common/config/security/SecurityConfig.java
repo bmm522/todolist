@@ -96,6 +96,7 @@ public class SecurityConfig {
         return new JwtProperties();
     }
 
+    @Bean
     public void settingJwtProvider() {
         JwtProvider.setJwtProperties(jwtProperties());
     }

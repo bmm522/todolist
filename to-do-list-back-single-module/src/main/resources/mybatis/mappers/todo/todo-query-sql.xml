@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace = "com.jiinkim.todolist.todo.dao.TodoDao">
+<mapper namespace="com.jiinkim.todolist.todo.dao.TodoDao">
     <resultMap type="todoQueryDto" id="todoQueryMap">
-        <id column="todo_id" property = "todoId"/>
+        <id column="todo_id" property="todoId"/>
         <result column="todo_title" property="todoTitle"/>
         <result column="todo_content" property="todoContent"/>
         <result column="todo_at" property="todoAt"/>
@@ -13,17 +13,25 @@
         <result column="updated_at" property="updatedAt"/>
     </resultMap>
 
-    <select id="findAllByUserIdWithPaging" parameterType="todoListGetParams" resultMap="todoQueryMap">
-
+    <select id="findAllBySearchCondition" parameterType="todoListGetParams" resultMap="todoQueryMap">
         SELECT
-        todo_id, todo_title, todo_content, todo_at, todo_done, user_id, created_at, updated_at
+        todo_id, todo_title, todo_content, todo_at, todo_done, user_id, created_at, updated_at, status
         FROM
         todo
-        WHERE
-        todo_at >= TO_CHAR(SYSDATE,'YY/MM/DD')
-        AND user_id = #{userId}
-        AND status = #{status}
-        ORDER BY todo_at
+        <where>
+            AND user_id = #{userId}
+            AND status = #{status}
+            <if test='"N".equals(isGetBeforeDataStatus)'>
+                AND todo_at >= TO_CHAR(SYSDATE,'YY/MM/DD')
+            </if>
+            <if test="todoTitle != null">
+                AND todo_title like #{todoTitle} || '%'
+            </if>
+            <if test="todoAt != null">
+                AND todo_at BETWEEN TO_DATE(#{todoAt},'YYYY-MM-DD') AND TO_DATE(#{todoAt},'YYYY-MM-DD') +1
+            </if>
+        </where>
+        order by todo_at
         <if test='"N".equals(isUpdate)'>
             OFFSET #{offset} ROWS FETCH NEXT #{nextRow} ROWS ONLY
         </if>
@@ -35,49 +43,32 @@
     </select>
 
     <select id="findByTodoId" resultMap="todoQueryMap">
-        SELECT
-            todo_id, todo_title, todo_content, todo_at, todo_done, user_id, created_at, updated_at
-        FROM
-            todo
-        WHERE
-            todo_id = #{param1} AND status = #{param2}
+        SELECT todo_id,
+               todo_title,
+               todo_content,
+               todo_at,
+               todo_done,
+               user_id,
+               created_at,
+               updated_at
+        FROM todo
+        WHERE todo_id = #{param1}
+          AND status = #{param2}
     </select>
 
-    <select id=" findAllByTodoIdAndUserId">
+    <select id="findAllByTodoIdAndUserId" resultMap="todoQueryMap">
         SELECT
-            user_id
+        user_id
         FROM
-            todo
+        todo
         WHERE
-            todo_id IN (
-                <foreach collection="deletedTodoIdList" item="todoId" separator=",">
-                    #{todoId}
-                </foreach>
-                )
+        todo_id IN (
+        <foreach collection="todoIdList" item="todoId" separator=",">
+            #{todoId}
+        </foreach>
+        )
     </select>
 
 
 </mapper>
 
-
-
-
-
-
-
-<!--
-        WITH filtered_todo AS (
-        SELECT rn, todo_id,todo_title, todo_content, todo_at, todo_done, user_id, created_at, updated_at
-        FROM  (
-        SELECT rownum as rn, todo_id,todo_title, todo_content, todo_at, todo_done, user_id, created_at, updated_at
-        FROM todo
-        WHERE todo_at <![CDATA[ >= ]]> TO_CHAR(SYSDATE,'YY/MM/DD')
-        AND user_id = #{userId}
-        AND status = #{status}
-        ORDER BY todo_at
-        )
-        where rownum <![CDATA[ <= ]]> #{endRow}
-        )
-        SELECT todo_id,todo_title, todo_content, todo_at, todo_done, user_id, created_at, updated_at
-        FROM filtered_todo
-        WHERE rn <![CDATA[ >= ]]>  #{startRow}-->
