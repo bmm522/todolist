@@ -1,212 +1,212 @@
 <template>
-    <div class="q-px-lg q-py-md" style="padding: 24px 800px">
-        <q-dialog v-model="deleteConfirmModal">
-            <q-card style="width: 350px">
-                <q-card-section>
-                    <div class="text-h6" style="color: red">주의</div>
-                </q-card-section>
+  <div class="q-px-lg q-py-md" style="padding: 24px 800px">
+    <q-dialog v-model="deleteConfirmModal">
+      <q-card style="width: 350px">
+        <q-card-section>
+          <div class="text-h6" style="color: red">주의</div>
+        </q-card-section>
 
-                <q-card-section class="q-pt-none">
-                    한번 삭제하면 다시 되돌릴 수 없습니다.
-                    <br />
-                    그래도 삭제하시겠습니까 ?
-                </q-card-section>
+        <q-card-section class="q-pt-none">
+          한번 삭제하면 다시 되돌릴 수 없습니다.
+          <br />
+          그래도 삭제하시겠습니까 ?
+        </q-card-section>
 
-                <q-card-actions align="right" class="bg-white text-teal">
-                    <q-btn
-                        flat
-                        label="취소"
-                        v-close-popup
-                        @click="deleteConfirmModalClose"
-                    />
-                    <q-btn
-                        flat
-                        label="삭제"
-                        v-close-popup
-                        @click="batchDeleteClickEvent"
-                    />
-                </q-card-actions>
-            </q-card>
-        </q-dialog>
-        <div
-            class="q-pa-sm rounded-borders"
-            :class="$q.dark.isActive ? 'bg-grey-9' : 'bg-grey-2'"
+        <q-card-actions align="right" class="bg-white text-teal">
+          <q-btn
+            flat
+            label="취소"
+            v-close-popup
+            @click="deleteConfirmModalClose"
+          />
+          <q-btn
+            flat
+            label="삭제"
+            v-close-popup
+            @click="batchDeleteClickEvent"
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+    <div
+      class="q-pa-sm rounded-borders"
+      :class="$q.dark.isActive ? 'bg-grey-9' : 'bg-grey-2'"
+    >
+      <q-checkbox
+        name="accept_agreement"
+        v-model="isGetBeforeData"
+        label="지난 날짜 포함해서 TodoList 보기"
+      />
+
+      <q-btn
+        v-if="isSearchTitleGroup"
+        name="accept_agreement"
+        v-model="isGetBeforeData"
+        @click="reOpenTitleModal"
+        label="재검색 하기"
+        color="blue"
+        style="margin-left: 20px"
+      />
+
+      <q-btn
+        v-if="isSearchTodoAtGroup"
+        name="accept_agreement"
+        v-model="isGetBeforeData"
+        @click="reOpenTodoAtModal"
+        label="재검색 하기"
+        color="blue"
+        style="margin-left: 20px"
+      />
+    </div>
+
+    <br />
+    <div
+      class="q-pa-sm rounded-borders"
+      :class="$q.dark.isActive ? 'bg-grey-9' : 'bg-grey-2'"
+    >
+      <q-option-group
+        v-model="searchGroup"
+        :options="searchOptions"
+        color="primary"
+        inline
+      />
+    </div>
+    <q-dialog v-model="searchModal.dateModal">
+      <q-card>
+        <q-date v-model="searchTodoAt" range emit-immediately />
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat label="취소" @click="closeSearchBox" />
+          <q-btn flat label="검색" @click="searchTodoAtEvent" />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
+    <q-dialog v-model="searchModal.titleSearchModal">
+      <q-card style="min-width: 350px">
+        <q-input
+          v-if="searchGroup === 'todoTitleSearch'"
+          outlined
+          bottom-slots
+          v-model="searchTodoTitle"
+          label="제목검색"
+          @keyup.enter.exact="searchTodoTitleEvent"
         >
-            <q-checkbox
-                name="accept_agreement"
-                v-model="isGetBeforeData"
-                label="지난 날짜 포함해서 TodoList 보기"
-            />
+        </q-input>
 
-            <q-btn
-                v-if="isSearchTitleGroup"
-                name="accept_agreement"
-                v-model="isGetBeforeData"
-                @click="reOpenTitleModal"
-                label="재검색 하기"
-                color="blue"
-                style="margin-left: 20px"
-            />
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat label="취소" @click="closeSearchBox" />
+          <q-btn flat label="검색" @click="searchTodoTitleEvent" />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+    <br />
+    <div class="flex">
+      <q-toggle v-model="batchDeleteToggle" label="일괄 삭제 처리하기" />
 
-            <q-btn
-                v-if="isSearchTodoAtGroup"
-                name="accept_agreement"
-                v-model="isGetBeforeData"
-                @click="reOpenTodoAtModal"
-                label="재검색 하기"
-                color="blue"
-                style="margin-left: 20px"
-            />
-        </div>
+      <br />
+      <q-toggle
+        v-model="batchTodoDoneYToggle"
+        label="할일 일괄 완료 처리하기"
+      />
 
-        <br />
-        <div
-            class="q-pa-sm rounded-borders"
-            :class="$q.dark.isActive ? 'bg-grey-9' : 'bg-grey-2'"
-        >
-            <q-option-group
-                v-model="searchGroup"
-                :options="searchOptions"
-                color="primary"
-                inline
-            />
-        </div>
-        <q-dialog v-model="searchModal.dateModal">
-            <q-card>
-                <q-date v-model="searchTodoAt" range emit-immediately />
-                <q-card-actions align="right" class="text-primary">
-                    <q-btn flat label="취소" @click="closeSearchBox" />
-                    <q-btn flat label="검색" @click="searchTodoAtEvent" />
-                </q-card-actions>
-            </q-card>
-        </q-dialog>
+      <br />
+      <q-toggle
+        v-model="batchTodoDoneNToggle"
+        label="할일 일괄 취소 처리하기"
+      />
+    </div>
+    <q-page-sticky position="bottom-left" :offset="[600, 1250]">
+      <q-btn
+        style="margin-left: 30px"
+        v-if="batchDeleteToggle"
+        color="red"
+        icon-right="delete"
+        label="삭제 하기"
+        @click="deleteConfirmModalOpen"
+      />
+    </q-page-sticky>
+    <q-page-sticky position="bottom-left" :offset="[590, 1170]">
+      <q-btn
+        style="margin-left: 30px"
+        v-if="batchTodoDoneYToggle"
+        color="blue"
+        icon-right="send"
+        label="할일 완료 처리"
+        @click="batchUpdateTodoDoneYClickEvent"
+      />
+    </q-page-sticky>
+    <q-page-sticky position="bottom-left" :offset="[590, 1090]">
+      <q-btn
+        style="margin-left: 30px"
+        v-if="batchTodoDoneNToggle"
+        color="red"
+        icon-right="send"
+        label="할일 취소 처리"
+        @click="batchUpdateTodoDoneNClickEvent"
+      />
+    </q-page-sticky>
+    <div class="q-px-lg q-py-md bg-yellow-1 text-black">
+      <q-timeline color="teal-10">
+        <div v-for="date in Object.keys(sortedTodoMap)" :key="date">
+          <q-timeline-entry heading> {{ date }}</q-timeline-entry>
 
-        <q-dialog v-model="searchModal.titleSearchModal">
-            <q-card style="min-width: 350px">
-                <q-input
-                    v-if="searchGroup === 'todoTitleSearch'"
-                    outlined
-                    bottom-slots
-                    v-model="searchTodoTitle"
-                    label="제목검색"
-                    @keyup.enter.exact="searchTodoTitleEvent"
-                >
-                </q-input>
-
-                <q-card-actions align="right" class="text-primary">
-                    <q-btn flat label="취소" @click="closeSearchBox" />
-                    <q-btn flat label="검색" @click="searchTodoTitleEvent" />
-                </q-card-actions>
-            </q-card>
-        </q-dialog>
-        <br />
-        <div class="flex">
-            <q-toggle v-model="batchDeleteToggle" label="일괄 삭제 처리하기" />
-
-            <br />
-            <q-toggle
-                v-model="batchTodoDoneYToggle"
-                label="할일 일괄 완료 처리하기"
-            />
-
-            <br />
-            <q-toggle
-                v-model="batchTodoDoneNToggle"
-                label="할일 일괄 취소 처리하기"
-            />
-        </div>
-        <q-page-sticky position="bottom-left" :offset="[600, 1250]">
-            <q-btn
-                style="margin-left: 30px"
-                v-if="batchDeleteToggle"
-                color="red"
-                icon-right="delete"
-                label="삭제 하기"
-                @click="deleteConfirmModalOpen"
-            />
-        </q-page-sticky>
-        <q-page-sticky position="bottom-left" :offset="[590, 1170]">
-            <q-btn
-                style="margin-left: 30px"
-                v-if="batchTodoDoneYToggle"
-                color="blue"
-                icon-right="send"
-                label="할일 완료 처리"
-                @click="batchUpdateTodoDoneYClickEvent"
-            />
-        </q-page-sticky>
-        <q-page-sticky position="bottom-left" :offset="[590, 1090]">
-            <q-btn
-                style="margin-left: 30px"
-                v-if="batchTodoDoneNToggle"
-                color="red"
-                icon-right="send"
-                label="할일 취소 처리"
-                @click="batchUpdateTodoDoneNClickEvent"
-            />
-        </q-page-sticky>
-        <div class="q-px-lg q-py-md bg-yellow-1 text-black">
-            <q-timeline color="teal-10">
-                <div v-for="date in Object.keys(sortedTodoMap)" :key="date">
-                    <q-timeline-entry heading> {{ date }}</q-timeline-entry>
-
-                    <q-timeline-entry
-                        v-for="todo in sortedTodoMap[date]"
-                        :key="todo.todoId"
-                        :title="todo.todoTitle"
-                        :subtitle="todo.todoAt.substring(11, 16)"
-                        side="left"
-                        :icon="todo.todoDone === 'Y' ? 'done_all' : 'edit'"
-                        :color="todo.todoDone === 'Y' ? 'orange' : 'blue'"
-                        @click="editModalOpenEvent(todo)"
-                        :is-todo-done="store.editTodoDialogData.isTodoDone"
-                        @mouseover="onEntryHover(true, todo.todoId)"
-                        @mouseleave="onEntryHover(false, todo.todoId)"
-                        :class="{
+          <q-timeline-entry
+            v-for="todo in sortedTodoMap[date]"
+            :key="todo.todoId"
+            :title="todo.todoTitle"
+            :subtitle="todo.todoAt.substring(11, 16)"
+            side="left"
+            :icon="todo.todoDone === 'Y' ? 'done_all' : 'edit'"
+            :color="todo.todoDone === 'Y' ? 'orange' : 'blue'"
+            @click="editModalOpenEvent(todo)"
+            :is-todo-done="store.editTodoDialogData.isTodoDone"
+            @mouseover="onEntryHover(true, todo.todoId)"
+            @mouseleave="onEntryHover(false, todo.todoId)"
+            :class="{
                             'hovered-entry': isHoveredEntry === todo.todoId,
                         }"
-                        style="cursor: pointer"
-                    >
-                        <div>
-                            {{ todo.todoContent }}
-                        </div>
-                        <div>
-                            <q-checkbox
-                                v-if="batchDeleteToggle"
-                                v-model="batchDeleteTodoId"
-                                :val="todo.todoId"
-                                label="삭제"
-                                color="teal"
-                            />
-                            <q-checkbox
-                                v-if="
+            style="cursor: pointer"
+          >
+            <div>
+              {{ todo.todoContent }}
+            </div>
+            <div>
+              <q-checkbox
+                v-if="batchDeleteToggle"
+                v-model="batchDeleteTodoId"
+                :val="todo.todoId"
+                label="삭제"
+                color="teal"
+              />
+              <q-checkbox
+                v-if="
                                     batchTodoDoneYToggle &&
                                     todo.todoDone === 'N'
                                 "
-                                v-model="batchUpdateDoneYTodoId"
-                                :val="todo.todoId"
-                                label="할일 완료"
-                                color="orange"
-                            />
-                            <q-checkbox
-                                v-if="
+                v-model="batchUpdateDoneYTodoId"
+                :val="todo.todoId"
+                label="할일 완료"
+                color="orange"
+              />
+              <q-checkbox
+                v-if="
                                     batchTodoDoneNToggle &&
                                     todo.todoDone === 'Y'
                                 "
-                                v-model="batchUpdateDoneNTodoId"
-                                :val="todo.todoId"
-                                label="할일 취소"
-                                color="red"
-                            />
-                            <!--          {{batchDeleteCheckbox}}-->
-                        </div>
-                        <hr />
-                        <hr />
-                    </q-timeline-entry>
-                </div>
-            </q-timeline>
+                v-model="batchUpdateDoneNTodoId"
+                :val="todo.todoId"
+                label="할일 취소"
+                color="red"
+              />
+              <!--          {{batchDeleteCheckbox}}-->
+            </div>
+            <hr />
+            <hr />
+          </q-timeline-entry>
         </div>
+      </q-timeline>
     </div>
+  </div>
 </template>
 
 <script setup>
@@ -239,31 +239,31 @@ const searchGroup = ref("todoAllSearch"); // 검색 그룹 상태 변수, 기본
 const searchOptions = [ // 검색 옵션들 배열
   {
     label: "모두",
-    value: "todoAllSearch",
+    value: "todoAllSearch"
   },
   {
     label: "제목으로 검색",
-    value: "todoTitleSearch",
+    value: "todoTitleSearch"
   },
   {
     label: "날짜로 검색",
-    value: "todoAtSearch",
-  },
+    value: "todoAtSearch"
+  }
 ];
 const searchCondition = { // 검색 조건 객체
   todoTitle: undefined, // Todo 제목 검색어
   fromTodoAt: undefined, // Todo의 시작 날짜 범위
-  toTodoAt: undefined, // Todo의 종료 날짜 범위
+  toTodoAt: undefined // Todo의 종료 날짜 범위
 };
 const searchTodoTitle = ref(""); // Todo 제목 검색어 상태 변수
 const searchModal = ref({ // 검색 모달 상태 변수
   dateModal: false, // 날짜 검색 모달 표시 여부
-  titleSearchModal: false, // 제목 검색 모달 표시 여부
+  titleSearchModal: false // 제목 검색 모달 표시 여부
 });
 const dateFormat = "YYYY/MM/DD"; // 날짜 형식
 const searchTodoAt = ref({ // Todo 날짜 검색 범위 상태 변수
   from: dayjs().format(dateFormat), // 시작 날짜
-  to: dayjs().add(1, "d").format(dateFormat), // 종료 날짜 (하루 뒤)
+  to: dayjs().add(1, "d").format(dateFormat) // 종료 날짜 (하루 뒤)
 });
 
 // 데이터 로드 및 상태 관리를 위한 변수들 초기화
@@ -422,28 +422,30 @@ const reOpenTodoAtModal = () => {
 // Todo 제목 검색 이벤트 처리 함수
 const searchTodoTitleEvent = async () => {
   searchModal.value.titleSearchModal = false;
-  todoMap.value = {};
-  page = 1;
-  batchTodoDoneNToggle.value = false;
-  batchUpdateDoneNTodoId.value = [];
+  initTodoMapAndPageAndToggleData();
+  await loadPage("N", isGetBeforeDataStatus.value, searchGroup.value);
+};
+// Todo 날짜 검색 이벤트 처리 함수
+const searchTodoAtEvent = async () => {
+  searchModal.value.dateModal = false;
+  initTodoMapAndPageAndToggleData();
   await loadPage("N", isGetBeforeDataStatus.value, searchGroup.value);
 };
 
+// 검색 이벤트 시에 기존의 데이터를 초기화 해주는 함수
+const initTodoMapAndPageAndToggleData = () => {
+  todoMap.value = {};
+  page = 1;
+  batchTodoDoneNToggle.value = false;
+  batchUpdateDoneYTodoId.value = [];
+  batchUpdateDoneNTodoId.value = [];
+};
 // 삭제 확인 모달 열기 함수
+
 const deleteConfirmModalOpen = () => {
   deleteConfirmModal.value = true;
 };
 
-// Todo 날짜 검색 이벤트 처리 함수
-const searchTodoAtEvent = async () => {
-  searchModal.value.dateModal = false;
-  todoMap.value = {};
-  page = 1;
-  batchTodoDoneNToggle.value = false;
-  batchUpdateDoneNTodoId.value = [];
-  console.log("들어오냐?");
-  await loadPage("N", isGetBeforeDataStatus.value, searchGroup.value);
-};
 
 // 삭제 확인 모달 닫기 함수
 const deleteConfirmModalClose = () => {
@@ -546,6 +548,6 @@ watch(
 
 <style scoped>
 .hovered-entry {
-    background-color: rgba(255, 255, 160, 0.49);
+  background-color: rgba(255, 255, 160, 0.49);
 }
 </style>
