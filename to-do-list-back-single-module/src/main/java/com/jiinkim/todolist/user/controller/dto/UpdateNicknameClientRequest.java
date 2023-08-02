@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UpdateNicknameClientRequest {
 
-    @NotNull
-    private String nickname;
+        @NotNull
+        private String nickname;
+
 }

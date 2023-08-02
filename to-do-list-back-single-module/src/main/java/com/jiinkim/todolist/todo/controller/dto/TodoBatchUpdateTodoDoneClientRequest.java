@@ -12,5 +12,6 @@ import java.util.List;
 
 public class TodoBatchUpdateTodoDoneClientRequest {
 
-    private List<Integer> updatedTodoIdList;
+        private List<Integer> updatedTodoIdList;
+
 }

@@ -10,11 +10,13 @@ import org.springframework.validation.annotation.Validated;
 @AllArgsConstructor
 public class RegisterClientRequest {
 
-    @NotBlank
-    private String username;
-    @NotBlank
-    private String password;
-    @NotBlank
-    private String nickname;
+        @NotBlank
+        private String username;
+
+        @NotBlank
+        private String password;
+
+        @NotBlank
+        private String nickname;
 
 }

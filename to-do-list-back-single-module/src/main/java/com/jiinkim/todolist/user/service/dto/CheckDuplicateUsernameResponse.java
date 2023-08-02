@@ -8,11 +8,12 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class CheckDuplicateUsernameResponse {
 
-    private final boolean duplicateCheckResult;
+        private final boolean duplicateCheckResult;
 
-    public static CheckDuplicateUsernameResponse create(final int count) {
-        return new CheckDuplicateUsernameResponse(count == 1);
-    }
+        public static CheckDuplicateUsernameResponse create(final int count) {
+
+                return new CheckDuplicateUsernameResponse(count == 1);
+        }
 
 }
 

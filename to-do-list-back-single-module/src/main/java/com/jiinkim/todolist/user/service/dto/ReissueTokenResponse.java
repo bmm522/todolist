@@ -12,11 +12,14 @@ import lombok.NoArgsConstructor;
 public class ReissueTokenResponse {
 
 
-    private final String accessToken;
-    private final String refreshToken;
+        private final String accessToken;
 
-    public static ReissueTokenResponse create(final String accessToken, final String refreshToken) {
-        return new ReissueTokenResponse(accessToken, refreshToken);
-    }
+        private final String refreshToken;
+
+        public static ReissueTokenResponse create(final String accessToken,
+            final String refreshToken) {
+
+                return new ReissueTokenResponse(accessToken, refreshToken);
+        }
 
 }

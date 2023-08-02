@@ -10,12 +10,15 @@ import java.util.Optional;
 
 public interface UserQueryDao {
 
-    int checkDuplicateByUsername(final String username);
+        int checkDuplicateByUsername(final String username);
 
-    Optional<UserQueryDto> findUserByUsername(@Param("username") String username, @Param("status") Status status);
+        Optional<UserQueryDto> findUserByUsername(@Param("username") String username,
+            @Param("status") Status status);
 
-    String findNicknameByUserId(@Param("userId") Long userId, @Param("status") Status status);
+        String findNicknameByUserId(@Param("userId") Long userId, @Param("status") Status status);
 
 
-    Optional<UserQueryDto> findUserByUserId(@Param("userId") Long userId, @Param("status") Status status);
+        Optional<UserQueryDto> findUserByUserId(@Param("userId") Long userId,
+            @Param("status") Status status);
+
 }

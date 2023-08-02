@@ -14,12 +14,13 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class TodoInsertClientRequest {
 
-    @NotNull
-    private String todoTitle;
+        @NotNull
+        private String todoTitle;
 
-    private String todoContent;
-    @NotNull
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
-    private LocalDateTime todoAt;
+        private String todoContent;
+
+        @NotNull
+        @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+        private LocalDateTime todoAt;
 
 }

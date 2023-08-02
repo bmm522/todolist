@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.jiinkim.todolist.todo.dao.TodoDao">
     <resultMap type="todoModel" id="todoResultMap">
         <id column="todo_id" property="todoId"/>
@@ -14,9 +14,11 @@
     </resultMap>
 
     <insert id="insert" useGeneratedKeys="true" parameterType="todoModel">
-        INSERT INTO TODO(todo_id, todo_title, todo_content, todo_done, todo_at, user_id, status,
+        INSERT INTO TODO(todo_id, todo_title, todo_content, todo_done, todo_at, user_id,
+                         status,
                          created_at, updated_at)
-        VALUES (todo_seq.nextval, #{todoTitle}, #{todoContent}, #{todoDone}, #{todoAt}, #{userId},
+        VALUES (todo_seq.nextval, #{todoTitle}, #{todoContent}, #{todoDone}, #{todoAt},
+                #{userId},
                 #{status}, #{createdAt}, #{updatedAt})
     </insert>
 

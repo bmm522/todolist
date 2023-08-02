@@ -8,9 +8,11 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class UpdateNicknameResponse {
 
-    private final String updatedNickname;
+        private final String updatedNickname;
 
-    public static UpdateNicknameResponse create(final String updatedNickname) {
-        return new UpdateNicknameResponse(updatedNickname);
-    }
+        public static UpdateNicknameResponse create(final String updatedNickname) {
+
+                return new UpdateNicknameResponse(updatedNickname);
+        }
+
 }

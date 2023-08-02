@@ -17,51 +17,70 @@ import java.time.LocalDateTime;
 public class User {
 
 
-    private Long userId;
-    private String username;
-    private String password;
-    private String nickname;
-    private String refreshToken;
-    private Status status;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+        private Long userId;
+
+        private String username;
+
+        private String password;
+
+        private String nickname;
+
+        private String refreshToken;
+
+        private Status status;
+
+        private LocalDateTime createdAt;
+
+        private LocalDateTime updatedAt;
 
 
-    private User(final String username, final String password, final String nickname, final LocalDateTime createdAt, final LocalDateTime updatedAt) {
-        this.username = username;
-        this.password = password;
-        this.nickname = nickname;
-        this.status = Status.Y;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-    }
+        private User(final String username, final String password, final String nickname,
+            final LocalDateTime createdAt, final LocalDateTime updatedAt) {
+
+                this.username = username;
+                this.password = password;
+                this.nickname = nickname;
+                this.status = Status.Y;
+                this.createdAt = createdAt;
+                this.updatedAt = updatedAt;
+        }
 
 
-    public static User create(final Long userId, final String username, final String password, final String nickname, final String refreshToken, final Status status, final LocalDateTime createdAt, final LocalDateTime updatedAt) {
-        return new User(userId, username, password, nickname, refreshToken, status, createdAt, updatedAt);
-    }
+        public static User create(final Long userId, final String username, final String password,
+            final String nickname, final String refreshToken, final Status status,
+            final LocalDateTime createdAt, final LocalDateTime updatedAt) {
+
+                return new User(userId, username, password, nickname, refreshToken, status,
+                    createdAt, updatedAt);
+        }
 
 
-    public static User createWhenRegister(final String username, final String password, final String nickname) {
-        LocalDateTime now = TimeUtils.getNow();
-        return new User(username, password, nickname, now, now);
-    }
+        public static User createWhenRegister(final String username, final String password,
+            final String nickname) {
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
+                LocalDateTime now = TimeUtils.getNow();
+                return new User(username, password, nickname, now, now);
+        }
 
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
+        public void setCreatedAt(LocalDateTime createdAt) {
 
-    public void setRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
-    }
+                this.createdAt = createdAt;
+        }
 
-    public void updateNickname(final String nickname) {
-        this.nickname = nickname;
-    }
+        public void setUpdatedAt(LocalDateTime updatedAt) {
+
+                this.updatedAt = updatedAt;
+        }
+
+        public void setRefreshToken(String refreshToken) {
+
+                this.refreshToken = refreshToken;
+        }
+
+        public void updateNickname(final String nickname) {
+
+                this.nickname = nickname;
+        }
 
 
 }

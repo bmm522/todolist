@@ -13,22 +13,19 @@ import org.springframework.stereotype.Component;
 @Setter
 public class JwtProperties {
 
-  public String secret;
+        public String secret;
 
-  public String tokenPrefix;
-
-
-  public String refreshPrefix;
+        public String tokenPrefix;
 
 
-  public String headerJwt;
-
-  public String headerRefresh;
-
-  public String iss;
+        public String refreshPrefix;
 
 
+        public String headerJwt;
 
+        public String headerRefresh;
+
+        public String iss;
 
 
 }

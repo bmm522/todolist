@@ -35,67 +35,78 @@ import java.util.List;
 public class SecurityConfig {
 
 
-    private final UserDao userDao;
+        private final UserDao userDao;
 
-    private final ObjectMapper objectMapper;
-
-
-    private static final String allowedOriginUrl = "http://localhost:9000";
+        private final ObjectMapper objectMapper;
 
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(request -> request.anyRequest().permitAll())
-                .formLogin(AbstractHttpConfigurer::disable)
-                .logout(logout -> logout.logoutUrl("/user/logout"))
-                .httpBasic(AbstractHttpConfigurer::disable)
-                .cors(Customizer.withDefaults())
-                .apply(new MyCustomSecurity());
-
-        return http.build();
-    }
-
-    @Bean
-    CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of(allowedOriginUrl));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST"));
-        configuration.setAllowedHeaders(Collections.singletonList("*"));
-        configuration.addExposedHeader("AccessToken");
-        configuration.addExposedHeader("RefreshToken");
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
-
-    @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder(4);
-    }
+        private static final String allowedOriginUrl = "http://localhost:9000";
 
 
-    public class MyCustomSecurity extends AbstractHttpConfigurer<MyCustomSecurity, HttpSecurity> {
+        @Bean
+        public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        @Override
-        public void configure(HttpSecurity http) throws Exception {
-            AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
-            http
-                    .addFilter(new JwtAuthenticationFilter(authenticationManager, objectMapper))
-                    .addFilter(new LoginAuthenticationFilter(authenticationManager, userDao, objectMapper));
+                http.csrf(AbstractHttpConfigurer::disable)
+                    .sessionManagement(
+                        session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                    .authorizeHttpRequests(request -> request.anyRequest().permitAll())
+                    .formLogin(AbstractHttpConfigurer::disable)
+                    .logout(logout -> logout.logoutUrl("/user/logout"))
+                    .httpBasic(AbstractHttpConfigurer::disable)
+                    .cors(Customizer.withDefaults())
+                    .apply(new MyCustomSecurity());
+
+                return http.build();
         }
-    }
 
-    @Bean
-    @ConfigurationProperties(prefix = "jwt")
-    public JwtProperties jwtProperties() {
-        return new JwtProperties();
-    }
+        @Bean
+        CorsConfigurationSource corsConfigurationSource() {
 
-    @Bean
-    public void settingJwtProvider() {
-        JwtProvider.setJwtProperties(jwtProperties());
-    }
+                CorsConfiguration configuration = new CorsConfiguration();
+                configuration.setAllowedOrigins(List.of(allowedOriginUrl));
+                configuration.setAllowedMethods(Arrays.asList("GET", "POST"));
+                configuration.setAllowedHeaders(Collections.singletonList("*"));
+                configuration.addExposedHeader("AccessToken");
+                configuration.addExposedHeader("RefreshToken");
+                UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+                source.registerCorsConfiguration("/**", configuration);
+                return source;
+        }
+
+        @Bean
+        public BCryptPasswordEncoder bCryptPasswordEncoder() {
+
+                return new BCryptPasswordEncoder(4);
+        }
+
+
+        public class MyCustomSecurity extends AbstractHttpConfigurer<MyCustomSecurity, HttpSecurity> {
+
+                @Override
+                public void configure(HttpSecurity http) throws Exception {
+
+                        AuthenticationManager authenticationManager = http.getSharedObject(
+                            AuthenticationManager.class);
+                        http
+                            .addFilter(
+                                new JwtAuthenticationFilter(authenticationManager, objectMapper))
+                            .addFilter(new LoginAuthenticationFilter(authenticationManager, userDao,
+                                objectMapper));
+                }
+
+        }
+
+        @Bean
+        @ConfigurationProperties(prefix = "jwt")
+        public JwtProperties jwtProperties() {
+
+                return new JwtProperties();
+        }
+
+        @Bean
+        public void settingJwtProvider() {
+
+                JwtProvider.setJwtProperties(jwtProperties());
+        }
 
 }

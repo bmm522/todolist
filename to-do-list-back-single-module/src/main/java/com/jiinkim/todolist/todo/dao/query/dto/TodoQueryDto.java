@@ -16,22 +16,32 @@ import java.time.LocalDateTime;
 @Alias("todoQueryDto")
 public class TodoQueryDto {
 
-    private Long todoId;
-    private String todoTitle;
-    private String todoContent;
-    private Status todoDone;
-    private LocalDateTime todoAt;
-    private Long userId;
-    private Status status;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+        private Long todoId;
 
-    public boolean isPermission(final Long userId) {
-        return this.userId.equals(userId);
-    }
+        private String todoTitle;
 
-    public LocalDate getTodoDate() {
-        return this.todoAt.toLocalDate();
-    }
+        private String todoContent;
+
+        private Status todoDone;
+
+        private LocalDateTime todoAt;
+
+        private Long userId;
+
+        private Status status;
+
+        private LocalDateTime createdAt;
+
+        private LocalDateTime updatedAt;
+
+        public boolean isPermission(final Long userId) {
+
+                return this.userId.equals(userId);
+        }
+
+        public LocalDate getTodoDate() {
+
+                return this.todoAt.toLocalDate();
+        }
 
 }

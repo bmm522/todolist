@@ -12,18 +12,19 @@ import org.springframework.format.annotation.DateTimeFormat;
 @AllArgsConstructor
 public class TodoUpdateClientRequest {
 
-    @NotNull
-    private Long todoId;
+        @NotNull
+        private Long todoId;
 
-    @NotNull
-    private String todoTitle;
+        @NotNull
+        private String todoTitle;
 
-    private String todoContent;
+        private String todoContent;
 
-    @NotNull
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
-    private LocalDateTime todoAt;
+        @NotNull
+        @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+        private LocalDateTime todoAt;
 
-    @NotNull
-    private Status todoDone;
+        @NotNull
+        private Status todoDone;
+
 }

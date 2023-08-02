@@ -11,15 +11,17 @@ import java.util.List;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class TodoBatchUpdateTodoDoneRequest {
 
-    private final List<Integer> updatedTodoIdList;
+        private final List<Integer> updatedTodoIdList;
 
-    private final Status isDone;
+        private final Status isDone;
 
-    private final Long userId;
+        private final Long userId;
 
-    public static TodoBatchUpdateTodoDoneRequest create(final List<Integer> updatedTodoIdList, final Status isDone, final Long userId) {
-        return new TodoBatchUpdateTodoDoneRequest(updatedTodoIdList, isDone, userId);
-    }
+        public static TodoBatchUpdateTodoDoneRequest create(final List<Integer> updatedTodoIdList,
+            final Status isDone, final Long userId) {
+
+                return new TodoBatchUpdateTodoDoneRequest(updatedTodoIdList, isDone, userId);
+        }
 
 
 }

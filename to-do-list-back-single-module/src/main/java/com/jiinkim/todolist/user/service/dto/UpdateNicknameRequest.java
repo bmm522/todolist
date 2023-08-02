@@ -8,10 +8,13 @@ import lombok.Getter;
 @Getter
 public class UpdateNicknameRequest {
 
-    private final String nickname;
-    private final Long userId;
+        private final String nickname;
 
-    public static UpdateNicknameRequest create(final String nickname, final Long userId) {
-        return new UpdateNicknameRequest(nickname, userId);
-    }
+        private final Long userId;
+
+        public static UpdateNicknameRequest create(final String nickname, final Long userId) {
+
+                return new UpdateNicknameRequest(nickname, userId);
+        }
+
 }

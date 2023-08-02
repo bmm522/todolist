@@ -9,17 +9,23 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class RegisterRequest {
 
-  private final String username;
-  private String password;
-  private final String nickname;
+        private final String username;
 
-  public static RegisterRequest create(final String username, final String password, final String nickname) {
-    return new RegisterRequest(username, password, nickname);
-  }
+        private String password;
 
-  public User toModel(final String encodedPassword, final String refreshToken) {
-    User user = User.createWhenRegister(username, encodedPassword, nickname);
-    user.setRefreshToken(refreshToken);
-    return user;
-  }
+        private final String nickname;
+
+        public static RegisterRequest create(final String username, final String password,
+            final String nickname) {
+
+                return new RegisterRequest(username, password, nickname);
+        }
+
+        public User toModel(final String encodedPassword, final String refreshToken) {
+
+                User user = User.createWhenRegister(username, encodedPassword, nickname);
+                user.setRefreshToken(refreshToken);
+                return user;
+        }
+
 }

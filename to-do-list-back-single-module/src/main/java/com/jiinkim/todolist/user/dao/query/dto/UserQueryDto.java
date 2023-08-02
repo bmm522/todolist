@@ -14,18 +14,26 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class UserQueryDto {
 
-    private Long userId;
-    private String username;
-    private String password;
-    private String nickname;
-    private String refreshToken;
-    private Status status;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+        private Long userId;
+
+        private String username;
+
+        private String password;
+
+        private String nickname;
+
+        private String refreshToken;
+
+        private Status status;
+
+        private LocalDateTime createdAt;
+
+        private LocalDateTime updatedAt;
 
 
-    public boolean isPermission(final Long userId) {
-        return this.userId.equals(userId);
-    }
+        public boolean isPermission(final Long userId) {
+
+                return this.userId.equals(userId);
+        }
 
 }

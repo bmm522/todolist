@@ -12,19 +12,28 @@ import java.util.Optional;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class TodoGetSearchCondition {
 
-    private final int page;
-    private final Status isUpdate;
-    private final Status isGetBeforeDataStatus;
-    private final String todoTitle;
-    private final String fromTodoAt;
-    private final String toTodoAt;
+        private final int page;
 
-    public static TodoGetSearchCondition create(int page, Status isUpdate, Status isGetBeforeDataStatus, Optional<String> todoTitleOp, Optional<String> fromTodoAtOp, Optional<String> toTodoAtOp) {
-        String todoTitle = todoTitleOp.orElse(null);
-        String fromTodoAt = fromTodoAtOp.orElse(null);
-        String toTodoAt = toTodoAtOp.orElse(null);
-        return new TodoGetSearchCondition(page, isUpdate, isGetBeforeDataStatus, todoTitle, fromTodoAt, toTodoAt);
+        private final Status isUpdate;
 
-    }
+        private final Status isGetBeforeDataStatus;
+
+        private final String todoTitle;
+
+        private final String fromTodoAt;
+
+        private final String toTodoAt;
+
+        public static TodoGetSearchCondition create(int page, Status isUpdate,
+            Status isGetBeforeDataStatus, Optional<String> todoTitleOp,
+            Optional<String> fromTodoAtOp, Optional<String> toTodoAtOp) {
+
+                String todoTitle = todoTitleOp.orElse(null);
+                String fromTodoAt = fromTodoAtOp.orElse(null);
+                String toTodoAt = toTodoAtOp.orElse(null);
+                return new TodoGetSearchCondition(page, isUpdate, isGetBeforeDataStatus, todoTitle,
+                    fromTodoAt, toTodoAt);
+
+        }
 
 }

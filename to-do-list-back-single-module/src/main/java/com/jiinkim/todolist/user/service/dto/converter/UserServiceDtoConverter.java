@@ -11,12 +11,17 @@ import org.springframework.stereotype.Component;
 public class UserServiceDtoConverter {
 
 
-    public RegisterRequest from(final RegisterClientRequest request) {
-        return RegisterRequest.create(request.getUsername(), request.getPassword(), request.getNickname());
-    }
+        public RegisterRequest from(final RegisterClientRequest request) {
+
+                return RegisterRequest.create(request.getUsername(), request.getPassword(),
+                    request.getNickname());
+        }
 
 
-    public static UpdateNicknameRequest of(final UpdateNicknameClientRequest request, final Long userId) {
-        return UpdateNicknameRequest.create(request.getNickname(), userId);
-    }
+        public static UpdateNicknameRequest of(final UpdateNicknameClientRequest request,
+            final Long userId) {
+
+                return UpdateNicknameRequest.create(request.getNickname(), userId);
+        }
+
 }

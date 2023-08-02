@@ -17,11 +17,12 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class TodoGetResponse {
 
-  Map<LocalDate, List<TodoQueryDto>> timeBucketTodoMap;
+        Map<LocalDate, List<TodoQueryDto>> timeBucketTodoMap;
 
 
-  public static TodoGetResponse create(Map<LocalDate, List<TodoQueryDto>> timeBucketTodoMap) {
-    return new TodoGetResponse(timeBucketTodoMap);
-  }
+        public static TodoGetResponse create(Map<LocalDate, List<TodoQueryDto>> timeBucketTodoMap) {
+
+                return new TodoGetResponse(timeBucketTodoMap);
+        }
 
 }

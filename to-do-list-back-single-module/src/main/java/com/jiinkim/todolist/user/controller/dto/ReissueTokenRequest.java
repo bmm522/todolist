@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ReissueTokenRequest {
 
-  @NotNull
-  private String refreshToken;
+        @NotNull
+        private String refreshToken;
 
 }

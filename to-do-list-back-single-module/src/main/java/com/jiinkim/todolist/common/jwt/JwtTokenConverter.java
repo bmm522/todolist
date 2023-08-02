@@ -7,11 +7,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class JwtTokenConverter {
 
-    protected JwtToken of(final String accessToken, final String refreshToken) {
-        return JwtToken.create(accessToken, refreshToken);
-    }
+        protected JwtToken of(final String accessToken, final String refreshToken) {
 
-  protected JwtToken from(final String accessToken) {
-      return JwtToken.createAccessToken(accessToken);
-  }
+                return JwtToken.create(accessToken, refreshToken);
+        }
+
+        protected JwtToken from(final String accessToken) {
+
+                return JwtToken.createAccessToken(accessToken);
+        }
+
 }

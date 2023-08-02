@@ -13,9 +13,10 @@ public interface TodoQueryDao {
 
 //    List<TodoQueryDto> findTodoListWithPaging(final Long offset, final Long userId);
 
-    List<TodoQueryDto> findAllBySearchCondition(TodoListGetParams params);
+        List<TodoQueryDto> findAllBySearchCondition(TodoListGetParams params);
 
-    Optional<TodoQueryDto> findByTodoId(Long param1, Status param2);
+        Optional<TodoQueryDto> findByTodoId(Long param1, Status param2);
 
-    List<TodoQueryDto> findAllByTodoIdAndUserId(@Param("todoIdList") List<Integer> todoIdList);
+        List<TodoQueryDto> findAllByTodoIdAndUserId(@Param("todoIdList") List<Integer> todoIdList);
+
 }

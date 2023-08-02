@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.jiinkim.todolist.user.dao.UserDao">
     <resultMap type="userModel" id="userResultMap">
         <id column="user_id" property="userId"/>
@@ -13,9 +14,12 @@
     </resultMap>
 
 
-    <insert id="register" useGeneratedKeys="true" parameterType="com.jiinkim.todolist.user.dao.model.User">
-        INSERT INTO USERS(user_id, username, password, nickname, refresh_token, status, created_at, updated_at)
-        VALUES (user_seq.nextval, #{username}, #{password}, #{nickname}, #{refreshToken}, #{status}, #{createdAt},
+    <insert id="register" useGeneratedKeys="true"
+        parameterType="com.jiinkim.todolist.user.dao.model.User">
+        INSERT INTO USERS(user_id, username, password, nickname, refresh_token, status,
+                          created_at, updated_at)
+        VALUES (user_seq.nextval, #{username}, #{password}, #{nickname}, #{refreshToken},
+                #{status}, #{createdAt},
                 #{updatedAt})
     </insert>
 

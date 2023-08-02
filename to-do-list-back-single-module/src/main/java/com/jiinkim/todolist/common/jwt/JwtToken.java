@@ -19,22 +19,26 @@ import org.springframework.util.StringUtils;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class JwtToken {
 
-  private String accessToken;
-  private String refreshToken;
+        private String accessToken;
+
+        private String refreshToken;
 
 
-  public JwtToken(final String accessToken) {
-    this.accessToken = accessToken;
+        public JwtToken(final String accessToken) {
 
-  }
+                this.accessToken = accessToken;
 
-  public static JwtToken createAccessToken(final String accessToken) {
-    return new JwtToken(accessToken);
-  }
+        }
 
-  public static JwtToken create(final String accessToken, final String refreshToken) {
-    return new JwtToken(accessToken, refreshToken);
-  }
+        public static JwtToken createAccessToken(final String accessToken) {
+
+                return new JwtToken(accessToken);
+        }
+
+        public static JwtToken create(final String accessToken, final String refreshToken) {
+
+                return new JwtToken(accessToken, refreshToken);
+        }
 
 
 }

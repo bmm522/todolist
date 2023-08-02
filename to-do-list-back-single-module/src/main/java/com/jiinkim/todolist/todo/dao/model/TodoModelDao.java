@@ -9,13 +9,17 @@ import org.apache.ibatis.annotations.Param;
 
 public interface TodoModelDao {
 
-    int insert(Todo todo);
+        int insert(Todo todo);
 
-    int updateTodoDone(@Param("todoId") Long todoId, @Param("todoDone") Status todoDone);
+        int updateTodoDone(@Param("todoId") Long todoId, @Param("todoDone") Status todoDone);
 
-    int updateTodo(Todo todo);
+        int updateTodo(Todo todo);
 
-    int batchDeleteTodoListByTodoId(@Param("deletedTodoIdList") List<Integer> deletedTodoIdList);
+        int batchDeleteTodoListByTodoId(
+            @Param("deletedTodoIdList") List<Integer> deletedTodoIdList);
 
-    int batchUpdateTodoDoneByTodoIdAndIsDone(@Param("updatedTodoIdList") List<Integer> updatedTodoIdList, @Param("done") Status isDone);
+        int batchUpdateTodoDoneByTodoIdAndIsDone(
+            @Param("updatedTodoIdList") List<Integer> updatedTodoIdList,
+            @Param("done") Status isDone);
+
 }

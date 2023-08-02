@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.jiinkim.todolist.todo.dao.TodoDao">
     <resultMap type="todoQueryDto" id="todoQueryMap">
         <id column="todo_id" property="todoId"/>
@@ -13,9 +14,11 @@
         <result column="updated_at" property="updatedAt"/>
     </resultMap>
 
-    <select id="findAllBySearchCondition" parameterType="todoListGetParams" resultMap="todoQueryMap">
+    <select id="findAllBySearchCondition" parameterType="todoListGetParams"
+        resultMap="todoQueryMap">
         SELECT
-        todo_id, todo_title, todo_content, todo_at, todo_done, user_id, created_at, updated_at, status
+        todo_id, todo_title, todo_content, todo_at, todo_done, user_id, created_at,
+        updated_at, status
         FROM
         todo
         <where>
@@ -28,7 +31,8 @@
                 AND todo_title like #{todoTitle} || '%'
             </if>
             <if test="fromTodoAt != null">
-                AND todo_at BETWEEN TO_DATE(#{fromTodoAt},'YYYY-MM-DD') AND TO_DATE(#{toTodoAt},'YYYY-MM-DD') +1
+                AND todo_at BETWEEN TO_DATE(#{fromTodoAt},'YYYY-MM-DD') AND
+                TO_DATE(#{toTodoAt},'YYYY-MM-DD') +1
             </if>
         </where>
         order by todo_at
