@@ -139,6 +139,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
          * @throws UserUpdateFailedException        사용자 닉네임 업데이트 과정에서 에러가 발생한 경우
          */
         @Override
+        @Transactional
         public UpdateNicknameResponse updateNickname(UpdateNicknameRequest request) {
 
                 UserQueryDto userQueryDto = userDao.findUserByUserId(request.getUserId(), Status.Y)

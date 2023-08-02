@@ -21,7 +21,7 @@ public interface UserService {
          * @param toRegisterRequest 등록할 사용자 정보를 담은 RegisterRequest 객체
          * @return Integer 등록된 사용자의 아이디
          */
-        Integer register(final RegisterRequest toRegisterRequest);
+        Integer register(RegisterRequest toRegisterRequest);
 
         /**
          * 사용자의 아이디로 닉네임을 조회합니다.

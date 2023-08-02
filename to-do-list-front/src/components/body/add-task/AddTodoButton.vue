@@ -18,6 +18,7 @@ import { useStore } from "stores/store";
 const addTaskModal = ref(false);
 const store = useStore;
 const emits = defineEmits(["submitData"]);
+
 const onSubmit = () => {
     emits("submitData");
 };

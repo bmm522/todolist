@@ -1,5 +1,5 @@
 <template>
-  <q-dialog v-model="modalStore.data.timeSelectModal" persistent>
+  <q-dialog v-model="store.dialogModal.data.timeSelectModal" persistent>
     <q-card
       style="min-width: 200px">
       <q-card-section>
@@ -10,8 +10,8 @@
         format24h
       />
       <q-card-actions align="right" class="text-primary">
-        <q-btn flat label="취소" @click="modalStore.closeTimeSelectModal()"/>
-        <q-btn flat label="확인" @click="timeSelectEvent"/>
+        <q-btn flat label="취소" @click="store.dialogModal.closeTimeSelectModal()" />
+        <q-btn flat label="확인" @click="timeSelectEvent" />
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -19,32 +19,24 @@
 </template>
 
 <script setup>
-import {onMounted, ref, watch} from "vue";
+import { onMounted, ref, watch } from "vue";
 import dayjs from "dayjs";
-import {useDateTimeDialogDataStore} from "stores/date_time_dialog_data";
-import {useDialogModalStore} from "stores/dialog_modal";
+import { useDateTimeDialogDataStore } from "stores/date_time_dialog_data";
+import { useDialogModalStore } from "stores/dialog_modal";
+import { useStore } from "stores/store";
 
 // 초기값 세팅
 
-const emits = defineEmits(['select']);
-
-
-
+const emits = defineEmits(["select"]);
 
 const dateTimeStore = useDateTimeDialogDataStore();
-const modalStore = useDialogModalStore();
-
-const dateTimeStoreData = dateTimeStore.data;
-
+const store = useStore;
+const dateTimeStoreData = store.dateTimeDialogData.data;
 
 const timeSelectEvent = () => {
-  emits('select');
-  modalStore.closeTimeSelectModal();
-}
-
-// onMounted(() => {
-//   dateTimeStoreData.time = dateTimeStore.formatTime(dayjs());
-// })
+  emits("select");
+  store.dialogModal.closeTimeSelectModal();
+};
 
 
 </script>

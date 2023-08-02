@@ -125,8 +125,6 @@ const insertTodoEvent = async () => {
     }
 };
 
-onBeforeUnmount(() => {});
-
 const hasTitle = computed(() => {
     return addTodoDialogStoreData.todoTitle.length !== 0;
 });

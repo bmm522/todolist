@@ -41,7 +41,7 @@ public class TodoServiceImpl implements TodoService {
          */
         @Transactional
         @Override
-        public Integer insertTodo(final TodoInsertRequest request) {
+        public Integer insertTodo(TodoInsertRequest request) {
 
                 Todo todo = TodoModelConverter.from(request);
                 int result = todoDao.insert(todo);
@@ -81,7 +81,7 @@ public class TodoServiceImpl implements TodoService {
          */
         @Transactional
         @Override
-        public Integer updateTodo(final TodoUpdateRequest request) {
+        public Integer updateTodo(TodoUpdateRequest request) {
 
                 TodoQueryDto todoQueryDto = todoDao.findByTodoId(request.getTodoId(), Status.Y)
                     .orElseThrow(() -> new TodoNotFoundQueryResultException(
@@ -126,6 +126,7 @@ public class TodoServiceImpl implements TodoService {
          * @return Integer 업데이트된 할일의 개수
          * @throws PermissionException Todo 업데이트 권한이 없는 경우 발생합니다.
          */
+        @Transactional
         @Override
         public Integer batchUpdateTodoDone(TodoBatchUpdateTodoDoneRequest request) {
 
@@ -139,14 +140,14 @@ public class TodoServiceImpl implements TodoService {
 
         }
 
-        private void checkPermission(TodoQueryDto todoQueryDto, final Long userIdFromRequest) {
+        private void checkPermission(final TodoQueryDto todoQueryDto, final Long userIdFromRequest) {
 
                 if (!todoQueryDto.isPermission(userIdFromRequest)) {
                         throw new PermissionException("todo를 변경할 권한이 없습니다.");
                 }
         }
 
-        private void checkPermission(List<TodoQueryDto> todoQueryDtoList,
+        private void checkPermission(final List<TodoQueryDto> todoQueryDtoList,
             final Long userIdFromRequest) {
 
                 todoQueryDtoList.stream()

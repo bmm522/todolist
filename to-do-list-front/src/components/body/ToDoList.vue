@@ -218,289 +218,329 @@ import { useStore } from "stores/store";
 import dayjs from "dayjs";
 import CommonNotify from "src/common/CommonNotify";
 
+// Store 및 props 변수 초기화
 const store = useStore;
-const props = defineProps(["updateData"]);
-const deleteConfirmModal = ref(false);
-const batchTodoDoneYToggle = ref(false);
-const batchTodoDoneNToggle = ref(false);
-const batchDeleteToggle = ref(false);
-const isHoveredEntry = ref(null);
+const props = defineProps(["updateData"]); // 부모 컴포넌트로부터 updateData 프로퍼티를 전달받음
 
-const batchDeleteTodoId = ref([]);
-const batchUpdateDoneYTodoId = ref([]);
-const batchUpdateDoneNTodoId = ref([]);
+// 상태 변수들 초기화
+const deleteConfirmModal = ref(false); // 삭제 확인 모달 상태 변수
+const batchTodoDoneYToggle = ref(false); // 일괄 완료 토글 상태 변수
+const batchTodoDoneNToggle = ref(false); // 일괄 미완료 토글 상태 변수
+const batchDeleteToggle = ref(false); // 일괄 삭제 토글 상태 변수
+const isHoveredEntry = ref(null); // 요소에 마우스 오버 시 해당 Todo 아이디를 가리키는 상태 변수
 
-const searchGroup = ref("todoAllSearch");
-const searchOptions = [
-    {
-        label: "모두",
-        value: "todoAllSearch",
-    },
-    {
-        label: "제목으로 검색",
-        value: "todoTitleSearch",
-    },
-    {
-        label: "날짜로 검색",
-        value: "todoAtSearch",
-    },
+// 일괄 처리를 위한 Todo 아이디 배열 상태 변수들 초기화
+const batchDeleteTodoId = ref([]); // 일괄 삭제할 Todo 아이디 배열
+const batchUpdateDoneYTodoId = ref([]); // 일괄 완료 처리할 Todo 아이디 배열
+const batchUpdateDoneNTodoId = ref([]); // 일괄 미완료 처리할 Todo 아이디 배열
+
+// 검색 관련 상태 변수들 초기화
+const searchGroup = ref("todoAllSearch"); // 검색 그룹 상태 변수, 기본값은 "모두"
+const searchOptions = [ // 검색 옵션들 배열
+  {
+    label: "모두",
+    value: "todoAllSearch",
+  },
+  {
+    label: "제목으로 검색",
+    value: "todoTitleSearch",
+  },
+  {
+    label: "날짜로 검색",
+    value: "todoAtSearch",
+  },
 ];
-const searchCondition = {
-    todoTitle: undefined,
-    fromTodoAt: undefined,
-    toTodoAt: undefined,
+const searchCondition = { // 검색 조건 객체
+  todoTitle: undefined, // Todo 제목 검색어
+  fromTodoAt: undefined, // Todo의 시작 날짜 범위
+  toTodoAt: undefined, // Todo의 종료 날짜 범위
 };
-const searchTodoTitle = ref("");
-const searchModal = ref({
-    dateModal: false,
-    titleSearchModal: false,
+const searchTodoTitle = ref(""); // Todo 제목 검색어 상태 변수
+const searchModal = ref({ // 검색 모달 상태 변수
+  dateModal: false, // 날짜 검색 모달 표시 여부
+  titleSearchModal: false, // 제목 검색 모달 표시 여부
 });
-const dateFormat = "YYYY/MM/DD";
-const searchTodoAt = ref({
-    from: dayjs().format(dateFormat),
-    to: dayjs().add(1, "d").format(dateFormat),
+const dateFormat = "YYYY/MM/DD"; // 날짜 형식
+const searchTodoAt = ref({ // Todo 날짜 검색 범위 상태 변수
+  from: dayjs().format(dateFormat), // 시작 날짜
+  to: dayjs().add(1, "d").format(dateFormat), // 종료 날짜 (하루 뒤)
 });
 
-const isGetBeforeData = ref(false);
-const isGetBeforeDataStatus = ref("N");
-const tempMap = ref({});
-const todoMap = ref({});
+// 데이터 로드 및 상태 관리를 위한 변수들 초기화
+const isGetBeforeData = ref(false); // 이전 데이터 가져오기 여부
+const isGetBeforeDataStatus = ref("N"); // 이전 데이터 가져오기 상태 ("Y": 활성화, "N":  비활성화)
+const tempMap = ref({}); // 이전 데이터 맵
+const todoMap = ref({}); // Todo 데이터 맵
 
-let page = 1;
+let page = 1; // 현재 페이지 초기화
 
+// 페이지 로드 함수
 const loadPage = async (isUpdate, isGetBeforeDataStatus, searchGroup) => {
-    tempMap.value = todoMap.value;
+  // 이전 데이터 맵 복사
+  tempMap.value = todoMap.value;
 
-    if (searchGroup === "todoTitleSearch") {
-        page = 1;
-        searchCondition.todoTitle = searchTodoTitle.value;
-        searchCondition.fromTodoAt = undefined;
-        searchCondition.toTodoAt = undefined;
+  // 검색 그룹에 따른 검색 조건 설정
+  if (searchGroup === "todoTitleSearch") {
+    page = 1;
+    searchCondition.todoTitle = searchTodoTitle.value;
+    searchCondition.fromTodoAt = undefined;
+    searchCondition.toTodoAt = undefined;
+  }
+
+  if (searchGroup === "todoAtSearch") {
+    page = 1;
+    searchCondition.todoTitle = undefined;
+    searchCondition.fromTodoAt = searchTodoAt.value.from;
+    searchCondition.toTodoAt = searchTodoAt.value.to;
+  }
+
+  // Todo 목록 API 호출
+  const loadData = await TodoApi.getTodoListApi(
+    page,
+    isUpdate,
+    isGetBeforeDataStatus,
+    searchCondition
+  );
+  const timeBucketTodoMap = loadData.body.timeBucketTodoMap;
+
+  // 로드된 데이터가 없는 경우 처리
+  if (Object.keys(timeBucketTodoMap).length === 0) {
+    if (
+      searchCondition.todoTitle === undefined &&
+      searchCondition.todoAt === undefined
+    ) {
+      page--;
+      return;
+    } else {
+      todoMap.value = {};
     }
+  }
 
-    if (searchGroup === "todoAtSearch") {
-        page = 1;
-        searchCondition.todoTitle = undefined;
-        searchCondition.fromTodoAt = searchTodoAt.value.from;
-        searchCondition.toTodoAt = searchTodoAt.value.to;
-    }
+  // 로드된 데이터를 Todo 맵에 추가
+  for (const date in timeBucketTodoMap) {
+    todoMap.value[date] = timeBucketTodoMap[date];
+  }
 
-    const loadData = await TodoApi.getTodoListApi(
-        page,
-        isUpdate,
-        isGetBeforeDataStatus,
-        searchCondition
-    );
-    const timeBucketTodoMap = loadData.body.timeBucketTodoMap;
-
-    if (Object.keys(timeBucketTodoMap).length === 0) {
-        if (
-            searchCondition.todoTitle === undefined &&
-            searchCondition.todoAt === undefined
-        ) {
-            page--;
-            return;
-        } else {
-            todoMap.value = {};
-        }
-    }
-    for (const date in timeBucketTodoMap) {
-        todoMap.value[date] = timeBucketTodoMap[date];
-    }
-
-    page++;
-    return timeBucketTodoMap;
+  page++;
+  return timeBucketTodoMap;
 };
 
+// 요소에 마우스 호버 시 호출되는 함수
 const onEntryHover = (hovered, todoId) => {
-    console.log(todoId);
-    isHoveredEntry.value = hovered ? todoId : null;
+  console.log(todoId);
+  isHoveredEntry.value = hovered ? todoId : null;
 };
 
+// Todo 편집 모달을 열기 위한 함수
 const editModalOpenEvent = (todo) => {
-    store.dialogModal.openEditTodoModal();
-    store.editTodoDialogData.createFromTodo(todo);
-    store.dateTimeDialogData.initFromTodoAt(todo.todoAt);
+  store.dialogModal.openEditTodoModal(); // Todo 편집 모달 열기
+  store.editTodoDialogData.createFromTodo(todo); // Todo 데이터를 사용하여 편집 모달 데이터 초기화
+  store.dateTimeDialogData.initFromTodoAt(todo.todoAt); // Todo 시작 날짜 데이터로 날짜/시간 모달 데이터 초기화
 };
 
+// 스크롤 이벤트 처리 함수
 const handleScroll = async () => {
-    if (window.innerHeight + window.scrollY >= document.body.scrollHeight - 1) {
-        await loadPage("N", isGetBeforeDataStatus.value, searchGroup.value);
-    }
+  if (window.innerHeight + window.scrollY >= document.body.scrollHeight - 1) {
+    await loadPage("N", isGetBeforeDataStatus.value, searchGroup.value);
+  }
 };
 
+// 일괄 삭제 버튼 클릭 이벤트 처리 함수
 const batchDeleteClickEvent = async () => {
-    if (batchDeleteTodoId.value.length === 0) {
-        CommonNotify.fail("적어도 하나 이상의 Todo를 선택해주세요.");
-        return;
-    }
+  if (batchDeleteTodoId.value.length === 0) {
+    CommonNotify.fail("적어도 하나 이상의 Todo를 선택해주세요."); // 에러 메시지 표시
+    return;
+  }
 
-    await TodoApi.batchDeleteTodoListApi(batchDeleteTodoId.value);
-    todoMap.value = {};
-    page = 1;
-    batchDeleteToggle.value = false;
-    batchDeleteTodoId.value = [];
-    await loadPage("N", isGetBeforeDataStatus.value, searchGroup.value);
+  await TodoApi.batchDeleteTodoListApi(batchDeleteTodoId.value); // 선택한 Todo 일괄 삭제
+  todoMap.value = {};
+  page = 1;
+  batchDeleteToggle.value = false;
+  batchDeleteTodoId.value = [];
+  await loadPage("N", isGetBeforeDataStatus.value, searchGroup.value);
 };
+
+// 검색 박스 닫기 함수
 const closeSearchBox = () => {
-    if (searchGroup.value === "todoAtSearch") {
-        searchGroup.value = "todoAllSearch";
-        searchModal.value.dateModal = false;
-    }
-
-    if (searchGroup.value === "todoTitleSearch") {
-        searchGroup.value = "todoAllSearch";
-        searchModal.value.titleSearchModal = false;
-    }
-};
-const batchUpdateTodoDoneYClickEvent = async () => {
-    if (batchUpdateDoneYTodoId.value.length === 0) {
-        CommonNotify.fail("적어도 하나 이상의 Todo를 선택해주세요.");
-        return;
-    }
-
-    await TodoApi.batchUpdateTodoDoneApi(batchUpdateDoneYTodoId.value, "Y");
-    todoMap.value = {};
-    page = 1;
-    batchTodoDoneYToggle.value = false;
-    batchUpdateDoneYTodoId.value = [];
-    await loadPage("N", isGetBeforeDataStatus.value, searchGroup.value);
-};
-
-const batchUpdateTodoDoneNClickEvent = async () => {
-    if (batchUpdateDoneNTodoId.value.length === 0) {
-        CommonNotify.fail("적어도 하나 이상의 Todo를 선택해주세요.");
-        return;
-    }
-
-    await TodoApi.batchUpdateTodoDoneApi(batchUpdateDoneNTodoId.value, "N");
-    todoMap.value = {};
-    page = 1;
-    batchTodoDoneNToggle.value = false;
-    batchUpdateDoneNTodoId.value = [];
-    await loadPage("N", isGetBeforeDataStatus.value, searchGroup.value);
-};
-const side = computed((userId) => {
-    return userId % 1 === 0 ? "left" : "right";
-});
-
-const reOpenTitleModal = () => {
-    searchTodoTitle.value = "";
-    searchModal.value.titleSearchModal = true;
-};
-
-const reOpenTodoAtModal = () => {
-    searchModal.value.dateModal = true;
-};
-
-const searchTodoTitleEvent = async () => {
-    searchModal.value.titleSearchModal = false;
-    todoMap.value = {};
-    page = 1;
-    batchTodoDoneNToggle.value = false;
-    batchUpdateDoneNTodoId.value = [];
-    await loadPage("N", isGetBeforeDataStatus.value, searchGroup.value);
-};
-
-const deleteConfirmModalOpen = () => {
-    deleteConfirmModal.value = true;
-};
-
-const searchTodoAtEvent = async () => {
+  if (searchGroup.value === "todoAtSearch") {
+    searchGroup.value = "todoAllSearch";
     searchModal.value.dateModal = false;
-    todoMap.value = {};
-    page = 1;
-    batchTodoDoneNToggle.value = false;
-    batchUpdateDoneNTodoId.value = [];
-    console.log("들어오냐?");
-    await loadPage("N", isGetBeforeDataStatus.value, searchGroup.value);
+  }
+
+  if (searchGroup.value === "todoTitleSearch") {
+    searchGroup.value = "todoAllSearch";
+    searchModal.value.titleSearchModal = false;
+  }
 };
 
+// 일괄 완료 처리 버튼 클릭 이벤트 처리 함수
+const batchUpdateTodoDoneYClickEvent = async () => {
+  if (batchUpdateDoneYTodoId.value.length === 0) {
+    CommonNotify.fail("적어도 하나 이상의 Todo를 선택해주세요."); // 에러 메시지 표시
+    return;
+  }
+
+  await TodoApi.batchUpdateTodoDoneApi(batchUpdateDoneYTodoId.value, "Y"); // 선택한 Todo 일괄 완료 처리
+  todoMap.value = {};
+  page = 1;
+  batchTodoDoneYToggle.value = false;
+  batchUpdateDoneYTodoId.value = [];
+  await loadPage("N", isGetBeforeDataStatus.value, searchGroup.value);
+};
+
+// 일괄 미완료 처리 버튼 클릭 이벤트 처리 함수
+const batchUpdateTodoDoneNClickEvent = async () => {
+  if (batchUpdateDoneNTodoId.value.length === 0) {
+    CommonNotify.fail("적어도 하나 이상의 Todo를 선택해주세요."); // 에러 메시지 표시
+    return;
+  }
+
+  await TodoApi.batchUpdateTodoDoneApi(batchUpdateDoneNTodoId.value, "N"); // 선택한 Todo 일괄 미완료 처리
+  todoMap.value = {};
+  page = 1;
+  batchTodoDoneNToggle.value = false;
+  batchUpdateDoneNTodoId.value = [];
+  await loadPage("N", isGetBeforeDataStatus.value, searchGroup.value);
+};
+
+// 유저 아이디를 기반으로 왼쪽 또는 오른쪽을 반환하는 컴퓨티드 상태 변수
+const side = computed((userId) => {
+  return userId % 1 === 0 ? "left" : "right";
+});
+
+// Todo 제목 검색 모달 다시 열기 함수
+const reOpenTitleModal = () => {
+  searchTodoTitle.value = "";
+  searchModal.value.titleSearchModal = true;
+};
+
+// Todo 날짜 검색 모달 다시 열기 함수
+const reOpenTodoAtModal = () => {
+  searchModal.value.dateModal = true;
+};
+
+// Todo 제목 검색 이벤트 처리 함수
+const searchTodoTitleEvent = async () => {
+  searchModal.value.titleSearchModal = false;
+  todoMap.value = {};
+  page = 1;
+  batchTodoDoneNToggle.value = false;
+  batchUpdateDoneNTodoId.value = [];
+  await loadPage("N", isGetBeforeDataStatus.value, searchGroup.value);
+};
+
+// 삭제 확인 모달 열기 함수
+const deleteConfirmModalOpen = () => {
+  deleteConfirmModal.value = true;
+};
+
+// Todo 날짜 검색 이벤트 처리 함수
+const searchTodoAtEvent = async () => {
+  searchModal.value.dateModal = false;
+  todoMap.value = {};
+  page = 1;
+  batchTodoDoneNToggle.value = false;
+  batchUpdateDoneNTodoId.value = [];
+  console.log("들어오냐?");
+  await loadPage("N", isGetBeforeDataStatus.value, searchGroup.value);
+};
+
+// 삭제 확인 모달 닫기 함수
 const deleteConfirmModalClose = () => {
-    deleteConfirmModal.value = false;
+  deleteConfirmModal.value = false;
 };
 
+// 컴포넌트 마운트 시 스크롤 이벤트 리스너 등록 및 페이지 로드 함수 호출
 onMounted(async () => {
-    window.addEventListener("scroll", handleScroll);
-    await loadPage("N", isGetBeforeDataStatus.value, searchGroup.value);
+  window.addEventListener("scroll", handleScroll);
+  await loadPage("N", isGetBeforeDataStatus.value, searchGroup.value);
 });
 
+// 컴포넌트 언마운트 시 스크롤 이벤트 리스너 제거
 onBeforeUnmount(() => {
-    window.removeEventListener("scroll", handleScroll);
+  window.removeEventListener("scroll", handleScroll);
 });
 
+// Todo 제목 검색 그룹 여부를 반환하는 컴퓨티드 상태 변수
 const isSearchTitleGroup = computed(() => {
-    return searchGroup.value === "todoTitleSearch";
+  return searchGroup.value === "todoTitleSearch";
 });
 
+// Todo 날짜 검색 그룹 여부를 반환하는 컴퓨티드 상태 변수
 const isSearchTodoAtGroup = computed(() => {
-    return searchGroup.value === "todoAtSearch";
+  return searchGroup.value === "todoAtSearch";
 });
 
+// 검색 모달의 날짜 범위 변경 시 호출되는 함수
 watch(
-    () => searchModal.value.dateModal,
-    async (newValue, oldValue) => {
-        searchTodoAt.value.from = dayjs().format(dateFormat);
-        searchTodoAt.value.to = dayjs().add(1, "d").format(dateFormat);
-    }
+  () => searchModal.value.dateModal,
+  async (newValue, oldValue) => {
+    searchTodoAt.value.from = dayjs().format(dateFormat);
+    searchTodoAt.value.to = dayjs().add(1, "d").format(dateFormat);
+  }
 );
 
+// props.updateData가 변경될 때마다 호출되는 함수
 watch(
-    () => props.updateData,
-    async (newValue, oldValue) => {
-        await loadPage("Y", isGetBeforeDataStatus.value, searchGroup.value);
-    }
+  () => props.updateData,
+  async (newValue, oldValue) => {
+    await loadPage("Y", isGetBeforeDataStatus.value, searchGroup.value);
+  }
 );
 
+// Todo 맵을 날짜 기준으로 정렬하여 반환하는 컴퓨티드 상태 변수
 const sortedTodoMap = computed(() => {
-    return Object.fromEntries(
-        Object.entries(todoMap.value).sort((a, b) => {
-            return new Date(a[0]).getTime() - new Date(b[0]).getTime();
-        })
-    );
+  return Object.fromEntries(
+    Object.entries(todoMap.value).sort((a, b) => {
+      return new Date(a[0]).getTime() - new Date(b[0]).getTime();
+    })
+  );
 });
 
+// isGetBeforeData 값이 변경될 때마다 호출되는 함수
 watch(
-    () => isGetBeforeData.value,
-    async (newValue, oldValue) => {
-        if (newValue) {
-            console.log(searchGroup.value);
-            isGetBeforeDataStatus.value = "Y";
+  () => isGetBeforeData.value,
+  async (newValue, oldValue) => {
+    if (newValue) {
+      console.log(searchGroup.value);
+      isGetBeforeDataStatus.value = "Y";
 
-            await loadPage("Y", isGetBeforeDataStatus.value, searchGroup);
-        } else {
-            console.log(searchGroup);
-            isGetBeforeDataStatus.value = "N";
-            todoMap.value = {};
-            await loadPage("Y", isGetBeforeDataStatus.value, searchGroup);
-        }
+      await loadPage("Y", isGetBeforeDataStatus.value, searchGroup);
+    } else {
+      console.log(searchGroup);
+      isGetBeforeDataStatus.value = "N";
+      todoMap.value = {};
+      await loadPage("Y", isGetBeforeDataStatus.value, searchGroup);
     }
+  }
 );
 
+// searchGroup 값이 변경될 때마다 호출되는 함수
 watch(
-    () => searchGroup.value,
-    async (newValue, oldValue) => {
-        // isGetBeforeData.value = false;
+  () => searchGroup.value,
+  async (newValue, oldValue) => {
+    // isGetBeforeData.value = false;
 
-        if (newValue === "todoAtSearch") {
-            searchTodoTitle.value = "";
-            searchModal.value.dateModal = true;
-        }
-
-        if (newValue === "todoTitleSearch") {
-            searchTodoAt.value = "";
-            searchModal.value.titleSearchModal = true;
-        }
-
-        if (newValue === "todoAllSearch") {
-            searchCondition.todoTitle = undefined;
-            searchTodoTitle.value = undefined;
-            searchCondition.fromTodoAt = undefined;
-            searchCondition.toTodoAt = undefined;
-            page = 1;
-            await loadPage("N", isGetBeforeDataStatus.value, newValue);
-        }
+    if (newValue === "todoAtSearch") {
+      searchTodoTitle.value = "";
+      searchModal.value.dateModal = true;
     }
+
+    if (newValue === "todoTitleSearch") {
+      searchTodoAt.value = "";
+      searchModal.value.titleSearchModal = true;
+    }
+
+    // 전체 선택 시 모두 초기화
+    if (newValue === "todoAllSearch") {
+      searchCondition.todoTitle = undefined;
+      searchTodoTitle.value = undefined;
+      searchCondition.fromTodoAt = undefined;
+      searchCondition.toTodoAt = undefined;
+      page = 1;
+      await loadPage("N", isGetBeforeDataStatus.value, newValue);
+    }
+  }
 );
 </script>
 
