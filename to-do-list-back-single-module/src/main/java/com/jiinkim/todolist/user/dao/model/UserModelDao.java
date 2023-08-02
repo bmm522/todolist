@@ -8,4 +8,6 @@ public interface UserModelDao {
     int updateRefreshToken(User savedUser);
 
     int register(User user);
+
+    int updateNickname(User user);
 }

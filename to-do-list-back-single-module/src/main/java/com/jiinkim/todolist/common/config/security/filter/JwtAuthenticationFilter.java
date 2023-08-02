@@ -19,78 +19,79 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import java.io.IOException;
+
 import org.springframework.util.StringUtils;
 
 @Slf4j
 public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
 
-  private final ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
 
-  private final String headerName = "AccessToken";
+    private final String headerName = "AccessToken";
 
-  public JwtAuthenticationFilter(AuthenticationManager authenticationManager,
-      final ObjectMapper objectMapper) {
-    super(authenticationManager);
-    this.objectMapper = objectMapper;
-  }
-
-  @Override
-  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-      FilterChain chain) throws IOException, ServletException {
-    if (checkSkipFilter(request.getRequestURI())) {
-      chain.doFilter(request, response);
-      return;
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager,
+                                   final ObjectMapper objectMapper) {
+        super(authenticationManager);
+        this.objectMapper = objectMapper;
     }
 
-    String accessToken = getHeaderValue(request, response);
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+                                    FilterChain chain) throws IOException, ServletException {
+        if (checkSkipFilter(request.getRequestURI())) {
+            chain.doFilter(request, response);
+            return;
+        }
 
-    JwtProvider.checkValidAccessToken(accessToken);
+        String accessToken = getHeaderValue(request, response);
 
-    if (!JwtProvider.isExpiredAccessToken(accessToken)) {
-      handleExpired(response);
+        JwtProvider.checkValidAccessToken(accessToken);
+
+        if (!JwtProvider.isExpiredAccessToken(accessToken)) {
+            handleExpired(response);
+            return;
+        }
+
+        UserDetailsImpl userDetails = getUserDetails(accessToken);
+
+        Authentication authentication =
+                new UsernamePasswordAuthenticationToken(userDetails, null);
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        try {
+            chain.doFilter(request, response);
+        } finally {
+            SecurityContextHolder.clearContext();
+        }
+
     }
 
-    UserDetailsImpl userDetails = getUserDetails(accessToken);
 
-    Authentication authentication =
-        new UsernamePasswordAuthenticationToken(userDetails, null);
-
-    SecurityContextHolder.getContext().setAuthentication(authentication);
-    try {
-      chain.doFilter(request, response);
-    } finally {
-      SecurityContextHolder.clearContext();
+    private UserDetailsImpl getUserDetails(final String accessToken) {
+        return new UserDetailsImpl(
+                JwtProvider.getUserIdFromAccessToken(accessToken),
+                JwtProvider.getUsernameFromAccessToken(accessToken)
+        );
     }
 
-  }
-
-
-  private UserDetailsImpl getUserDetails(final String accessToken) {
-    return new UserDetailsImpl(
-        JwtProvider.getUserIdFromAccessToken(accessToken),
-        JwtProvider.getUsernameFromAccessToken(accessToken)
-    );
-  }
-
-  private void handleExpired(HttpServletResponse response)
-      throws IOException {
-    objectMapper.writeValue(response.getOutputStream(), ApiResponse.fail(HttpStatus.UNAUTHORIZED,
-        AccessTokenExpiredException.class));
-  }
-
-
-  public boolean checkSkipFilter(final String requestURI) {
-    return PermitUrls.isPermitted(requestURI);
-  }
-
-  private String getHeaderValue(HttpServletRequest request, HttpServletResponse response)
-      throws IOException {
-    String headerValue = request.getHeader(headerName);
-    if (StringUtils.hasText(headerValue)) {
-      objectMapper.writeValue(response.getOutputStream(),
-          ApiResponse.fail(HttpStatus.UNAUTHORIZED, new NotFoundTokenFromHeaderException(
-              String.format("헤더에서 %s 정보를 찾을 수 없습니다.", headerName))));
+    private void handleExpired(HttpServletResponse response)
+            throws IOException {
+        objectMapper.writeValue(response.getOutputStream(), ApiResponse.fail(419));
     }
-    return headerValue;
-  }
+
+
+    public boolean checkSkipFilter(final String requestURI) {
+        return PermitUrls.isPermitted(requestURI);
+    }
+
+    private String getHeaderValue(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+        String headerValue = request.getHeader(headerName);
+        if (!StringUtils.hasText(headerValue)) {
+            objectMapper.writeValue(response.getOutputStream(),
+                    ApiResponse.fail(HttpStatus.UNAUTHORIZED, new NotFoundTokenFromHeaderException(
+                            String.format("헤더에서 %s 정보를 찾을 수 없습니다.", headerName))));
+        }
+        return headerValue;
+    }
 }

@@ -27,8 +27,8 @@
             <if test="todoTitle != null">
                 AND todo_title like #{todoTitle} || '%'
             </if>
-            <if test="todoAt != null">
-                AND todo_at BETWEEN TO_DATE(#{todoAt},'YYYY-MM-DD') AND TO_DATE(#{todoAt},'YYYY-MM-DD') +1
+            <if test="fromTodoAt != null">
+                AND todo_at BETWEEN TO_DATE(#{fromTodoAt},'YYYY-MM-DD') AND TO_DATE(#{toTodoAt},'YYYY-MM-DD') +1
             </if>
         </where>
         order by todo_at

@@ -1,5 +1,7 @@
 import axios from "axios";
 import {useQuasar} from "quasar";
+import {expiredTokenHandler} from "src/common/ExpiredTokenHandler";
+
 
 
 const createInstance = () => {
@@ -7,33 +9,27 @@ const createInstance = () => {
   return setInterceptor(instance);
 }
 
+
 const setInterceptor = (instance) => {
-  instance.interceptors.request.use(function (config ) {
-    config.headers.AccessToken =  sessionStorage.getItem("AccessToken");
-    config.headers.RefreshToken =  sessionStorage.getItem("RefreshToken");
+  instance.interceptors.request.use(function (config) {
+    config.headers.AccessToken = localStorage.getItem("AccessToken");
     config.headers["Content-Type"] = "application/json";
     return config;
   })
 
-
-
   instance.interceptors.response.use(
-
-    (res) => {
-      return res;
-    },
-
-    (error) => {
-      return Promise.reject();
+    async (response) => {
+      if (response.data.code === 419) {
+        return await expiredTokenHandler(response);
+      }
+      return response;
     },
   )
-
   return instance;
 }
 
+const globalAxios = createInstance();
 
-
-const globalAxios= createInstance();
 
 
 export default globalAxios;

@@ -28,8 +28,8 @@ public class TodoServiceDtoConverter {
     }
 
 
-    public TodoGetSearchCondition of(final int page, final Status isUpdate, final Status isGetBeforeDataStatus, Optional<String> todoTitle, final Optional<String> todoAt) {
-        return TodoGetSearchCondition.create(page, isUpdate, isGetBeforeDataStatus, todoTitle, todoAt);
+    public TodoGetSearchCondition of(final int page, final Status isUpdate, final Status isGetBeforeDataStatus, Optional<String> todoTitle, final Optional<String> fromTodoAt, final Optional<String> toTodoAt) {
+        return TodoGetSearchCondition.create(page, isUpdate, isGetBeforeDataStatus, todoTitle, fromTodoAt, toTodoAt);
     }
 
     public static TodoBatchUpdateTodoDoneRequest of(final TodoBatchUpdateTodoDoneClientRequest request, Status isDone, Long userId) {

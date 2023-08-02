@@ -20,7 +20,8 @@ const getTodoListApi = async (page, isUpdate,  isGetBeforeDataStatus, searchCond
       isUpdate: isUpdate,
       isGetBeforeDataStatus : isGetBeforeDataStatus,
       todoTitle: searchCondition.todoTitle,
-      todoAt:searchCondition.todoAt,
+      fromTodoAt:searchCondition.fromTodoAt,
+      toTodoAt:searchCondition.toTodoAt,
     }
   })
 

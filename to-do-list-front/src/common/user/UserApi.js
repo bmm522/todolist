@@ -13,8 +13,10 @@ const checkDuplicateUsernameApi = async (username) => {
 }
 
 const getNickname = async () => {
+
   const result = await globalAxios.get("/user/nickname"
   )
+
   return  result.data;
 }
 
@@ -41,9 +43,23 @@ const loginApi = async (userId, password) => {
   return result.data;
 }
 
+
+const editUserNickname = async (nickname) => {
+  nickname.trim();
+  const result = await globalAxios.post("/user/nickname/update", JSON.stringify({
+    nickname : nickname
+  }))
+  return result.data;
+}
+
+
+
+
+
 export default {
   checkDuplicateUsernameApi,
   registerApi,
   loginApi,
-  getNickname
+  getNickname,
+  editUserNickname
 };

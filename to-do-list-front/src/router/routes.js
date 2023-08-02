@@ -4,11 +4,16 @@ import {createRouter} from "vue-router";
 const routes = [
   {
     path: '/',
+    component: () => import('layouts/LoginLayout.vue'),
+  },
+  {
+    path: '/login',
     name:'login',
     component: () => import('layouts/LoginLayout.vue'),
   },
   {
     path: '/register',
+    name:'register',
     component: () => import('layouts/RegisterLayout.vue'),
     children: [
       // { path: '', component: () => import('pages/IndexPage.vue') }
@@ -16,9 +21,11 @@ const routes = [
   },
   {
     path: '/todo',
+    name:'todo',
     component: () => import('layouts/TodoLayout.vue'),
     children: [
-      // { path: '', component: () => import('pages/IndexPage.vue') }
+      { path: '/todo/list', name:'todo-list', component: () => import('components/body/TodoBodyComponent.vue') },
+      { path: '/todo/edit', name:'edit-user-info',component: () => import('components/body/UserInfoEditComponent.vue') }
     ]
   },
 

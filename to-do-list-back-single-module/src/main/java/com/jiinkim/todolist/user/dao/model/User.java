@@ -1,7 +1,6 @@
 package com.jiinkim.todolist.user.dao.model;
 
 
-
 import com.jiinkim.todolist.common.config.mybatis.Status;
 import com.jiinkim.todolist.common.utils.TimeUtils;
 import lombok.AllArgsConstructor;
@@ -15,8 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Alias("userModel")
-public class User  {
-
+public class User {
 
 
     private Long userId;
@@ -29,7 +27,6 @@ public class User  {
     private LocalDateTime updatedAt;
 
 
-
     private User(final String username, final String password, final String nickname, final LocalDateTime createdAt, final LocalDateTime updatedAt) {
         this.username = username;
         this.password = password;
@@ -40,8 +37,8 @@ public class User  {
     }
 
 
-    public static User create(final Long userId, final String username, final String password, final String nickname, final String refreshToken,final Status status,final LocalDateTime createdAt, final LocalDateTime updatedAt) {
-        return new User(userId, username, password, nickname, refreshToken,status,createdAt, updatedAt);
+    public static User create(final Long userId, final String username, final String password, final String nickname, final String refreshToken, final Status status, final LocalDateTime createdAt, final LocalDateTime updatedAt) {
+        return new User(userId, username, password, nickname, refreshToken, status, createdAt, updatedAt);
     }
 
 
@@ -62,6 +59,9 @@ public class User  {
         this.refreshToken = refreshToken;
     }
 
+    public void updateNickname(final String nickname) {
+        this.nickname = nickname;
+    }
 
 
 }

@@ -4,10 +4,11 @@ import com.jiinkim.todolist.common.config.security.CurrentUserId;
 import com.jiinkim.todolist.common.dto.ApiResponse;
 import com.jiinkim.todolist.user.controller.dto.RegisterClientRequest;
 import com.jiinkim.todolist.user.controller.dto.ReissueTokenRequest;
-import com.jiinkim.todolist.user.service.dto.converter.UserServiceDtoConverter;
+import com.jiinkim.todolist.user.controller.dto.UpdateNicknameClientRequest;
 import com.jiinkim.todolist.user.service.UserService;
 
 import com.jiinkim.todolist.user.service.dto.*;
+import com.jiinkim.todolist.user.service.dto.converter.UserServiceDtoConverter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,8 +22,6 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
-    private final UserServiceDtoConverter userServiceDtoConverter;
-
 
     /**
      * @param username 중복 체크 하고자 하는 유저 아이디
@@ -37,7 +36,7 @@ public class UserController {
     @PostMapping("/register")
     public ApiResponse<Integer> register(
             @RequestBody @Valid RegisterClientRequest request) {
-        RegisterRequest dto = userServiceDtoConverter.from(request);
+        RegisterRequest dto = UserServiceDtoConverter.from(request);
         return ApiResponse.success(HttpStatus.CREATED, userService.register(dto));
     }
 
@@ -51,6 +50,12 @@ public class UserController {
     public ApiResponse<GetNicknameResponse> getNickname(
             @CurrentUserId Long userId) {
         return ApiResponse.success(HttpStatus.OK, userService.getNickname(userId));
+    }
+
+    @PostMapping("/nickname/update")
+    public ApiResponse<UpdateNicknameResponse> updateNickname(@RequestBody @Valid UpdateNicknameClientRequest request, @CurrentUserId Long userId) {
+        UpdateNicknameRequest dto = UserServiceDtoConverter.of(request, userId);
+        return ApiResponse.success(HttpStatus.OK, userService.updateNickname(dto));
     }
 
 }

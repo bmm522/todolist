@@ -18,12 +18,13 @@ public class TodoListGetParams {
     private final Long userId;
     private final Status isGetBeforeDataStatus;
     private final String todoTitle;
-    private final String todoAt;
+    private final String fromTodoAt;
+    private final String toTodoAt;
     private Status isUpdate;
     private Status status;
 
 
-    private TodoListGetParams(final int page, final Long userId, final Status isUpdate, final Status isGetBeforeDataStatus, final String todoTitle, final String todoAt) {
+    private TodoListGetParams(final int page, final Long userId, final Status isUpdate, final Status isGetBeforeDataStatus, final String todoTitle, final String fromTodoAt, final String toTodoAt) {
         this.page = page;
         this.pageSize = 10;
         this.userId = userId;
@@ -31,11 +32,12 @@ public class TodoListGetParams {
         this.isUpdate = isUpdate;
         this.isGetBeforeDataStatus = isGetBeforeDataStatus;
         this.todoTitle = todoTitle;
-        this.todoAt = todoAt;
+        this.fromTodoAt = fromTodoAt;
+        this.toTodoAt = toTodoAt;
     }
 
-    public static TodoListGetParams create(final int page, final Long userId, final Status isUpdate, final Status isGetBeforeDataStatus, final String todoTitle, final String todoAt) {
-        return new TodoListGetParams(page, userId, isUpdate, isGetBeforeDataStatus, todoTitle, todoAt);
+    public static TodoListGetParams create(final int page, final Long userId, final Status isUpdate, final Status isGetBeforeDataStatus, final String todoTitle, final String fromTodoAt, final String toTodoAt) {
+        return new TodoListGetParams(page, userId, isUpdate, isGetBeforeDataStatus, todoTitle, fromTodoAt, toTodoAt);
     }
 
     public int getOffset() {

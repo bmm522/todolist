@@ -9,7 +9,7 @@ import lombok.experimental.UtilityClass;
 public class TodoQueryDtoConverter {
 
     public TodoListGetParams of(final TodoGetSearchCondition condition, final Long userId) {
-        return TodoListGetParams.create(condition.getPage(), userId, condition.getIsUpdate(), condition.getIsGetBeforeDataStatus(), condition.getTodoTitle(), condition.getTodoAt());
+        return TodoListGetParams.create(condition.getPage(), userId, condition.getIsUpdate(), condition.getIsGetBeforeDataStatus(), condition.getTodoTitle(), condition.getFromTodoAt(), condition.getToTodoAt());
     }
 
 

@@ -1,13 +1,16 @@
 <template>
+  <AppComponent>
   <RegisterComponent/>
+  </AppComponent>
 </template>
 
 <script>
 import RegisterComponent from "components/login/RegisterComponent.vue";
+import AppComponent from "components/app/AppComponent.vue";
 
 export default {
   name: "RegisterLayout",
-  components: { RegisterComponent }
+  components: {AppComponent, RegisterComponent }
 };
 </script>
 

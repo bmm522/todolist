@@ -41,9 +41,12 @@ public class TodoController {
             @RequestParam("isUpdate") Status isUpdate,
             @RequestParam("isGetBeforeDataStatus") Status isGetBeforeDataStatus,
             @RequestParam(value = "todoTitle", required = false) Optional<String> todoTitle,
-            @RequestParam(value = "todoAt", required = false) Optional<String> todoAt,
+            @RequestParam(value = "fromTodoAt", required = false) Optional<String> fromTodoAt,
+            @RequestParam(value = "toTodoAt", required = false) Optional<String> toTodoAt,
             @CurrentUserId Long userId) {
-        TodoGetSearchCondition dto = TodoServiceDtoConverter.of(page, isUpdate, isGetBeforeDataStatus, todoTitle, todoAt);
+        System.out.println(fromTodoAt);
+        System.out.println(toTodoAt);
+        TodoGetSearchCondition dto = TodoServiceDtoConverter.of(page, isUpdate, isGetBeforeDataStatus, todoTitle, fromTodoAt, toTodoAt);
         return ApiResponse.success(HttpStatus.OK, todoService.getTodoGroupingMap(dto, userId));
     }
 

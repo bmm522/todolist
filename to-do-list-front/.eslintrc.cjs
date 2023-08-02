@@ -61,7 +61,7 @@ module.exports = {
 
   // add your custom rules here
   rules: {
-    'brace-style': [2, 'stroustrup', { 'allowSingleLine': true }],
+    // 'brace-style': [2, 'stroustrup', { 'allowSingleLine': true }],
 
     'vue/max-attributes-per-line': 0,
     'vue/valid-v-for': 0,

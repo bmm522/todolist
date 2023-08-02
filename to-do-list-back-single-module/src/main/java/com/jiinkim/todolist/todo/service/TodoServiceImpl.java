@@ -50,6 +50,7 @@ public class TodoServiceImpl implements TodoService {
 
         List<TodoQueryDto> queryDtoList = todoDao.findAllBySearchCondition(params);
 
+
         Map<LocalDate, List<TodoQueryDto>> timeBucketTodoMap = queryDtoList.stream()
                 .collect(groupingBy(TodoQueryDto::getTodoDate));
 
@@ -106,13 +107,12 @@ public class TodoServiceImpl implements TodoService {
 
     private void checkPermission(List<TodoQueryDto> todoQueryDtoList, final Long userIdFromRequest) {
         todoQueryDtoList.stream()
-            .filter(todoQueryDto -> !todoQueryDto.isPermission(userIdFromRequest))
-            .findAny()
-            .ifPresent(todoQueryDto -> {
-                throw new PermissionException("todo를 변경할 권한이 없습니다.");
-            });
+                .filter(todoQueryDto -> !todoQueryDto.isPermission(userIdFromRequest))
+                .findAny()
+                .ifPresent(todoQueryDto -> {
+                    throw new PermissionException("todo를 변경할 권한이 없습니다.");
+                });
     }
-
 
 
 }

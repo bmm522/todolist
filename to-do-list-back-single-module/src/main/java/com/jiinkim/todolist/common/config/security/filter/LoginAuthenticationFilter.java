@@ -3,6 +3,7 @@ package com.jiinkim.todolist.common.config.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jiinkim.todolist.common.config.mybatis.Status;
+import com.jiinkim.todolist.common.config.security.filter.dto.UserInfoWithJwtToken;
 import com.jiinkim.todolist.common.exception.servererror.UserNotFoundQueryResultException;
 import com.jiinkim.todolist.common.exception.unauthorized.LoginFailedException;
 import com.jiinkim.todolist.common.dto.ApiResponse;
@@ -17,8 +18,10 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.util.Optional;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -34,75 +37,81 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Slf4j
 public class LoginAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-  private final AuthenticationManager authenticationManager;
-  private final UserDao userDao;
-  private final ObjectMapper objectMapper;
+    private final AuthenticationManager authenticationManager;
+    private final UserDao userDao;
+    private final ObjectMapper objectMapper;
 
-  @Override
-  public Authentication attemptAuthentication(HttpServletRequest request,
-      HttpServletResponse response) throws AuthenticationException {
-    User user = null;
+    @Override
+    public Authentication attemptAuthentication(HttpServletRequest request,
+                                                HttpServletResponse response) throws AuthenticationException {
+        User user = null;
 
-    try {
-      user = objectMapper.readValue(request.getInputStream(), User.class);
-    } catch (IOException e) {
-      log.error("클라이언트로 부터 온 데이터 stream 과정에서 에러");
-      log.error(e.getMessage());
+        try {
+            user = objectMapper.readValue(request.getInputStream(), User.class);
+        } catch (IOException e) {
+            log.error("클라이언트로 부터 온 데이터 stream 과정에서 에러");
+            log.error(e.getMessage());
+        }
+
+        UsernamePasswordAuthenticationToken authenticationToken
+                = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
+
+        return authenticationManager.authenticate(authenticationToken);
     }
 
-    UsernamePasswordAuthenticationToken authenticationToken
-        = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
+    @Override
+    protected void successfulAuthentication(HttpServletRequest request,
+                                            HttpServletResponse response,
+                                            FilterChain chain, Authentication authResult) throws IOException, ServletException {
 
-    return authenticationManager.authenticate(authenticationToken);
-  }
+        UserDetailsImpl userDetails = (UserDetailsImpl) authResult.getPrincipal();
+        User loginUser = userDetails.getUser();
 
-  @Override
-  protected void successfulAuthentication(HttpServletRequest request,
-      HttpServletResponse response,
-      FilterChain chain, Authentication authResult) throws IOException, ServletException {
+        User savedUser = getSavedUser(loginUser.getUsername());
 
-    UserDetailsImpl userDetails = (UserDetailsImpl) authResult.getPrincipal();
-    User loginUser = userDetails.getUser();
+        Optional<String> refreshTokenOp = reIssueTokenIfExpired(savedUser);
 
-    User savedUser = getSavedUser(loginUser.getUsername());
-
-    Optional<String> refreshTokenOp = reIssueTokenIfExpired(savedUser);
-
-    JwtToken jwtToken = JwtProvider.generatedJwtToken(loginUser.getUserId(),
-        loginUser.getUsername());
-    refreshTokenOp.ifPresent(jwtToken::setRefreshToken);
-
-    objectMapper.writeValue(response.getOutputStream(),
-        ApiResponse.success(HttpStatus.OK, jwtToken));
-  }
+        JwtToken jwtToken = JwtProvider.generatedJwtToken(loginUser.getUserId(),
+                loginUser.getUsername());
+        refreshTokenOp.ifPresent(jwtToken::setRefreshToken);
 
 
-  @Override
-  protected void unsuccessfulAuthentication(HttpServletRequest request,
-      HttpServletResponse response, AuthenticationException failed)
-      throws IOException, ServletException {
-    objectMapper.writeValue(response.getOutputStream(),
-        ApiResponse.fail(HttpStatus.UNAUTHORIZED, new LoginFailedException("로그인을 실패했습니다.")));
-  }
-
-  private User getSavedUser(final String username) {
-    UserQueryDto userQueryDto = userDao.findUserByUsername(username, Status.Y)
-        .orElseThrow(() -> new UserNotFoundQueryResultException("아이디에 해당하는 유저가 없습니다."));
-    return UserModelConverter.from(userQueryDto);
-  }
-
-  private Optional<String> reIssueTokenIfExpired(final User savedUser) {
-    if (!JwtProvider.isExpiredRefreshToken(savedUser.getRefreshToken())) {
-
-      String newRefreshToken = JwtProvider.generatedRefreshToken(savedUser.getUsername());
-
-      savedUser.setRefreshToken(newRefreshToken);
-
-      userDao.updateRefreshToken(savedUser);
-
-      return Optional.of(newRefreshToken);
-
+        objectMapper.writeValue(response.getOutputStream(),
+                ApiResponse.success(HttpStatus.OK,
+                        UserInfoWithJwtToken.create(
+                                jwtToken,
+                                loginUser.getUserId(),
+                                loginUser.getUsername(),
+                                loginUser.getNickname())));
     }
-    return Optional.empty();
-  }
+
+
+    @Override
+    protected void unsuccessfulAuthentication(HttpServletRequest request,
+                                              HttpServletResponse response, AuthenticationException failed)
+            throws IOException, ServletException {
+        objectMapper.writeValue(response.getOutputStream(),
+                ApiResponse.fail(HttpStatus.UNAUTHORIZED, new LoginFailedException("로그인을 실패했습니다.")));
+    }
+
+    private User getSavedUser(final String username) {
+        UserQueryDto userQueryDto = userDao.findUserByUsername(username, Status.Y)
+                .orElseThrow(() -> new UserNotFoundQueryResultException("아이디에 해당하는 유저가 없습니다."));
+        return UserModelConverter.from(userQueryDto);
+    }
+
+    private Optional<String> reIssueTokenIfExpired(final User savedUser) {
+        if (!JwtProvider.isExpiredRefreshToken(savedUser.getRefreshToken())) {
+
+            String newRefreshToken = JwtProvider.generatedRefreshToken(savedUser.getUsername());
+
+            savedUser.setRefreshToken(newRefreshToken);
+
+            userDao.updateRefreshToken(savedUser);
+
+            return Optional.of(newRefreshToken);
+
+        }
+        return Optional.empty();
+    }
 }

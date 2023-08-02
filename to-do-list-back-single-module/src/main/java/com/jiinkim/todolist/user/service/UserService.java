@@ -2,10 +2,7 @@ package com.jiinkim.todolist.user.service;
 
 
 import com.jiinkim.todolist.user.controller.dto.ReissueTokenRequest;
-import com.jiinkim.todolist.user.service.dto.CheckDuplicateUsernameResponse;
-import com.jiinkim.todolist.user.service.dto.GetNicknameResponse;
-import com.jiinkim.todolist.user.service.dto.RegisterRequest;
-import com.jiinkim.todolist.user.service.dto.ReissueTokenResponse;
+import com.jiinkim.todolist.user.service.dto.*;
 
 
 public interface UserService {
@@ -17,4 +14,6 @@ public interface UserService {
 
 
     ReissueTokenResponse reIssueToken(final ReissueTokenRequest request);
+
+    UpdateNicknameResponse updateNickname(UpdateNicknameRequest dto);
 }

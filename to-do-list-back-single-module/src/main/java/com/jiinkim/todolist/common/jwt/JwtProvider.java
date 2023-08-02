@@ -1,7 +1,7 @@
 package com.jiinkim.todolist.common.jwt;
 
 
-public class JwtProvider  {
+public class JwtProvider {
 
     private static final JwtGenerator jwtGenerator = new JwtGenerator();
     private static final JwtTokenConverter jwtTokenConverter = new JwtTokenConverter();
@@ -15,15 +15,7 @@ public class JwtProvider  {
     }
 
 
-//    public static String getClaimStringByKeyFromAccessToken(final String accessToken, final String key) {
-//        return jwtDecoder.getClaimStringByKeyFromAccessToken(accessToken, key, jwtProperties.getTokenPrefix(), jwtProperties.getSecret());
-//    }
-//
-//    public static String getClaimStringByKeyFromRefreshToken(final String refreshToken, final String key) {
-//        return jwtDecoder.getClaimStringByKeyFromRefreshToken(refreshToken, key, jwtProperties.getRefreshPrefix(), jwtProperties.getSecret());
-//    }
-
-    public static  Long getUserIdFromAccessToken(final String accessToken) {
+    public static Long getUserIdFromAccessToken(final String accessToken) {
         return jwtDecoder.getUserIdFromAccessToken(accessToken, jwtProperties.getTokenPrefix(), jwtProperties.getSecret());
     }
 
@@ -44,16 +36,16 @@ public class JwtProvider  {
         return jwtTokenConverter.from(accessToken);
     }
 
-    public static JwtToken  generatedJwtToken(final Long userId, final String username) {
+    public static JwtToken generatedJwtToken(final Long userId, final String username) {
         return jwtGenerator.make(userId, username, jwtProperties.getTokenPrefix(), jwtProperties.getRefreshPrefix(), jwtProperties.getIss(), jwtProperties.getSecret());
     }
 
     public static String generatedRefreshToken(final String username) {
-        return jwtGenerator.makeRefreshToken(username,jwtProperties.getRefreshPrefix(), jwtProperties.getIss(), jwtProperties.getSecret());
+        return jwtGenerator.makeRefreshToken(username, jwtProperties.getRefreshPrefix(), jwtProperties.getIss(), jwtProperties.getSecret());
     }
 
     public static String generatedAccessToken(final Long userId, final String username) {
-        return jwtGenerator.makeAccessToken(userId,username,jwtProperties.getTokenPrefix(), jwtProperties.getIss(), jwtProperties.getSecret());
+        return jwtGenerator.makeAccessToken(userId, username, jwtProperties.getTokenPrefix(), jwtProperties.getIss(), jwtProperties.getSecret());
     }
 
     public static boolean isExpiredRefreshToken(final String jwtToken) {
