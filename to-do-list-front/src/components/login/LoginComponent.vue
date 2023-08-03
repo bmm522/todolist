@@ -66,7 +66,7 @@ const login = async () => {
         store.userInfoData.data.nickname = data.body.nickname;
 
         CommonNotify.success("환영합니다.");
-        await router.push("/todo/list");
+        await router.push({ name: "todo-list" });
     }
 
     if (data.code === 401) {
