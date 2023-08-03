@@ -12,7 +12,7 @@ import java.util.Date;
 public class JwtGenerator {
 
 
-    private final int EXPIRATION_TIME = 1000 * 20;
+    private final int EXPIRATION_TIME = 1000 * 60;
 
     private final int REFRESHTOKEN_EXPIRATION_TIME = 14 * 24 * 6 * 10 * 60000;
 

@@ -41,14 +41,11 @@
 </template>
 
 <script setup>
-import AddTaskButton from "components/body/add-task/AddTodoButton.vue";
-import ToDoList from "components/body/ToDoList.vue";
-import EditTaskDialog from "components/body/EditTodoDialog.vue";
 import { computed, ref } from "vue";
-import { Notify } from "quasar";
 import UserApi from "src/common/user/UserApi";
 import { useStore } from "stores/store";
 import CommonNotify from "src/common/CommonNotify";
+
 const nickname = ref("");
 const store = useStore;
 const editNickname = async () => {

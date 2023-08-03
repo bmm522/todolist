@@ -73,14 +73,10 @@
 </template>
 
 <script setup>
-import { computed, onBeforeUnmount, ref, watch } from "vue";
+import { computed, ref } from "vue";
 import DateSelectDialog from "components/body/add-task/DateSelectDialog.vue";
-import { Notify } from "quasar";
 import TodoApi from "src/common/todo/TodoApi";
 
-import { useDialogModalStore } from "stores/dialog_modal";
-import { useDateTimeDialogDataStore } from "stores/date_time_dialog_data";
-import { useAddTodoDialogDataStore } from "stores/add_todo_dialog_data";
 import CommonNotify from "src/common/CommonNotify";
 import { useStore } from "stores/store";
 
