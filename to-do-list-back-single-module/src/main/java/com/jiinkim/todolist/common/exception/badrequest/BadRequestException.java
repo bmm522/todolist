@@ -4,9 +4,9 @@ import com.jiinkim.todolist.common.exception.CustomException;
 
 public class BadRequestException extends CustomException {
 
-        public BadRequestException(final String message) {
+    public BadRequestException(final String message) {
 
-                super(message);
-        }
+        super(message);
+    }
 
 }

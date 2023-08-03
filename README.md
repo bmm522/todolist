@@ -20,7 +20,8 @@
 - ### 6.  DAO단의 Model과 Query 분리
 - ### 7.  Converter
 - ### 8.  JWT
-- ### 9. 후기
+- ### 9. 에러 공통 처리
+- ### 10. 후기
 
 
 ---
@@ -113,4 +114,12 @@
 
 ---
 
-## 9. 후기
+
+## 9. 에러 공통 처리
+
+<image style="width: 900px" src="https://github.com/bmm522/quiz-studio/assets/102157839/adf67025-6a9e-470d-8ea7-0f1295d71372"/>
+
+
+---
+
+## 10. 후기

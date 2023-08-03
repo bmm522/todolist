@@ -18,30 +18,30 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class ExceptionResponseHandler {
 
-        @ExceptionHandler(InternalServerException.class)
-        public ApiResponse<InternalServerException> handleInternalServer(
-            InternalServerException e) {
+    @ExceptionHandler(InternalServerException.class)
+    public ApiResponse<InternalServerException> handleInternalServer(
+        InternalServerException e) {
 
-                return ApiResponse.fail(HttpStatus.INTERNAL_SERVER_ERROR, e);
-        }
+        return ApiResponse.fail(HttpStatus.INTERNAL_SERVER_ERROR, e);
+    }
 
-        @ExceptionHandler(UnAuthorizedException.class)
-        public ApiResponse<UnAuthorizedException> handleUnAuthorized(UnAuthorizedException e) {
+    @ExceptionHandler(UnAuthorizedException.class)
+    public ApiResponse<UnAuthorizedException> handleUnAuthorized(UnAuthorizedException e) {
 
-                return ApiResponse.fail(HttpStatus.UNAUTHORIZED, e);
-        }
+        return ApiResponse.fail(HttpStatus.UNAUTHORIZED, e);
+    }
 
-        @ExceptionHandler(ForbiddenException.class)
-        public ApiResponse<ForbiddenException> handleForbidden(ForbiddenException e) {
+    @ExceptionHandler(ForbiddenException.class)
+    public ApiResponse<ForbiddenException> handleForbidden(ForbiddenException e) {
 
-                return ApiResponse.fail(HttpStatus.FORBIDDEN, e);
-        }
+        return ApiResponse.fail(HttpStatus.FORBIDDEN, e);
+    }
 
-        @ExceptionHandler(BadRequestException.class)
-        public ApiResponse<BadRequestException> handleBadRequest(BadRequestException e) {
+    @ExceptionHandler(BadRequestException.class)
+    public ApiResponse<BadRequestException> handleBadRequest(BadRequestException e) {
 
-                return ApiResponse.fail(HttpStatus.BAD_REQUEST, e);
-        }
+        return ApiResponse.fail(HttpStatus.BAD_REQUEST, e);
+    }
 
 
 }

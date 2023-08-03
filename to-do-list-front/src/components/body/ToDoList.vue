@@ -70,8 +70,6 @@
                 color="primary"
                 inline
             />
-            {{ searchTodoAt.from }}
-            {{ searchTodoAt.to }}
         </div>
         <q-dialog v-model="searchModal.dateModal">
             <q-card>

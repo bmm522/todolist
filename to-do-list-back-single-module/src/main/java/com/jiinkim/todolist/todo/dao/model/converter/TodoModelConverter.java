@@ -8,21 +8,20 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class TodoModelConverter {
+    
+    public Todo from(TodoInsertRequest dto) {
+
+        return Todo.createWhenInsert(dto.getTodoTitle(), dto.getTodoContent(),
+            dto.getTodoAt(),
+            dto.getUserId());
+    }
 
 
-        public Todo from(TodoInsertRequest dto) {
+    public Todo from(TodoUpdateRequest dto) {
 
-                return Todo.createWhenInsert(dto.getTodoTitle(), dto.getTodoContent(),
-                    dto.getTodoAt(),
-                    dto.getUserId());
-        }
-
-
-        public Todo from(TodoUpdateRequest dto) {
-
-                return Todo.createWhenUpdate(dto.getTodoId(), dto.getTodoTitle(),
-                    dto.getTodoContent(), dto.getTodoAt(), dto.getTodoDone(),
-                    dto.getUserId());
-        }
+        return Todo.createWhenUpdate(dto.getTodoId(), dto.getTodoTitle(),
+            dto.getTodoContent(), dto.getTodoAt(), dto.getTodoDone(),
+            dto.getUserId());
+    }
 
 }

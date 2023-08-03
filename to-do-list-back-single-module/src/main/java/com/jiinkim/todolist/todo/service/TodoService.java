@@ -1,6 +1,11 @@
 package com.jiinkim.todolist.todo.service;
 
 import com.jiinkim.todolist.todo.service.dto.*;
+import com.jiinkim.todolist.todo.service.dto.TodoBatchDeleteRequest;
+import com.jiinkim.todolist.todo.service.dto.TodoBatchUpdateTodoDoneRequest;
+import com.jiinkim.todolist.todo.service.dto.TodoGetSearchCondition;
+import com.jiinkim.todolist.todo.service.dto.TodoInsertRequest;
+import com.jiinkim.todolist.todo.service.dto.TodoUpdateRequest;
 
 
 public interface TodoService {
@@ -32,7 +37,7 @@ public interface TodoService {
     /**
      * 여러 할일(Todo)의 완료 상태를 일괄 업데이트합니다.
      *
-     * @param dto    일괄 업데이트할 할일 아이디 리스트와 업데이트할 완료 상태를 담은 TodoBatchUpdateTodoDoneRequest 객체
+     * @param dto 일괄 업데이트할 할일 아이디 리스트와 업데이트할 완료 상태를 담은 TodoBatchUpdateTodoDoneRequest 객체
      * @return Integer 업데이트된 할일의 개수
      */
     Integer batchUpdateTodoDone(TodoBatchUpdateTodoDoneRequest dto);

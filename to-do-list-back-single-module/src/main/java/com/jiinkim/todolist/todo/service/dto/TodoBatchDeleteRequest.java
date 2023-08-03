@@ -10,15 +10,15 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class TodoBatchDeleteRequest {
 
-        private final List<Integer> deletedTodoIdList;
+    private final List<Integer> deletedTodoIdList;
 
 
-        private final Long userId;
+    private final Long userId;
 
-        public static TodoBatchDeleteRequest create(final List<Integer> deletedTodoIdList,
-            final Long userId) {
+    public static TodoBatchDeleteRequest create(final List<Integer> deletedTodoIdList,
+        final Long userId) {
 
-                return new TodoBatchDeleteRequest(deletedTodoIdList, userId);
-        }
+        return new TodoBatchDeleteRequest(deletedTodoIdList, userId);
+    }
 
 }
