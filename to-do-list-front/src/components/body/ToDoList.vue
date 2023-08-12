@@ -1,5 +1,5 @@
 <template>
-    <div class="q-px-lg q-py-md shadow-3" style="padding: 24px 700px">
+    <div class="q-px-lg q-py-md shadow-3" style="padding: 24px 100px">
         <q-dialog v-model="todoListState.deleteConfirmModal">
             <q-card style="width: 350px">
                 <q-card-section>
